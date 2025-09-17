@@ -5,6 +5,7 @@
 Todas as interfaces devem seguir a convenção de nomenclatura com prefixo `I`:
 
 ### ✅ Correto
+
 ```typescript
 export interface IUser {
   id: string;
@@ -19,6 +20,7 @@ export interface IProduct {
 ```
 
 ### ❌ Incorreto
+
 ```typescript
 export interface User {
   id: string;
