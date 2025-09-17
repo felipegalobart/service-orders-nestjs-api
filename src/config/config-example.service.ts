@@ -6,11 +6,17 @@ export class ConfigExampleService {
   constructor(private configService: ConfigService) {}
 
   getDatabaseUri(): string {
-    return this.configService.get<string>('mongodbUri') || 'mongodb://localhost:27017/stock-management';
+    return (
+      this.configService.get<string>('mongodbUri') ||
+      'mongodb://localhost:27017/stock-management'
+    );
   }
 
   getJwtSecret(): string {
-    return this.configService.get<string>('jwtSecret') || 'your-super-secret-jwt-key-here';
+    return (
+      this.configService.get<string>('jwtSecret') ||
+      'your-super-secret-jwt-key-here'
+    );
   }
 
   getApiPrefix(): string {
