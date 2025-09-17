@@ -308,9 +308,9 @@ ping 192.168.31.75
 
 ### **📚 Recursos Úteis:**
 
-- **MongoDB Documentation**: https://docs.mongodb.com/
-- **NestJS MongoDB**: https://docs.nestjs.com/techniques/mongodb
-- **MongoDB Atlas**: https://www.mongodb.com/atlas
+- **MongoDB Documentation**: <https://docs.mongodb.com/>
+- **NestJS MongoDB**: <https://docs.nestjs.com/techniques/mongodb>
+- **MongoDB Atlas**: <https://www.mongodb.com/atlas>
 
 ### **🔧 Comandos de Diagnóstico:**
 
