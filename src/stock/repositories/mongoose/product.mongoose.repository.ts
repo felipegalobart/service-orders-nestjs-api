@@ -1,4 +1,5 @@
 import { InjectModel } from '@nestjs/mongoose';
+import { NotFoundException } from '@nestjs/common';
 import { ProductRepository } from '../product.repository';
 import { IProduct } from 'src/stock/schemas/models/product.interface';
 import { Product } from 'src/stock/schemas/product.schema';
@@ -17,18 +18,23 @@ export class ProductMongooseRepository implements ProductRepository {
   async getStockById(productId: string): Promise<IProduct> {
     const product = await this.productModel.findById(productId).exec();
     if (!product) {
-      throw new Error('Product not found');
+      throw new NotFoundException('Product not found');
     }
     return product as unknown as IProduct;
   }
-  async createStock(product: IProduct): Promise<void> {
+  async createStock(product: IProduct): Promise<IProduct> {
     const createStock = new this.productModel(product);
-    await createStock.save();
+    const savedProduct = await createStock.save();
+    return savedProduct as unknown as IProduct;
   }
-  async updateStock(productId: string, stock: number): Promise<void> {
-    await this.productModel
-      .findByIdAndUpdate(productId, { quantity: stock })
+  async updateStock(productId: string, stock: number): Promise<IProduct> {
+    const updatedProduct = await this.productModel
+      .findByIdAndUpdate(productId, { quantity: stock }, { new: true })
       .exec();
+    if (!updatedProduct) {
+      throw new NotFoundException('Product not found');
+    }
+    return updatedProduct as unknown as IProduct;
   }
   async deleteStock(productId: string): Promise<void> {
     await this.productModel.deleteOne({ _id: productId }).exec();

@@ -1,0 +1,369 @@
+{
+  "info": {
+    "name": "Stock Management API - NestJS",
+    "description": "Coleção completa para testar o sistema de gerenciamento de estoque desenvolvido em NestJS com MongoDB",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "productId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/",
+          "host": ["{{baseUrl}}"],
+          "path": [""]
+        },
+        "description": "Verifica se a API está funcionando"
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Stock",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/stock?limit=10&page=1",
+          "host": ["{{baseUrl}}"],
+          "path": ["stock"],
+          "query": [
+            {
+              "key": "limit",
+              "value": "10",
+              "description": "Número de itens por página"
+            },
+            {
+              "key": "page",
+              "value": "1",
+              "description": "Número da página"
+            }
+          ]
+        },
+        "description": "Lista todos os produtos com paginação"
+      },
+      "response": []
+    },
+    {
+      "name": "Get Stock by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/stock/{{productId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["stock", "{{productId}}"]
+        },
+        "description": "Busca um produto específico por ID"
+      },
+      "response": []
+    },
+    {
+      "name": "Create Product",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Produto Teste\",\n  \"quantity\": 100,\n  \"relationalId\": 12345\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/stock",
+          "host": ["{{baseUrl}}"],
+          "path": ["stock"]
+        },
+        "description": "Cria um novo produto no estoque"
+      },
+      "response": []
+    },
+    {
+      "name": "Create Product - Smartphone",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"iPhone 15 Pro\",\n  \"quantity\": 50,\n  \"relationalId\": 1001\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/stock",
+          "host": ["{{baseUrl}}"],
+          "path": ["stock"]
+        },
+        "description": "Exemplo: Criar um smartphone"
+      },
+      "response": []
+    },
+    {
+      "name": "Create Product - Notebook",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"MacBook Pro M3\",\n  \"quantity\": 25,\n  \"relationalId\": 1002\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/stock",
+          "host": ["{{baseUrl}}"],
+          "path": ["stock"]
+        },
+        "description": "Exemplo: Criar um notebook"
+      },
+      "response": []
+    },
+    {
+      "name": "Create Product - Headphones",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"AirPods Pro\",\n  \"quantity\": 200,\n  \"relationalId\": 1003\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/stock",
+          "host": ["{{baseUrl}}"],
+          "path": ["stock"]
+        },
+        "description": "Exemplo: Criar fones de ouvido"
+      },
+      "response": []
+    },
+    {
+      "name": "Update Stock Quantity",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"stock\": 150\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/stock/{{productId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["stock", "{{productId}}"]
+        },
+        "description": "Atualiza a quantidade em estoque de um produto"
+      },
+      "response": []
+    },
+    {
+      "name": "Update Stock - Increase",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"stock\": 75\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/stock/{{productId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["stock", "{{productId}}"]
+        },
+        "description": "Exemplo: Aumentar estoque para 75 unidades"
+      },
+      "response": []
+    },
+    {
+      "name": "Update Stock - Decrease",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"stock\": 10\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/stock/{{productId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["stock", "{{productId}}"]
+        },
+        "description": "Exemplo: Diminuir estoque para 10 unidades"
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Product",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/stock/{{productId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["stock", "{{productId}}"]
+        },
+        "description": "Remove um produto do estoque"
+      },
+      "response": []
+    },
+    {
+      "name": "Test Error - Get Non-existent Product",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/stock/507f1f77bcf86cd799439011",
+          "host": ["{{baseUrl}}"],
+          "path": ["stock", "507f1f77bcf86cd799439011"]
+        },
+        "description": "Testa o tratamento de erro para produto não encontrado"
+      },
+      "response": []
+    },
+    {
+      "name": "Test Error - Update Non-existent Product",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"stock\": 100\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/stock/507f1f77bcf86cd799439011",
+          "host": ["{{baseUrl}}"],
+          "path": ["stock", "507f1f77bcf86cd799439011"]
+        },
+        "description": "Testa o tratamento de erro ao atualizar produto inexistente"
+      },
+      "response": []
+    },
+    {
+      "name": "Test Error - Delete Non-existent Product",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/stock/507f1f77bcf86cd799439011",
+          "host": ["{{baseUrl}}"],
+          "path": ["stock", "507f1f77bcf86cd799439011"]
+        },
+        "description": "Testa o tratamento de erro ao deletar produto inexistente"
+      },
+      "response": []
+    },
+    {
+      "name": "Test Validation - Create Product Missing Fields",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Produto Incompleto\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/stock",
+          "host": ["{{baseUrl}}"],
+          "path": ["stock"]
+        },
+        "description": "Testa validação com campos obrigatórios faltando"
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Script executado antes de cada requisição",
+          "console.log('Executando requisição para:', pm.request.url);"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Script executado após cada requisição",
+          "console.log('Status da resposta:', pm.response.status);",
+          "",
+          "// Salva o ID do produto criado para usar em outras requisições",
+          "if (pm.response.code === 201 && pm.request.method === 'POST') {",
+          "    try {",
+          "        const responseJson = pm.response.json();",
+          "        if (responseJson && responseJson._id) {",
+          "            pm.collectionVariables.set('productId', responseJson._id);",
+          "            console.log('ID do produto salvo:', responseJson._id);",
+          "        }",
+          "    } catch (error) {",
+          "        console.log('Erro ao processar resposta JSON:', error.message);",
+          "    }",
+          "}",
+          "",
+          "// Testes básicos de resposta",
+          "pm.test('Status code is successful', function () {",
+          "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+          "});",
+          "",
+          "pm.test('Response time is less than 5000ms', function () {",
+          "    pm.expect(pm.response.responseTime).to.be.below(5000);",
+          "});"
+        ]
+      }
+    }
+  ]
+}

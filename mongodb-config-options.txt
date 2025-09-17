@@ -1,0 +1,16 @@
+# MongoDB Configuration Options
+
+# Option 1: Local MongoDB without authentication (Easiest for development)
+MONGODB_URI=mongodb://localhost:27017/stock-management
+
+# Option 2: Local MongoDB with authentication
+# MONGODB_URI=mongodb://admin:password@localhost:27017/stock-management?authSource=admin
+
+# Option 3: Remote MongoDB (your current IP)
+# MONGODB_URI=mongodb://192.168.31.75:27017/stock-management
+
+# Option 4: Remote MongoDB with authentication
+# MONGODB_URI=mongodb://username:password@192.168.31.75:27017/stock-management?authSource=admin
+
+# Option 5: MongoDB Atlas (Cloud)
+# MONGODB_URI=mongodb+srv://username:password@cluster0.xxxxx.mongodb.net/stock-management?retryWrites=true&w=majority
