@@ -1,4 +1,4 @@
-export interface AppConfig {
+export interface IAppConfig {
   nodeEnv: string;
   port: number;
   mongodbUri: string;
@@ -9,7 +9,7 @@ export interface AppConfig {
   logLevel: string;
 }
 
-export const appConfig = (): AppConfig => ({
+export const appConfig = (): IAppConfig => ({
   nodeEnv: process.env.NODE_ENV || 'development',
   port: parseInt(process.env.PORT || '3000', 10),
   mongodbUri:
