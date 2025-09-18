@@ -180,12 +180,29 @@ npm run start:prod
 ### **4. 🧪 Teste**
 
 ```bash
-# Health check
+# Executar todos os testes
+npm run test
+
+# Executar apenas testes unitários
+npm run test:unit
+
+# Executar apenas testes E2E
+npm run test:e2e
+
+# Executar testes com cobertura
+npm run test:cov
+
+# Executar todos os testes (script completo)
+./run-tests.sh
+
+# Health check manual
 curl http://localhost:3000/
 
 # Testar rate limiting
 ./test-rate-limiting.sh
 ```
+
+**📚 Documentação completa:** [Guia de Testes](./docs/testing/TESTING_GUIDE.md)
 
 ## 📚 Documentação da API
 
@@ -478,9 +495,10 @@ npm run test:e2e       # Executar testes E2E
 
 ### **📚 Documentação Detalhada**
 
-- **[CONFIG.md](./CONFIG.md)** - Guia de configuração de variáveis de ambiente
-- **[PRETTIER_SETUP.md](./PRETTIER_SETUP.md)** - Configuração de formatação automática
-- **[POSTMAN_GUIDE.md](./POSTMAN_GUIDE.md)** - Guia completo do Postman
+- **[📁 Documentação Completa](./docs/README.md)** - Índice de toda a documentação
+- **[⚙️ Configuração](./docs/configuration/README.md)** - Setup e configuração do projeto
+- **[📡 API](./docs/api/README.md)** - Documentação e uso da API
+- **[🧪 Testes](./docs/testing/README.md)** - Como executar e escrever testes
 
 ### **🔧 Ferramentas de Desenvolvimento**
 
@@ -531,7 +549,9 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 ## 🚀 Próximos Passos
 
 - [ ] **Swagger** para documentação interativa
-- [ ] **Testes unitários** automatizados
+- [x] **Testes unitários** automatizados ✅
+- [x] **Testes E2E** automatizados ✅
+- [x] **Cobertura de código** implementada ✅
 - [ ] **Logs** estruturados
 - [ ] **Docker** para containerização
 - [ ] **CI/CD** com GitHub Actions
