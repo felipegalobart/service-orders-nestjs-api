@@ -14,7 +14,7 @@ import { ZodValidationPipe } from '../shared/pipe/zod-validation.pipe';
 
 const updateUserSchema = z.object({
   name: z.string().min(2).optional(),
-  email: z.string().email().optional(),
+  email: z.email().optional(),
 });
 
 type UpdateUserDto = z.infer<typeof updateUserSchema>;
