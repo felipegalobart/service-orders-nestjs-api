@@ -29,9 +29,9 @@ export class UserController {
 
   // Qualquer usuário autenticado pode ver seu próprio perfil
   @Get('profile')
-  async getProfile(
+  getProfile(
     @CurrentUser() user: Omit<IUser, 'password'>,
-  ): Promise<Omit<IUser, 'password'>> {
+  ): Omit<IUser, 'password'> {
     return user;
   }
 
