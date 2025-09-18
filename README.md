@@ -5,8 +5,9 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://typescriptlang.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
 [![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)](https://jwt.io/)
+[![Rate Limiting](https://img.shields.io/badge/Rate%20Limiting-FF6B6B?style=for-the-badge&logo=shield&logoColor=white)](https://docs.nestjs.com/security/rate-limiting)
 
-> **Sistema completo de gerenciamento de usuários e autenticação desenvolvido em NestJS com MongoDB, JWT e seguindo padrões de Clean Architecture.**
+> **Sistema completo de gerenciamento de usuários com autenticação JWT, autorização baseada em roles, rate limiting e seguindo padrões de Clean Architecture.**
 
 ## 📋 Índice
 
@@ -32,13 +33,30 @@
 - ✅ **Tratamento de erros** padronizado
 - ✅ **Respostas JSON** consistentes
 
-### 🔐 **Sistema de Autenticação**
+### 🔐 **Sistema de Autenticação Avançado**
 
 - ✅ **JWT Authentication** completo
 - ✅ **Registro de usuários** com bcrypt
 - ✅ **Login seguro** com validação
-- ✅ **Proteção de rotas** com Guards
+- ✅ **Proteção global de rotas** com Guards
+- ✅ **Rotas públicas** configuráveis
 - ✅ **Middleware** de autenticação
+
+### 🛡️ **Sistema de Autorização por Roles**
+
+- ✅ **Roles hierárquicos** (ADMIN, USER, MODERATOR)
+- ✅ **Guards de autorização** por endpoint
+- ✅ **Decorators customizados** (@Roles, @Public)
+- ✅ **Controle granular** de acesso
+- ✅ **Proteção de endpoints** administrativos
+
+### 🚫 **Rate Limiting e Segurança**
+
+- ✅ **Rate limiting global** configurável
+- ✅ **Limites específicos** por tipo de endpoint
+- ✅ **Proteção contra força bruta**
+- ✅ **Throttling por IP** e User-Agent
+- ✅ **Status 429** para requisições limitadas
 
 ### 🗃️ **Banco de Dados**
 
@@ -47,6 +65,7 @@
 - ✅ **Validações** de campos obrigatórios
 - ✅ **Índices** otimizados
 - ✅ **Middleware** de criptografia de senhas
+- ✅ **Repository Pattern** implementado
 
 ### 🔧 **Qualidade de Código**
 
@@ -54,13 +73,14 @@
 - ✅ **ESLint** com regras customizadas
 - ✅ **Prettier** para formatação automática
 - ✅ **Convenções** de nomenclatura (prefixo 'I' para interfaces)
-- ✅ **Repository Pattern** implementado
+- ✅ **Clean Architecture** implementada
 
 ### 📚 **Documentação**
 
 - ✅ **Coleção Postman** completa
 - ✅ **Guias** de configuração e troubleshooting
 - ✅ **Exemplos** de uso da API
+- ✅ **Scripts de teste** automatizados
 
 ## 🏗️ Arquitetura
 
@@ -93,15 +113,22 @@ src/
 │   ├── strategies/           # Estratégias de autenticação
 │   │   └── jwt.strategy.ts
 │   ├── guards/               # Guards de proteção
-│   │   └── jwt-auth.guard.ts
+│   │   ├── jwt-auth.guard.ts
+│   │   └── roles.guard.ts
 │   ├── decorators/           # Decorators customizados
-│   │   └── current-user.decorator.ts
+│   │   ├── current-user.decorator.ts
+│   │   ├── public.decorator.ts
+│   │   └── roles.decorator.ts
+│   ├── enums/                # Enums de roles
+│   │   └── user-role.enum.ts
 │   └── auth.module.ts
 ├── shared/                    # Recursos compartilhados
 │   ├── filters/              # Filtros globais
 │   │   └── http-exception.filter.ts
-│   └── pipe/                 # Pipes customizados
-│       └── zod-validation.pipe.ts
+│   ├── pipe/                 # Pipes customizados
+│   │   └── zod-validation.pipe.ts
+│   └── decorators/           # Decorators de throttling
+│       └── throttle.decorator.ts
 └── app.module.ts             # Módulo principal
 ```
 
@@ -111,6 +138,8 @@ src/
 - **Dependency Injection** - Inversão de controle
 - **Separation of Concerns** - Separação de responsabilidades
 - **Interface Segregation** - Interfaces específicas
+- **Guard Pattern** - Proteção de rotas
+- **Decorator Pattern** - Metadados de configuração
 
 ## ⚡ Quick Start
 
@@ -131,8 +160,10 @@ npm install
 # Copiar arquivo de configuração
 cp .env.example .env
 
-# Configurar MongoDB (editar .env)
+# Configurar variáveis (editar .env)
 MONGODB_URI=mongodb://localhost:27017/service-orders
+JWT_SECRET=your-super-secret-jwt-key-here
+JWT_EXPIRES_IN=7d
 ```
 
 ### **3. 🚀 Execução**
@@ -149,8 +180,11 @@ npm run start:prod
 ### **4. 🧪 Teste**
 
 ```bash
-# Testar API
+# Health check
 curl http://localhost:3000/
+
+# Testar rate limiting
+./test-rate-limiting.sh
 ```
 
 ## 📚 Documentação da API
@@ -159,24 +193,26 @@ curl http://localhost:3000/
 
 #### **🏠 Health Check**
 
-| Método | Endpoint | Descrição    |
-| ------ | -------- | ------------ |
-| `GET`  | `/`      | Health check |
+| Método | Endpoint | Descrição    | Autenticação |
+| ------ | -------- | ------------ | ------------ |
+| `GET`  | `/`      | Health check | ❌ Público   |
+
+#### **🔐 Authentication (Públicos)**
+
+| Método | Endpoint         | Descrição           | Rate Limit |
+| ------ | ---------------- | ------------------- | ---------- |
+| `POST` | `/auth/login`    | Login de usuário    | 5/min      |
+| `POST` | `/auth/register` | Registro de usuário | 5/min      |
 
 #### **👥 User Management**
 
-| Método   | Endpoint     | Descrição             |
-| -------- | ------------ | --------------------- |
-| `GET`    | `/users/:id` | Buscar usuário por ID |
-| `PUT`    | `/users/:id` | Atualizar usuário     |
-| `DELETE` | `/users/:id` | Deletar usuário       |
-
-#### **🔐 Authentication**
-
-| Método | Endpoint         | Descrição           |
-| ------ | ---------------- | ------------------- |
-| `POST` | `/auth/login`    | Login de usuário    |
-| `POST` | `/auth/register` | Registro de usuário |
+| Método   | Endpoint         | Descrição                | Autenticação | Roles         | Rate Limit |
+| -------- | ---------------- | ------------------------ | ------------ | ------------- | ---------- |
+| `GET`    | `/users/profile` | Perfil do usuário atual  | ✅ JWT       | Qualquer      | 10/min     |
+| `GET`    | `/users/:id`     | Buscar usuário por ID    | ✅ JWT       | ADMIN         | 3/min      |
+| `PUT`    | `/users/:id`     | Atualizar usuário        | ✅ JWT       | Próprio/ADMIN | 10/min     |
+| `DELETE` | `/users/:id`     | Deletar usuário          | ✅ JWT       | ADMIN         | 3/min      |
+| `GET`    | `/users`         | Listar todos os usuários | ✅ JWT       | ADMIN         | 3/min      |
 
 ### **📦 Modelo de Dados**
 
@@ -184,12 +220,19 @@ curl http://localhost:3000/
 
 ```typescript
 interface IUser {
-  id?: string; // ID único (gerado automaticamente)
+  id: string; // ID único (gerado automaticamente)
   email: string; // Email do usuário (obrigatório, único)
   password: string; // Senha criptografada (obrigatório)
   name: string; // Nome do usuário (obrigatório)
+  role: UserRole; // Role do usuário (USER, ADMIN, MODERATOR)
   createdAt?: Date; // Data de criação
   updatedAt?: Date; // Data de atualização
+}
+
+enum UserRole {
+  ADMIN = 'admin',
+  USER = 'user',
+  MODERATOR = 'moderator',
 }
 ```
 
@@ -203,7 +246,8 @@ curl -X POST http://localhost:3000/auth/register \
   -d '{
     "email": "user@example.com",
     "password": "password123",
-    "name": "João Silva"
+    "name": "João Silva",
+    "role": "user"
   }'
 ```
 
@@ -216,6 +260,7 @@ curl -X POST http://localhost:3000/auth/register \
     "id": "68cb3e5ff3a1b5397d4cbc49",
     "email": "user@example.com",
     "name": "João Silva",
+    "role": "user",
     "createdAt": "2025-09-18T15:30:00.000Z",
     "updatedAt": "2025-09-18T15:30:00.000Z"
   }
@@ -233,29 +278,31 @@ curl -X POST http://localhost:3000/auth/login \
   }'
 ```
 
-**Resposta:**
+#### **Acessar Perfil (Protegido)**
 
-```json
-{
-  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "user": {
-    "id": "68cb3e5ff3a1b5397d4cbc49",
-    "email": "user@example.com",
-    "name": "João Silva",
-    "createdAt": "2025-09-18T15:30:00.000Z",
-    "updatedAt": "2025-09-18T15:30:00.000Z"
-  }
-}
+```bash
+curl -X GET http://localhost:3000/users/profile \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+#### **Listar Usuários (Admin)**
+
+```bash
+curl -X GET http://localhost:3000/users \
+  -H "Authorization: Bearer ADMIN_JWT_TOKEN"
 ```
 
 ### **⚠️ Códigos de Erro**
 
-| Código | Descrição                |
-| ------ | ------------------------ |
-| `200`  | Sucesso                  |
-| `201`  | Criado com sucesso       |
-| `404`  | Produto não encontrado   |
-| `500`  | Erro interno do servidor |
+| Código | Descrição                         |
+| ------ | --------------------------------- |
+| `200`  | Sucesso                           |
+| `201`  | Criado com sucesso                |
+| `401`  | Não autorizado (JWT inválido)     |
+| `403`  | Acesso negado (role insuficiente) |
+| `404`  | Recurso não encontrado            |
+| `429`  | Rate limit excedido               |
+| `500`  | Erro interno do servidor          |
 
 ## 🛠️ Configuração
 
@@ -271,7 +318,7 @@ PORT=3000
 # Database Configuration
 MONGODB_URI=mongodb://localhost:27017/service-orders
 
-# JWT Configuration (para autenticação futura)
+# JWT Configuration
 JWT_SECRET=your-super-secret-jwt-key-here
 JWT_EXPIRES_IN=7d
 
@@ -283,6 +330,10 @@ CORS_ORIGIN=http://localhost:3000
 
 # Logging
 LOG_LEVEL=debug
+
+# Rate Limiting Configuration
+THROTTLER_TTL=60000
+THROTTLER_LIMIT=10
 ```
 
 ### **🗃️ Configuração MongoDB**
@@ -324,6 +375,9 @@ Importe a coleção `postman-collection.json` no Postman para testar todos os en
 # Health check
 curl http://localhost:3000/
 
+# Testar rate limiting
+./test-rate-limiting.sh
+
 # Registrar usuário
 curl -X POST http://localhost:3000/auth/register \
   -H "Content-Type: application/json" \
@@ -333,6 +387,20 @@ curl -X POST http://localhost:3000/auth/register \
 curl -X POST http://localhost:3000/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"test@example.com","password":"password123"}'
+```
+
+### **🛡️ Teste de Rate Limiting**
+
+```bash
+# Executar script de teste
+./test-rate-limiting.sh
+
+# Ou testar manualmente
+for i in {1..5}; do
+  curl -X POST http://localhost:3000/auth/register \
+    -H "Content-Type: application/json" \
+    -d '{"email":"test'$i'@example.com","password":"123456","name":"Test User"}'
+done
 ```
 
 ## 📁 Estrutura do Projeto
@@ -355,10 +423,12 @@ service-orders-nestjs-api/
 │   │   ├── strategies/           # Estratégias JWT
 │   │   ├── guards/               # Guards de proteção
 │   │   ├── decorators/           # Decorators customizados
+│   │   ├── enums/                # Enums de roles
 │   │   └── auth.module.ts        # Módulo de autenticação
 │   ├── shared/                   # Recursos compartilhados
 │   │   ├── filters/              # Filtros globais
-│   │   └── pipe/                 # Pipes customizados
+│   │   ├── pipe/                 # Pipes customizados
+│   │   └── decorators/           # Decorators de throttling
 │   ├── app.controller.ts         # Controller principal
 │   ├── app.module.ts             # Módulo principal
 │   ├── app.service.ts            # Serviço principal
@@ -370,6 +440,7 @@ service-orders-nestjs-api/
 ├── .prettierrc                   # Configuração Prettier
 ├── eslint.config.mjs             # Configuração ESLint
 ├── postman-collection.json       # Coleção Postman
+├── test-rate-limiting.sh         # Script de teste de rate limiting
 ├── package.json                  # Dependências e scripts
 └── README.md                     # Este arquivo
 ```
@@ -409,9 +480,7 @@ npm run test:e2e       # Executar testes E2E
 
 - **[CONFIG.md](./CONFIG.md)** - Guia de configuração de variáveis de ambiente
 - **[PRETTIER_SETUP.md](./PRETTIER_SETUP.md)** - Configuração de formatação automática
-- **[NAMING_CONVENTIONS.md](./NAMING_CONVENTIONS.md)** - Convenções de nomenclatura
 - **[POSTMAN_GUIDE.md](./POSTMAN_GUIDE.md)** - Guia completo do Postman
-- **[MONGODB_TROUBLESHOOTING.md](./MONGODB_TROUBLESHOOTING.md)** - Resolução de problemas MongoDB
 
 ### **🔧 Ferramentas de Desenvolvimento**
 
@@ -432,7 +501,7 @@ npm run test:e2e       # Executar testes E2E
 ### **📋 Padrões de Código**
 
 - ✅ **TypeScript** com tipagem forte
-- ✅ **Interfaces** com prefixo 'I' (ex: `IProduct`)
+- ✅ **Interfaces** com prefixo 'I' (ex: `IUser`)
 - ✅ **Formatação** automática com Prettier
 - ✅ **Linting** com ESLint
 - ✅ **Commits** seguindo Conventional Commits
@@ -447,14 +516,17 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 
 - ✅ **API REST** completa e funcional
 - ✅ **Sistema de autenticação JWT** implementado
+- ✅ **Sistema de autorização por roles** implementado
+- ✅ **Rate limiting** configurado e testado
 - ✅ **Banco de dados** MongoDB configurado
 - ✅ **Documentação** completa
-- ✅ **Testes** via Postman
+- ✅ **Testes** via Postman e scripts
 - ✅ **Qualidade de código** implementada
 - ✅ **Arquitetura** limpa e escalável
 - ✅ **Validação** com Zod
 - ✅ **Repository Pattern** implementado
 - ✅ **Filtros de exceção** globais
+- ✅ **Guards** de autenticação e autorização
 
 ## 🚀 Próximos Passos
 
@@ -463,13 +535,14 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 - [ ] **Logs** estruturados
 - [ ] **Docker** para containerização
 - [ ] **CI/CD** com GitHub Actions
-- [ ] **Rate limiting** para segurança
 - [ ] **Cache** com Redis
 - [ ] **WebSockets** para tempo real
+- [ ] **Helmet.js** para headers de segurança
+- [ ] **Health checks** para monitoramento
 
 ---
 
-**Desenvolvido com ❤️ usando NestJS, MongoDB e TypeScript**
+**Desenvolvido com ❤️ usando NestJS, MongoDB, TypeScript e Rate Limiting**
 
 <p align="center">
   <a href="https://nestjs.com/" target="blank">
