@@ -14,6 +14,10 @@ import { ZodValidationPipe } from '../shared/pipe/zod-validation.pipe';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { UserRole } from '../auth/enums/user-role.enum';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import {
+  ThrottleUser,
+  ThrottleAdmin,
+} from '../shared/decorators/throttle.decorator';
 
 const updateUserSchema = z.object({
   name: z.string().min(2).optional(),
@@ -28,6 +32,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   // Qualquer usuário autenticado pode ver seu próprio perfil
+  @ThrottleUser()
   @Get('profile')
   getProfile(
     @CurrentUser() user: Omit<IUser, 'password'>,
@@ -37,6 +42,7 @@ export class UserController {
 
   // Apenas admins podem ver qualquer usuário por ID
   @Roles(UserRole.ADMIN)
+  @ThrottleAdmin()
   @Get(':id')
   async getUserById(@Param('id') id: string): Promise<Omit<IUser, 'password'>> {
     const user = await this.userService.findById(id);
@@ -51,6 +57,7 @@ export class UserController {
   }
 
   // Usuários podem atualizar seu próprio perfil, admins podem atualizar qualquer usuário
+  @ThrottleUser()
   @Put(':id')
   async updateUser(
     @Param('id') id: string,
@@ -77,6 +84,7 @@ export class UserController {
 
   // Apenas admins podem deletar usuários
   @Roles(UserRole.ADMIN)
+  @ThrottleAdmin()
   @Delete(':id')
   async deleteUser(@Param('id') id: string): Promise<{ message: string }> {
     await this.userService.delete(id);
@@ -85,6 +93,7 @@ export class UserController {
 
   // Endpoint especial para admins listarem todos os usuários
   @Roles(UserRole.ADMIN)
+  @ThrottleAdmin()
   @Get()
   async getAllUsers(): Promise<Omit<IUser, 'password'>[]> {
     const users = await this.userService.findAll();

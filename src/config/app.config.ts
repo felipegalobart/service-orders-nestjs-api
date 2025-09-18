@@ -7,6 +7,8 @@ export interface IAppConfig {
   apiPrefix: string;
   corsOrigin: string;
   logLevel: string;
+  throttlerTtl: number;
+  throttlerLimit: number;
 }
 
 export const appConfig = (): IAppConfig => ({
@@ -19,4 +21,6 @@ export const appConfig = (): IAppConfig => ({
   apiPrefix: process.env.API_PREFIX || 'api/v1',
   corsOrigin: process.env.CORS_ORIGIN || 'http://localhost:3000',
   logLevel: process.env.LOG_LEVEL || 'debug',
+  throttlerTtl: parseInt(process.env.THROTTLER_TTL || '60000', 10), // 1 minuto em ms
+  throttlerLimit: parseInt(process.env.THROTTLER_LIMIT || '10', 10), // 10 requests por minuto
 });
