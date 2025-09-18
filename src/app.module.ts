@@ -6,6 +6,7 @@ import { StockModule } from './stock/stock.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { appConfig } from './config/app.config';
 import { JwtModule } from '@nestjs/jwt';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { JwtModule } from '@nestjs/jwt';
       inject: [ConfigService],
     }),
     StockModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
