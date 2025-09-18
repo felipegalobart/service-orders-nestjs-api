@@ -2,6 +2,7 @@ import { Controller, Post, Body } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { z } from 'zod';
 import { ZodValidationPipe } from '../shared/pipe/zod-validation.pipe';
+import { Public } from './decorators/public.decorator';
 
 // Schema para login
 const loginSchema = z.object({
@@ -23,11 +24,13 @@ type RegisterDto = z.infer<typeof registerSchema>;
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  @Public()
   @Post('login')
   async login(@Body(new ZodValidationPipe(loginSchema)) loginDto: LoginDto) {
     return this.authService.login(loginDto);
   }
 
+  @Public()
   @Post('register')
   async register(
     @Body(new ZodValidationPipe(registerSchema)) registerDto: RegisterDto,

@@ -8,8 +8,11 @@ export type UserDocument = HydratedDocument<User>;
 
 @Schema({ timestamps: true })
 export class User implements IUser {
-  @Prop({ type: mongoose.Schema.Types.ObjectId })
-  id?: string;
+  _id: string;
+
+  get id(): string {
+    return this._id;
+  }
 
   @Prop({ type: String, required: true, unique: true })
   email: string;
