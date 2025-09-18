@@ -8,7 +8,7 @@ export class ConfigExampleService {
   getDatabaseUri(): string {
     return (
       this.configService.get<string>('mongodbUri') ||
-      'mongodb://localhost:27017/stock-management'
+      'mongodb://localhost:27017/service-orders'
     );
   }
 

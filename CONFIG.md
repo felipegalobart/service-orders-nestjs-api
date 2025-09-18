@@ -29,7 +29,10 @@ export class MeuService {
   constructor(private configService: ConfigService) {}
 
   getDatabaseUri(): string {
-    return this.configService.get<string>('mongodbUri') || 'mongodb://localhost:27017/stock-management';
+    return (
+      this.configService.get<string>('mongodbUri') ||
+      'mongodb://localhost:27017/service-orders'
+    );
   }
 }
 ```

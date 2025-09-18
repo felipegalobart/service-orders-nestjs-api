@@ -13,7 +13,7 @@ export const appConfig = (): IAppConfig => ({
   nodeEnv: process.env.NODE_ENV || 'development',
   port: parseInt(process.env.PORT || '3000', 10),
   mongodbUri:
-    process.env.MONGODB_URI || 'mongodb://localhost:27017/stock-management',
+    process.env.MONGODB_URI || 'mongodb://localhost:27017/service-orders',
   jwtSecret: process.env.JWT_SECRET || 'your-super-secret-jwt-key-here',
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
   apiPrefix: process.env.API_PREFIX || 'api/v1',

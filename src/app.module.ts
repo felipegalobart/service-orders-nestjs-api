@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { StockModule } from './stock/stock.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { appConfig } from './config/app.config';
 import { JwtModule } from '@nestjs/jwt';
@@ -28,7 +27,6 @@ import { AuthModule } from './auth/auth.module';
       }),
       inject: [ConfigService],
     }),
-    StockModule,
     UserModule,
     AuthModule,
   ],

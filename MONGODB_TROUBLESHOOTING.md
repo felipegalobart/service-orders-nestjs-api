@@ -17,7 +17,7 @@ ps aux | grep mongodb
 
 ```bash
 # Conectar diretamente ao MongoDB
-mongosh "mongodb://192.168.31.75:27017/stock-management"
+mongosh "mongodb://192.168.31.75:27017/service-orders"
 ```
 
 #### **Verificar Logs do NestJS:**
@@ -48,7 +48,7 @@ mongod --config /usr/local/etc/mongod.conf
 
 ```bash
 # Atualizar .env com string de conexão do Atlas
-MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/stock-management?retryWrites=true&w=majority
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/service-orders?retryWrites=true&w=majority
 ```
 
 ### **B. 🔐 Problemas de Autenticação**
@@ -57,21 +57,21 @@ MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/stock-management
 
 ```bash
 # .env
-MONGODB_URI=mongodb://localhost:27017/stock-management
+MONGODB_URI=mongodb://localhost:27017/service-orders
 ```
 
 #### **Solução 2: MongoDB com usuário e senha**
 
 ```bash
 # .env
-MONGODB_URI=mongodb://username:password@localhost:27017/stock-management
+MONGODB_URI=mongodb://username:password@localhost:27017/service-orders
 ```
 
 #### **Solução 3: MongoDB com autenticação e database específico**
 
 ```bash
 # .env
-MONGODB_URI=mongodb://username:password@localhost:27017/stock-management?authSource=admin
+MONGODB_URI=mongodb://username:password@localhost:27017/service-orders?authSource=admin
 ```
 
 ### **C. 🌐 Problemas de Rede**
@@ -82,7 +82,7 @@ MONGODB_URI=mongodb://username:password@localhost:27017/stock-management?authSou
 # Verificar IP correto do MongoDB
 ifconfig | grep "inet "
 # Atualizar .env com IP correto
-MONGODB_URI=mongodb://192.168.1.100:27017/stock-management
+MONGODB_URI=mongodb://192.168.1.100:27017/service-orders
 ```
 
 #### **Solução 2: Porta incorreta**
@@ -110,10 +110,10 @@ sudo pfctl -f /etc/pf.conf
 
 ```bash
 # MongoDB Local (sem autenticação)
-MONGODB_URI=mongodb://localhost:27017/stock-management
+MONGODB_URI=mongodb://localhost:27017/service-orders
 
 # MongoDB Local (com autenticação)
-MONGODB_URI=mongodb://admin:password@localhost:27017/stock-management?authSource=admin
+MONGODB_URI=mongodb://admin:password@localhost:27017/service-orders?authSource=admin
 ```
 
 #### **Criar usuário MongoDB:**
@@ -131,7 +131,7 @@ db.createUser({
 })
 
 // Criar usuário para o banco específico
-use stock-management
+use service-orders
 db.createUser({
   user: "stockuser",
   pwd: "stockpass",
@@ -145,7 +145,7 @@ db.createUser({
 
 ```bash
 # MongoDB Atlas
-MONGODB_URI=mongodb+srv://username:password@cluster0.xxxxx.mongodb.net/stock-management?retryWrites=true&w=majority
+MONGODB_URI=mongodb+srv://username:password@cluster0.xxxxx.mongodb.net/service-orders?retryWrites=true&w=majority
 ```
 
 #### **Configurar Atlas:**
@@ -171,7 +171,7 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: password
-      MONGO_INITDB_DATABASE: stock-management
+      MONGO_INITDB_DATABASE: service-orders
     volumes:
       - mongodb_data:/data/db
 
@@ -182,7 +182,7 @@ volumes:
 #### **Arquivo .env:**
 
 ```bash
-MONGODB_URI=mongodb://admin:password@localhost:27017/stock-management?authSource=admin
+MONGODB_URI=mongodb://admin:password@localhost:27017/service-orders?authSource=admin
 ```
 
 ---
@@ -195,10 +195,10 @@ MONGODB_URI=mongodb://admin:password@localhost:27017/stock-management?authSource
 
 ```bash
 # Sem autenticação
-mongosh "mongodb://localhost:27017/stock-management"
+mongosh "mongodb://localhost:27017/service-orders"
 
 # Com autenticação
-mongosh "mongodb://username:password@localhost:27017/stock-management"
+mongosh "mongodb://username:password@localhost:27017/service-orders"
 ```
 
 #### **Testar operações:**
@@ -208,7 +208,7 @@ mongosh "mongodb://username:password@localhost:27017/stock-management"
 show dbs
 
 // Usar banco
-use stock-management
+use service-orders
 
 // Criar coleção de teste
 db.products.insertOne({name: "Test", quantity: 10, relationalId: 1})
@@ -258,7 +258,7 @@ brew services start mongodb-community
 
 ```bash
 # Solução: Verificar credenciais
-MONGODB_URI=mongodb://username:password@localhost:27017/stock-management
+MONGODB_URI=mongodb://username:password@localhost:27017/service-orders
 ```
 
 ### **3. "MongoServerError: not authorized"**

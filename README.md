@@ -6,7 +6,7 @@
 [![Node.js](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
 [![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)](https://jwt.io/)
 
-> **Sistema completo de gerenciamento de ordens de serviço desenvolvido em NestJS com MongoDB, autenticação JWT e seguindo padrões de Clean Architecture.**
+> **Sistema completo de gerenciamento de usuários e autenticação desenvolvido em NestJS com MongoDB, JWT e seguindo padrões de Clean Architecture.**
 
 ## 📋 Índice
 
@@ -26,7 +26,7 @@
 
 ### ✨ **API REST Completa**
 
-- ✅ **CRUD completo** para produtos e usuários
+- ✅ **CRUD completo** para usuários
 - ✅ **Paginação** automática
 - ✅ **Validação** de dados de entrada com Zod
 - ✅ **Tratamento de erros** padronizado
@@ -71,20 +71,6 @@ src/
 ├── config/                    # Configurações globais
 │   ├── app.config.ts         # Configuração da aplicação
 │   └── config-example.service.ts
-├── stock/                     # Módulo de estoque
-│   ├── controllers/          # Controladores REST
-│   │   └── stock.controller.ts
-│   ├── services/             # Lógica de negócio
-│   │   └── stock.service.ts
-│   ├── repositories/         # Camada de dados
-│   │   ├── product.repository.ts
-│   │   └── mongoose/
-│   │       └── product.mongoose.repository.ts
-│   ├── schemas/              # Schemas e interfaces
-│   │   ├── models/
-│   │   │   └── product.interface.ts
-│   │   └── product.schema.ts
-│   └── stock.module.ts
 ├── user/                      # Módulo de usuários
 │   ├── controllers/          # Controladores REST
 │   │   └── user.controller.ts
@@ -146,7 +132,7 @@ npm install
 cp .env.example .env
 
 # Configurar MongoDB (editar .env)
-MONGODB_URI=mongodb://localhost:27017/stock-management
+MONGODB_URI=mongodb://localhost:27017/service-orders
 ```
 
 ### **3. 🚀 Execução**
@@ -165,37 +151,32 @@ npm run start:prod
 ```bash
 # Testar API
 curl http://localhost:3000/
-
-# Listar produtos
-curl http://localhost:3000/stock
 ```
 
 ## 📚 Documentação da API
 
 ### **🔗 Endpoints Disponíveis**
 
-#### **🏪 Stock Management**
-| Método   | Endpoint     | Descrição                  |
-| -------- | ------------ | -------------------------- |
-| `GET`    | `/`          | Health check               |
-| `GET`    | `/stock`     | Listar produtos (paginado) |
-| `GET`    | `/stock/:id` | Buscar produto por ID      |
-| `POST`   | `/stock`     | Criar novo produto         |
-| `PUT`    | `/stock/:id` | Atualizar estoque          |
-| `DELETE` | `/stock/:id` | Deletar produto            |
+#### **🏠 Health Check**
+
+| Método | Endpoint | Descrição    |
+| ------ | -------- | ------------ |
+| `GET`  | `/`      | Health check |
 
 #### **👥 User Management**
-| Método   | Endpoint     | Descrição                  |
-| -------- | ------------ | -------------------------- |
-| `GET`    | `/users/:id` | Buscar usuário por ID      |
-| `PUT`    | `/users/:id` | Atualizar usuário          |
-| `DELETE` | `/users/:id` | Deletar usuário            |
+
+| Método   | Endpoint     | Descrição             |
+| -------- | ------------ | --------------------- |
+| `GET`    | `/users/:id` | Buscar usuário por ID |
+| `PUT`    | `/users/:id` | Atualizar usuário     |
+| `DELETE` | `/users/:id` | Deletar usuário       |
 
 #### **🔐 Authentication**
-| Método   | Endpoint     | Descrição                  |
-| -------- | ------------ | -------------------------- |
-| `POST`   | `/auth/login`    | Login de usuário           |
-| `POST`   | `/auth/register` | Registro de usuário        |
+
+| Método | Endpoint         | Descrição           |
+| ------ | ---------------- | ------------------- |
+| `POST` | `/auth/login`    | Login de usuário    |
+| `POST` | `/auth/register` | Registro de usuário |
 
 ### **📦 Modelo de Dados**
 
@@ -209,17 +190,6 @@ interface IUser {
   name: string; // Nome do usuário (obrigatório)
   createdAt?: Date; // Data de criação
   updatedAt?: Date; // Data de atualização
-}
-```
-
-#### **Produto (Product)**
-
-```typescript
-interface IProduct {
-  id?: string; // ID único (gerado automaticamente)
-  name: string; // Nome do produto (obrigatório)
-  quantity: number; // Quantidade em estoque (obrigatório)
-  relationalId: number; // ID relacional único (obrigatório)
 }
 ```
 
@@ -238,6 +208,7 @@ curl -X POST http://localhost:3000/auth/register \
 ```
 
 **Resposta:**
+
 ```json
 {
   "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
@@ -263,6 +234,7 @@ curl -X POST http://localhost:3000/auth/login \
 ```
 
 **Resposta:**
+
 ```json
 {
   "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
@@ -273,70 +245,6 @@ curl -X POST http://localhost:3000/auth/login \
     "createdAt": "2025-09-18T15:30:00.000Z",
     "updatedAt": "2025-09-18T15:30:00.000Z"
   }
-}
-```
-
-#### **Criar Produto**
-
-```bash
-curl -X POST http://localhost:3000/stock \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "iPhone 15 Pro",
-    "quantity": 50,
-    "relationalId": 1001
-  }'
-```
-
-**Resposta:**
-
-```json
-{
-  "_id": "68cb3e5ff3a1b5397d4cbc49",
-  "name": "iPhone 15 Pro",
-  "quantity": 50,
-  "relationalId": 1001,
-  "__v": 0
-}
-```
-
-#### **Listar Produtos**
-
-```bash
-curl "http://localhost:3000/stock?limit=10&page=1"
-```
-
-**Resposta:**
-
-```json
-[
-  {
-    "_id": "68cb3e5ff3a1b5397d4cbc49",
-    "name": "iPhone 15 Pro",
-    "quantity": 50,
-    "relationalId": 1001,
-    "__v": 0
-  }
-]
-```
-
-#### **Atualizar Estoque**
-
-```bash
-curl -X PUT http://localhost:3000/stock/68cb3e5ff3a1b5397d4cbc49 \
-  -H "Content-Type: application/json" \
-  -d '{"stock": 75}'
-```
-
-**Resposta:**
-
-```json
-{
-  "_id": "68cb3e5ff3a1b5397d4cbc49",
-  "name": "iPhone 15 Pro",
-  "quantity": 75,
-  "relationalId": 1001,
-  "__v": 0
 }
 ```
 
@@ -361,7 +269,7 @@ NODE_ENV=development
 PORT=3000
 
 # Database Configuration
-MONGODB_URI=mongodb://localhost:27017/stock-management
+MONGODB_URI=mongodb://localhost:27017/service-orders
 
 # JWT Configuration (para autenticação futura)
 JWT_SECRET=your-super-secret-jwt-key-here
@@ -389,14 +297,14 @@ brew install mongodb-community
 brew services start mongodb-community
 
 # Configurar .env
-MONGODB_URI=mongodb://localhost:27017/stock-management
+MONGODB_URI=mongodb://localhost:27017/service-orders
 ```
 
 #### **Opção 2: MongoDB Atlas (Produção)**
 
 ```bash
 # Configurar .env
-MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/stock-management
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/service-orders
 ```
 
 ## 🧪 Testes
@@ -416,24 +324,15 @@ Importe a coleção `postman-collection.json` no Postman para testar todos os en
 # Health check
 curl http://localhost:3000/
 
-# Criar produto
-curl -X POST http://localhost:3000/stock \
+# Registrar usuário
+curl -X POST http://localhost:3000/auth/register \
   -H "Content-Type: application/json" \
-  -d '{"name":"Teste","quantity":10,"relationalId":123}'
+  -d '{"email":"test@example.com","password":"password123","name":"Test User"}'
 
-# Listar produtos
-curl http://localhost:3000/stock
-
-# Buscar produto específico
-curl http://localhost:3000/stock/PRODUCT_ID
-
-# Atualizar estoque
-curl -X PUT http://localhost:3000/stock/PRODUCT_ID \
+# Login
+curl -X POST http://localhost:3000/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"stock":20}'
-
-# Deletar produto
-curl -X DELETE http://localhost:3000/stock/PRODUCT_ID
+  -d '{"email":"test@example.com","password":"password123"}'
 ```
 
 ## 📁 Estrutura do Projeto
@@ -444,12 +343,6 @@ service-orders-nestjs-api/
 │   ├── config/                    # Configurações
 │   │   ├── app.config.ts         # Configuração principal
 │   │   └── config-example.service.ts
-│   ├── stock/                     # Módulo de estoque
-│   │   ├── controllers/          # Controladores REST
-│   │   ├── services/             # Serviços de negócio
-│   │   ├── repositories/         # Repositórios de dados
-│   │   ├── schemas/              # Schemas MongoDB
-│   │   └── stock.module.ts       # Módulo de estoque
 │   ├── user/                     # Módulo de usuários
 │   │   ├── controllers/          # Controladores REST
 │   │   ├── services/             # Serviços de negócio

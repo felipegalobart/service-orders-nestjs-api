@@ -1,175 +1,167 @@
-# 🚀 Coleção Postman - Stock Management API
+# 🚀 Coleção Postman - User Management API
 
-Este arquivo contém uma coleção completa do Postman para testar todos os endpoints da API de gerenciamento de estoque.
+Este arquivo contém uma coleção completa do Postman para testar todos os endpoints da API de gerenciamento de usuários e autenticação.
 
 ## 📥 Como Importar
 
-### 1. **Abrir o Postman**
+1. **Abrir Postman**
+2. **Clicar em "Import"**
+3. **Selecionar o arquivo** `postman-collection.json`
+4. **Confirmar a importação**
 
-- Abra o aplicativo Postman
-- Clique em **"Import"** no canto superior esquerdo
+## 🔧 Configuração
 
-### 2. **Importar o Arquivo**
+### **Variáveis de Ambiente**
 
-- Selecione **"Upload Files"**
-- Escolha o arquivo `postman-collection.json`
-- Clique em **"Import"**
+A coleção usa as seguintes variáveis:
 
-### 3. **Configurar Variáveis**
+- `{{baseUrl}}` - URL base da API (padrão: `http://localhost:3000`)
+- `{{userId}}` - ID do usuário (preenchido automaticamente)
+- `{{accessToken}}` - Token JWT (preenchido automaticamente)
 
-A coleção já vem com variáveis pré-configuradas:
+### **Configurar URL Base**
 
-- `{{baseUrl}}` = `http://localhost:3000`
-- `{{productId}}` = Será preenchido automaticamente
+1. **Abrir a coleção**
+2. **Clicar em "Variables"**
+3. **Alterar `baseUrl`** para sua URL (ex: `http://localhost:3000`)
 
-## 🎯 Endpoints Incluídos
+## 📋 Endpoints Disponíveis
 
-### **📊 Operações Básicas**
+### **🏠 Health Check**
 
 - ✅ **Health Check** - Verificar se a API está funcionando
-- ✅ **Get All Stock** - Listar produtos com paginação
-- ✅ **Get Stock by ID** - Buscar produto específico
-- ✅ **Create Product** - Criar novo produto
-- ✅ **Update Stock** - Atualizar quantidade em estoque
-- ✅ **Delete Product** - Remover produto
 
-### **📝 Exemplos de Dados**
+### **🔐 Authentication**
 
-- **Produto Teste** - Dados básicos para teste
-- **iPhone 15 Pro** - Exemplo de smartphone
-- **MacBook Pro M3** - Exemplo de notebook
-- **AirPods Pro** - Exemplo de fones de ouvido
+- ✅ **Register User** - Registrar novo usuário
+- ✅ **Login User** - Fazer login
+- ✅ **Register Admin** - Exemplo de registro de admin
+- ✅ **Login Admin** - Exemplo de login de admin
 
-### **⚠️ Testes de Erro**
+### **👥 User Management**
 
-- **Produto não encontrado** - Testa tratamento de erro
-- **Campos obrigatórios** - Testa validação de entrada
-- **IDs inválidos** - Testa robustez da API
+- ✅ **Get User by ID** - Buscar usuário específico
+- ✅ **Update User** - Atualizar dados do usuário
+- ✅ **Delete User** - Remover usuário
 
-## 🔧 Funcionalidades Automáticas
+### **🧪 Testes de Erro**
 
-### **📋 Scripts de Teste**
+- ✅ **Register Duplicate Email** - Testar email duplicado
+- ✅ **Login Invalid Credentials** - Testar credenciais inválidas
+- ✅ **Get User Without Token** - Testar acesso sem autenticação
+- ✅ **Get Non-existent User** - Testar usuário não encontrado
 
-A coleção inclui scripts automáticos que:
+### **✅ Testes de Validação**
 
-- ✅ **Salvam o ID** do produto criado automaticamente
-- ✅ **Testam status codes** de sucesso
-- ✅ **Verificam tempo de resposta** (< 5 segundos)
-- ✅ **Logam informações** no console
+- ✅ **Register Missing Fields** - Testar campos obrigatórios
+- ✅ **Invalid Email Format** - Testar formato de email
+- ✅ **Short Password** - Testar senha muito curta
 
-### **🔄 Fluxo de Teste Recomendado**
+## 🚀 Como Usar
 
-1. **Iniciar o servidor**:
+### **1. Teste Básico**
 
-   ```bash
-   npm run start:dev
-   ```
+1. **Execute `Health Check`** para verificar se a API está funcionando
+2. **Execute `Register User`** para criar um usuário
+3. **Execute `Login User`** para fazer login
+4. **Execute `Get User by ID`** para buscar o usuário
 
-2. **Testar Health Check**:
-   - Execute `Health Check`
-   - Deve retornar status 200
+### **2. Fluxo Completo**
 
-3. **Criar produtos**:
-   - Execute `Create Product - Smartphone`
-   - Execute `Create Product - Notebook`
-   - Execute `Create Product - Headphones`
+1. **Registrar usuário** com `Register User`
+2. **Fazer login** com `Login User`
+3. **Buscar usuário** com `Get User by ID`
+4. **Atualizar dados** com `Update User`
+5. **Deletar usuário** com `Delete User`
 
-4. **Listar produtos**:
-   - Execute `Get All Stock`
-   - Verifique a paginação
+### **3. Testes de Validação**
 
-5. **Buscar produto específico**:
-   - Execute `Get Stock by ID`
-   - O ID será preenchido automaticamente
+1. **Execute `Register Missing Fields`** para testar validação
+2. **Execute `Invalid Email Format`** para testar formato de email
+3. **Execute `Short Password`** para testar validação de senha
 
-6. **Atualizar estoque**:
-   - Execute `Update Stock - Increase`
-   - Execute `Update Stock - Decrease`
+## 🔄 Scripts Automáticos
 
-7. **Testar erros**:
-   - Execute `Test Error - Get Non-existent Product`
-   - Execute `Test Validation - Create Product Missing Fields`
+A coleção inclui scripts que executam automaticamente:
 
-8. **Deletar produto**:
-   - Execute `Delete Product`
+### **Pré-requisição**
 
-## 📊 Estrutura dos Dados
+- Log da URL sendo executada
 
-### **📦 Modelo de Produto**
+### **Pós-requisição**
 
-```json
-{
-  "name": "Nome do Produto",
-  "quantity": 100,
-  "relationalId": 12345
-}
-```
+- **Salva automaticamente** o ID do usuário criado
+- **Salva automaticamente** o token JWT após login
+- **Testa** status code de sucesso
+- **Testa** tempo de resposta < 5000ms
 
-### **📋 Campos Obrigatórios**
+## 📊 Exemplos de Resposta
 
-- `name` (string) - Nome do produto
-- `quantity` (number) - Quantidade em estoque
-- `relationalId` (number) - ID relacional único
-
-### **🔄 Respostas da API**
-
-#### **✅ Sucesso (200/201)**
+### **Registro de Usuário**
 
 ```json
 {
-  "id": "507f1f77bcf86cd799439011",
-  "name": "iPhone 15 Pro",
-  "quantity": 50,
-  "relationalId": 1001
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "id": "68cb3e5ff3a1b5397d4cbc49",
+    "email": "test@example.com",
+    "name": "Test User",
+    "createdAt": "2025-01-18T15:30:00.000Z",
+    "updatedAt": "2025-01-18T15:30:00.000Z"
+  }
 }
 ```
 
-#### **❌ Erro (404)**
+### **Login de Usuário**
 
 ```json
 {
-  "statusCode": 404,
-  "message": "Product not found"
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "id": "68cb3e5ff3a1b5397d4cbc49",
+    "email": "test@example.com",
+    "name": "Test User",
+    "createdAt": "2025-01-18T15:30:00.000Z",
+    "updatedAt": "2025-01-18T15:30:00.000Z"
+  }
 }
 ```
 
-## 🛠️ Personalização
+## ⚠️ Códigos de Erro
 
-### **🔧 Alterar URL Base**
+| Código | Descrição                |
+| ------ | ------------------------ |
+| `200`  | Sucesso                  |
+| `201`  | Criado com sucesso       |
+| `400`  | Dados inválidos          |
+| `401`  | Não autorizado           |
+| `404`  | Usuário não encontrado   |
+| `500`  | Erro interno do servidor |
 
-1. Clique na coleção no Postman
-2. Vá para a aba **"Variables"**
-3. Altere o valor de `baseUrl` para sua URL
+## 🔧 Troubleshooting
 
-### **📝 Adicionar Novos Testes**
+### **Problema: Token não é salvo automaticamente**
 
-1. Clique com botão direito na coleção
-2. Selecione **"Add Request"**
-3. Configure o endpoint desejado
+- **Solução**: Verifique se o login retornou status 200
+- **Verificar**: Console do Postman para logs
 
-### **🧪 Adicionar Validações**
+### **Problema: Usuário não é encontrado**
 
-1. Vá para a aba **"Tests"** de qualquer requisição
-2. Adicione scripts de validação personalizados
+- **Solução**: Execute primeiro `Register User`
+- **Verificar**: Se o `userId` foi salvo nas variáveis
 
-## 🚀 Próximos Passos
+### **Problema: Erro de conexão**
 
-Após testar todos os endpoints:
+- **Solução**: Verifique se a API está rodando
+- **Verificar**: URL base nas variáveis da coleção
 
-1. **Implementar autenticação** (JWT)
-2. **Adicionar validações** mais robustas
-3. **Configurar Swagger** para documentação
-4. **Implementar testes unitários**
-5. **Adicionar logs** estruturados
+## 📝 Notas Importantes
 
-## 📚 Recursos Úteis
-
-- **Postman Learning Center**: https://learning.postman.com/
-- **NestJS Documentation**: https://docs.nestjs.com/
-- **MongoDB Documentation**: https://docs.mongodb.com/
+- **Autenticação**: Alguns endpoints requerem token JWT
+- **Validação**: Todos os dados são validados com Zod
+- **Scripts**: Executam automaticamente em cada requisição
+- **Variáveis**: São preenchidas automaticamente pelos scripts
 
 ---
 
-**🎉 Divirta-se testando sua API!**
-
-A coleção está pronta para uso e inclui todos os cenários de teste necessários para validar o funcionamento completo do sistema de estoque.
+**Desenvolvido com ❤️ para facilitar os testes da API**
