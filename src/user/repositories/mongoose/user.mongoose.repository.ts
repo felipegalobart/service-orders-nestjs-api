@@ -19,6 +19,7 @@ export class UserMongooseRepository implements UserRepository {
       email: user.email,
       password: user.password,
       name: user.name,
+      role: user.role,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     };
@@ -33,9 +34,23 @@ export class UserMongooseRepository implements UserRepository {
       email: user.email,
       password: user.password,
       name: user.name,
+      role: user.role,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     };
+  }
+
+  async findAll(): Promise<IUser[]> {
+    const users = await this.userModel.find().exec();
+    return users.map((user) => ({
+      id: user._id.toString(),
+      email: user.email,
+      password: user.password,
+      name: user.name,
+      role: user.role,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    }));
   }
 
   async create(userData: ICreateUser): Promise<IUser> {
@@ -47,6 +62,7 @@ export class UserMongooseRepository implements UserRepository {
       email: savedUser.email,
       password: savedUser.password,
       name: savedUser.name,
+      role: savedUser.role,
       createdAt: savedUser.createdAt,
       updatedAt: savedUser.updatedAt,
     };
@@ -66,6 +82,7 @@ export class UserMongooseRepository implements UserRepository {
       email: updatedUser.email,
       password: updatedUser.password,
       name: updatedUser.name,
+      role: updatedUser.role,
       createdAt: updatedUser.createdAt,
       updatedAt: updatedUser.updatedAt,
     };

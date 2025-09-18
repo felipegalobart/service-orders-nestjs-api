@@ -15,6 +15,10 @@ export class UserService {
     return this.userRepository.findById(id);
   }
 
+  async findAll(): Promise<IUser[]> {
+    return this.userRepository.findAll();
+  }
+
   async create(userData: ICreateUser): Promise<IUser> {
     return this.userRepository.create(userData);
   }

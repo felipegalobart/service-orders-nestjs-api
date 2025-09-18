@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { z } from 'zod';
 import { ZodValidationPipe } from '../shared/pipe/zod-validation.pipe';
 import { Public } from './decorators/public.decorator';
+import { UserRole } from './enums/user-role.enum';
 
 // Schema para login
 const loginSchema = z.object({
@@ -15,6 +16,7 @@ const registerSchema = z.object({
   email: z.email('Invalid email format'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
   name: z.string().min(2, 'Name must be at least 2 characters'),
+  role: z.nativeEnum(UserRole).optional().default(UserRole.USER),
 });
 
 type LoginDto = z.infer<typeof loginSchema>;

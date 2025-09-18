@@ -3,6 +3,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { IUser } from './models/user.interface';
 import mongoose, { HydratedDocument } from 'mongoose';
 import * as bcrypt from 'bcrypt';
+import { UserRole } from '../../auth/enums/user-role.enum';
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -22,6 +23,14 @@ export class User implements IUser {
 
   @Prop({ type: String, required: true })
   name: string;
+
+  @Prop({
+    type: String,
+    enum: UserRole,
+    default: UserRole.USER,
+    required: true,
+  })
+  role: UserRole;
 
   @Prop({ type: Date })
   createdAt?: Date;
