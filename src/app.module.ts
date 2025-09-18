@@ -5,6 +5,7 @@ import { AppService } from './app.service';
 import { StockModule } from './stock/stock.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { appConfig } from './config/app.config';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -12,6 +13,11 @@ import { appConfig } from './config/app.config';
       isGlobal: true,
       load: [appConfig],
       envFilePath: '.env',
+    }),
+    JwtModule.register({
+      global: true,
+      secret: process.env.JWT_SECRET,
+      signOptions: { expiresIn: process.env.JWT_EXPIRES_IN },
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
