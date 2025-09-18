@@ -1,11 +1,12 @@
-# 🏪 Stock Management API - NestJS
+# 🛠️ Service Orders NestJS API
 
 [![NestJS](https://img.shields.io/badge/NestJS-E0234E?style=for-the-badge&logo=nestjs&logoColor=white)](https://nestjs.com/)
 [![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)](https://mongodb.com/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://typescriptlang.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
+[![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)](https://jwt.io/)
 
-> **Sistema completo de gerenciamento de estoque desenvolvido em NestJS com MongoDB, seguindo padrões de Clean Architecture e boas práticas de desenvolvimento.**
+> **Sistema completo de gerenciamento de ordens de serviço desenvolvido em NestJS com MongoDB, autenticação JWT e seguindo padrões de Clean Architecture.**
 
 ## 📋 Índice
 
@@ -25,11 +26,19 @@
 
 ### ✨ **API REST Completa**
 
-- ✅ **CRUD completo** para produtos
+- ✅ **CRUD completo** para produtos e usuários
 - ✅ **Paginação** automática
-- ✅ **Validação** de dados de entrada
+- ✅ **Validação** de dados de entrada com Zod
 - ✅ **Tratamento de erros** padronizado
 - ✅ **Respostas JSON** consistentes
+
+### 🔐 **Sistema de Autenticação**
+
+- ✅ **JWT Authentication** completo
+- ✅ **Registro de usuários** com bcrypt
+- ✅ **Login seguro** com validação
+- ✅ **Proteção de rotas** com Guards
+- ✅ **Middleware** de autenticação
 
 ### 🗃️ **Banco de Dados**
 
@@ -37,6 +46,7 @@
 - ✅ **Schemas** tipados com TypeScript
 - ✅ **Validações** de campos obrigatórios
 - ✅ **Índices** otimizados
+- ✅ **Middleware** de criptografia de senhas
 
 ### 🔧 **Qualidade de Código**
 
@@ -44,6 +54,7 @@
 - ✅ **ESLint** com regras customizadas
 - ✅ **Prettier** para formatação automática
 - ✅ **Convenções** de nomenclatura (prefixo 'I' para interfaces)
+- ✅ **Repository Pattern** implementado
 
 ### 📚 **Documentação**
 
@@ -74,6 +85,37 @@ src/
 │   │   │   └── product.interface.ts
 │   │   └── product.schema.ts
 │   └── stock.module.ts
+├── user/                      # Módulo de usuários
+│   ├── controllers/          # Controladores REST
+│   │   └── user.controller.ts
+│   ├── services/             # Lógica de negócio
+│   │   └── user.service.ts
+│   ├── repositories/         # Camada de dados
+│   │   ├── user.repository.ts
+│   │   └── mongoose/
+│   │       └── user.mongoose.repository.ts
+│   ├── schemas/              # Schemas e interfaces
+│   │   ├── models/
+│   │   │   └── user.interface.ts
+│   │   └── user.schema.ts
+│   └── user.module.ts
+├── auth/                      # Módulo de autenticação
+│   ├── controllers/          # Controladores REST
+│   │   └── auth.controller.ts
+│   ├── services/             # Lógica de negócio
+│   │   └── auth.service.ts
+│   ├── strategies/           # Estratégias de autenticação
+│   │   └── jwt.strategy.ts
+│   ├── guards/               # Guards de proteção
+│   │   └── jwt-auth.guard.ts
+│   ├── decorators/           # Decorators customizados
+│   │   └── current-user.decorator.ts
+│   └── auth.module.ts
+├── shared/                    # Recursos compartilhados
+│   ├── filters/              # Filtros globais
+│   │   └── http-exception.filter.ts
+│   └── pipe/                 # Pipes customizados
+│       └── zod-validation.pipe.ts
 └── app.module.ts             # Módulo principal
 ```
 
@@ -90,8 +132,8 @@ src/
 
 ```bash
 # Clonar o repositório
-git clone https://github.com/felipegalobart/stock-nestjs.git
-cd stock-nestjs
+git clone https://github.com/felipegalobart/service-orders-nestjs-api.git
+cd service-orders-nestjs-api
 
 # Instalar dependências
 npm install
@@ -132,6 +174,7 @@ curl http://localhost:3000/stock
 
 ### **🔗 Endpoints Disponíveis**
 
+#### **🏪 Stock Management**
 | Método   | Endpoint     | Descrição                  |
 | -------- | ------------ | -------------------------- |
 | `GET`    | `/`          | Health check               |
@@ -141,7 +184,33 @@ curl http://localhost:3000/stock
 | `PUT`    | `/stock/:id` | Atualizar estoque          |
 | `DELETE` | `/stock/:id` | Deletar produto            |
 
+#### **👥 User Management**
+| Método   | Endpoint     | Descrição                  |
+| -------- | ------------ | -------------------------- |
+| `GET`    | `/users/:id` | Buscar usuário por ID      |
+| `PUT`    | `/users/:id` | Atualizar usuário          |
+| `DELETE` | `/users/:id` | Deletar usuário            |
+
+#### **🔐 Authentication**
+| Método   | Endpoint     | Descrição                  |
+| -------- | ------------ | -------------------------- |
+| `POST`   | `/auth/login`    | Login de usuário           |
+| `POST`   | `/auth/register` | Registro de usuário        |
+
 ### **📦 Modelo de Dados**
+
+#### **Usuário (User)**
+
+```typescript
+interface IUser {
+  id?: string; // ID único (gerado automaticamente)
+  email: string; // Email do usuário (obrigatório, único)
+  password: string; // Senha criptografada (obrigatório)
+  name: string; // Nome do usuário (obrigatório)
+  createdAt?: Date; // Data de criação
+  updatedAt?: Date; // Data de atualização
+}
+```
 
 #### **Produto (Product)**
 
@@ -155,6 +224,57 @@ interface IProduct {
 ```
 
 ### **📝 Exemplos de Uso**
+
+#### **Registrar Usuário**
+
+```bash
+curl -X POST http://localhost:3000/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "user@example.com",
+    "password": "password123",
+    "name": "João Silva"
+  }'
+```
+
+**Resposta:**
+```json
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "id": "68cb3e5ff3a1b5397d4cbc49",
+    "email": "user@example.com",
+    "name": "João Silva",
+    "createdAt": "2025-09-18T15:30:00.000Z",
+    "updatedAt": "2025-09-18T15:30:00.000Z"
+  }
+}
+```
+
+#### **Login de Usuário**
+
+```bash
+curl -X POST http://localhost:3000/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "user@example.com",
+    "password": "password123"
+  }'
+```
+
+**Resposta:**
+```json
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "id": "68cb3e5ff3a1b5397d4cbc49",
+    "email": "user@example.com",
+    "name": "João Silva",
+    "createdAt": "2025-09-18T15:30:00.000Z",
+    "updatedAt": "2025-09-18T15:30:00.000Z"
+  }
+}
+```
 
 #### **Criar Produto**
 
@@ -319,7 +439,7 @@ curl -X DELETE http://localhost:3000/stock/PRODUCT_ID
 ## 📁 Estrutura do Projeto
 
 ```
-stock-nestjs/
+service-orders-nestjs-api/
 ├── src/
 │   ├── config/                    # Configurações
 │   │   ├── app.config.ts         # Configuração principal
@@ -330,6 +450,22 @@ stock-nestjs/
 │   │   ├── repositories/         # Repositórios de dados
 │   │   ├── schemas/              # Schemas MongoDB
 │   │   └── stock.module.ts       # Módulo de estoque
+│   ├── user/                     # Módulo de usuários
+│   │   ├── controllers/          # Controladores REST
+│   │   ├── services/             # Serviços de negócio
+│   │   ├── repositories/         # Repositórios de dados
+│   │   ├── schemas/              # Schemas MongoDB
+│   │   └── user.module.ts        # Módulo de usuários
+│   ├── auth/                     # Módulo de autenticação
+│   │   ├── controllers/          # Controladores REST
+│   │   ├── services/             # Serviços de negócio
+│   │   ├── strategies/           # Estratégias JWT
+│   │   ├── guards/               # Guards de proteção
+│   │   ├── decorators/           # Decorators customizados
+│   │   └── auth.module.ts        # Módulo de autenticação
+│   ├── shared/                   # Recursos compartilhados
+│   │   ├── filters/              # Filtros globais
+│   │   └── pipe/                 # Pipes customizados
 │   ├── app.controller.ts         # Controller principal
 │   ├── app.module.ts             # Módulo principal
 │   ├── app.service.ts            # Serviço principal
@@ -417,21 +553,26 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 ## 🎯 Status do Projeto
 
 - ✅ **API REST** completa e funcional
+- ✅ **Sistema de autenticação JWT** implementado
 - ✅ **Banco de dados** MongoDB configurado
 - ✅ **Documentação** completa
 - ✅ **Testes** via Postman
 - ✅ **Qualidade de código** implementada
 - ✅ **Arquitetura** limpa e escalável
+- ✅ **Validação** com Zod
+- ✅ **Repository Pattern** implementado
+- ✅ **Filtros de exceção** globais
 
 ## 🚀 Próximos Passos
 
-- [ ] **Autenticação JWT** para segurança
-- [ ] **Validação DTOs** com class-validator
-- [ ] **Testes unitários** automatizados
 - [ ] **Swagger** para documentação interativa
+- [ ] **Testes unitários** automatizados
 - [ ] **Logs** estruturados
 - [ ] **Docker** para containerização
 - [ ] **CI/CD** com GitHub Actions
+- [ ] **Rate limiting** para segurança
+- [ ] **Cache** com Redis
+- [ ] **WebSockets** para tempo real
 
 ---
 

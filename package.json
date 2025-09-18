@@ -1,7 +1,7 @@
 {
-  "name": "stock-nestjs",
+  "name": "service-orders-nestjs-api",
   "version": "0.0.1",
-  "description": "",
+  "description": "Service Orders Management API built with NestJS, MongoDB, and JWT Authentication",
   "author": "",
   "private": true,
   "license": "UNLICENSED",
