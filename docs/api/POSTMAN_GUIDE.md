@@ -1,167 +1,409 @@
-# 🚀 Coleção Postman - User Management API
+# 📮 Guia da Collection Postman - Módulo Person
 
-Este arquivo contém uma coleção completa do Postman para testar todos os endpoints da API de gerenciamento de usuários e autenticação.
+## 🎯 Visão Geral
 
-## 📥 Como Importar
+Este guia explica como usar a collection do Postman para testar todos os endpoints do módulo Person. A collection está localizada em `postman-person-collection.json` na raiz do projeto.
 
-1. **Abrir Postman**
-2. **Clicar em "Import"**
-3. **Selecionar o arquivo** `postman-collection.json`
-4. **Confirmar a importação**
+## 📥 Importação da Collection
 
-## 🔧 Configuração
+### 1. Importar no Postman
 
-### **Variáveis de Ambiente**
+1. Abra o Postman
+2. Clique em **"Import"** no canto superior esquerdo
+3. Selecione o arquivo `postman-person-collection.json`
+4. Clique em **"Import"**
 
-A coleção usa as seguintes variáveis:
+### 2. Configurar Variáveis
 
-- `{{baseUrl}}` - URL base da API (padrão: `http://localhost:3000`)
-- `{{userId}}` - ID do usuário (preenchido automaticamente)
-- `{{accessToken}}` - Token JWT (preenchido automaticamente)
+A collection já vem com variáveis pré-configuradas:
 
-### **Configurar URL Base**
+- **`baseUrl`**: `http://localhost:3000` (configurável)
+- **`personId`**: Preenchida automaticamente ao criar pessoas
 
-1. **Abrir a coleção**
-2. **Clicar em "Variables"**
-3. **Alterar `baseUrl`** para sua URL (ex: `http://localhost:3000`)
+Para alterar a URL base:
 
-## 📋 Endpoints Disponíveis
+1. Clique no nome da collection
+2. Vá para a aba **"Variables"**
+3. Altere o valor de `baseUrl` se necessário
 
-### **🏠 Health Check**
+## 🚀 Como Usar a Collection
 
-- ✅ **Health Check** - Verificar se a API está funcionando
+### Ordem Recomendada de Testes
 
-### **🔐 Authentication**
+1. **Criar dados de teste**
+   - Execute "Create Person - Customer"
+   - Execute "Create Person - Supplier"
 
-- ✅ **Register User** - Registrar novo usuário
-- ✅ **Login User** - Fazer login
-- ✅ **Register Admin** - Exemplo de registro de admin
-- ✅ **Login Admin** - Exemplo de login de admin
+2. **Testar operações CRUD**
+   - "Get All Persons"
+   - "Get Person by ID"
+   - "Update Person"
+   - "Delete Person"
 
-### **👥 User Management**
+3. **Testar buscas específicas**
+   - "Search by Name"
+   - "Search by Document"
+   - "Search by Corporate Name"
+   - "Search by Phone"
 
-- ✅ **Get User by ID** - Buscar usuário específico
-- ✅ **Update User** - Atualizar dados do usuário
-- ✅ **Delete User** - Remover usuário
+4. **Testar busca unificada**
+   - "Unified Search"
 
-### **🧪 Testes de Erro**
+5. **Testar filtros**
+   - "Filter by Type - Customer"
+   - "Filter by Type - Supplier"
+   - "Filter by Pessoa Juridica"
+   - "Combined Filters"
 
-- ✅ **Register Duplicate Email** - Testar email duplicado
-- ✅ **Login Invalid Credentials** - Testar credenciais inválidas
-- ✅ **Get User Without Token** - Testar acesso sem autenticação
-- ✅ **Get Non-existent User** - Testar usuário não encontrado
+6. **Testar cenários de validação**
+   - Execute todos os testes em "Test Scenarios"
 
-### **✅ Testes de Validação**
+## 📋 Detalhes dos Endpoints
 
-- ✅ **Register Missing Fields** - Testar campos obrigatórios
-- ✅ **Invalid Email Format** - Testar formato de email
-- ✅ **Short Password** - Testar senha muito curta
+### CRUD Operations
 
-## 🚀 Como Usar
+#### Create Person - Customer
 
-### **1. Teste Básico**
+- **Método**: POST
+- **URL**: `{{baseUrl}}/persons`
+- **Body**: Pessoa física com endereço e contato
+- **Resultado**: Cria cliente e salva ID automaticamente
 
-1. **Execute `Health Check`** para verificar se a API está funcionando
-2. **Execute `Register User`** para criar um usuário
-3. **Execute `Login User`** para fazer login
-4. **Execute `Get User by ID`** para buscar o usuário
+#### Create Person - Supplier
 
-### **2. Fluxo Completo**
+- **Método**: POST
+- **URL**: `{{baseUrl}}/persons`
+- **Body**: Pessoa jurídica com múltiplos contatos
+- **Resultado**: Cria fornecedor
 
-1. **Registrar usuário** com `Register User`
-2. **Fazer login** com `Login User`
-3. **Buscar usuário** com `Get User by ID`
-4. **Atualizar dados** com `Update User`
-5. **Deletar usuário** com `Delete User`
+#### Get All Persons
 
-### **3. Testes de Validação**
+- **Método**: GET
+- **URL**: `{{baseUrl}}/persons`
+- **Query**: Sem parâmetros
+- **Resultado**: Lista todas as pessoas com paginação
 
-1. **Execute `Register Missing Fields`** para testar validação
-2. **Execute `Invalid Email Format`** para testar formato de email
-3. **Execute `Short Password`** para testar validação de senha
+#### Get All Persons - Paginated
 
-## 🔄 Scripts Automáticos
+- **Método**: GET
+- **URL**: `{{baseUrl}}/persons?page=1&limit=5`
+- **Query**: `page=1&limit=5`
+- **Resultado**: Lista com paginação específica
 
-A coleção inclui scripts que executam automaticamente:
+#### Get Person by ID
 
-### **Pré-requisição**
+- **Método**: GET
+- **URL**: `{{baseUrl}}/persons/{{personId}}`
+- **Resultado**: Busca pessoa específica
 
-- Log da URL sendo executada
+#### Update Person
 
-### **Pós-requisição**
+- **Método**: PUT
+- **URL**: `{{baseUrl}}/persons/{{personId}}`
+- **Body**: Dados atualizados
+- **Resultado**: Atualiza pessoa existente
 
-- **Salva automaticamente** o ID do usuário criado
-- **Salva automaticamente** o token JWT após login
-- **Testa** status code de sucesso
-- **Testa** tempo de resposta < 5000ms
+#### Delete Person (Soft Delete)
 
-## 📊 Exemplos de Resposta
+- **Método**: DELETE
+- **URL**: `{{baseUrl}}/persons/{{personId}}`
+- **Resultado**: Marca como deletada (soft delete)
 
-### **Registro de Usuário**
+### Search Operations
 
-```json
-{
-  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "user": {
-    "id": "68cb3e5ff3a1b5397d4cbc49",
-    "email": "test@example.com",
-    "name": "Test User",
-    "createdAt": "2025-01-18T15:30:00.000Z",
-    "updatedAt": "2025-01-18T15:30:00.000Z"
-  }
+#### Search by Name
+
+- **Método**: GET
+- **URL**: `{{baseUrl}}/persons/search/name?q=João`
+- **Query**: `q=João`
+- **Resultado**: Busca por nome (case-insensitive)
+
+#### Search by Name - Accented
+
+- **Método**: GET
+- **URL**: `{{baseUrl}}/persons/search/name?q=Jo%C3%A3o`
+- **Query**: `q=Jo%C3%A3o` (URL encoded)
+- **Resultado**: Busca por nome com acentos
+
+#### Search by Document
+
+- **Método**: GET
+- **URL**: `{{baseUrl}}/persons/search/document?q=123.456.789-00`
+- **Query**: `q=123.456.789-00`
+- **Resultado**: Busca por CPF/CNPJ (exata)
+
+#### Search by Corporate Name
+
+- **Método**: GET
+- **URL**: `{{baseUrl}}/persons/search/corporate-name?q=ABC`
+- **Query**: `q=ABC`
+- **Resultado**: Busca por razão social (case-insensitive)
+
+#### Search by Phone
+
+- **Método**: GET
+- **URL**: `{{baseUrl}}/persons/search/phone?q=99999-9999`
+- **Query**: `q=99999-9999`
+- **Resultado**: Busca por telefone (exata)
+
+#### Unified Search
+
+- **Método**: GET
+- **URL**: `{{baseUrl}}/persons/search?q=João`
+- **Query**: `q=João`
+- **Resultado**: Busca em todos os campos de texto
+
+#### Unified Search - Document
+
+- **Método**: GET
+- **URL**: `{{baseUrl}}/persons/search?q=12345678900`
+- **Query**: `q=12345678900`
+- **Resultado**: Busca por documento sem formatação
+
+### Filter Operations
+
+#### Filter by Type - Customer
+
+- **Método**: GET
+- **URL**: `{{baseUrl}}/persons?type=customer`
+- **Query**: `type=customer`
+- **Resultado**: Apenas clientes
+
+#### Filter by Type - Supplier
+
+- **Método**: GET
+- **URL**: `{{baseUrl}}/persons?type=supplier`
+- **Query**: `type=supplier`
+- **Resultado**: Apenas fornecedores
+
+#### Filter by Pessoa Juridica
+
+- **Método**: GET
+- **URL**: `{{baseUrl}}/persons?pessoaJuridica=true`
+- **Query**: `pessoaJuridica=true`
+- **Resultado**: Apenas pessoas jurídicas
+
+#### Filter by Blacklist
+
+- **Método**: GET
+- **URL**: `{{baseUrl}}/persons?blacklist=false`
+- **Query**: `blacklist=false`
+- **Resultado**: Pessoas não bloqueadas
+
+#### Combined Filters
+
+- **Método**: GET
+- **URL**: `{{baseUrl}}/persons?type=customer&pessoaJuridica=false&blacklist=false&page=1&limit=10`
+- **Query**: Múltiplos filtros + paginação
+- **Resultado**: Filtros combinados
+
+### Test Scenarios
+
+#### Validation Tests
+
+**Test Validation - Missing Required Fields**
+
+- **Método**: POST
+- **Body**: Apenas `type: "customer"`
+- **Resultado**: Erro 400 - Campos obrigatórios ausentes
+
+**Test Validation - Duplicate Document**
+
+- **Método**: POST
+- **Body**: Documento já existente
+- **Resultado**: Erro 409 - Documento duplicado
+
+**Test Validation - Invalid Email**
+
+- **Método**: POST
+- **Body**: Email com formato inválido
+- **Resultado**: Erro 400 - Email inválido
+
+**Test Validation - Multiple Default Addresses**
+
+- **Método**: POST
+- **Body**: Múltiplos endereços com `isDefault: true`
+- **Resultado**: Erro 400 - Apenas um endereço padrão
+
+#### Search Validation Tests
+
+**Test Search - Empty Query**
+
+- **Método**: GET
+- **Query**: `q=` (vazio)
+- **Resultado**: Erro 400 - Query muito curta
+
+**Test Search - Short Query**
+
+- **Método**: GET
+- **Query**: `q=a` (1 caractere)
+- **Resultado**: Erro 400 - Query muito curta
+
+#### Pagination Validation Tests
+
+**Test Pagination - Invalid Page**
+
+- **Método**: GET
+- **Query**: `page=0`
+- **Resultado**: Erro 400 - Página inválida
+
+**Test Pagination - Invalid Limit**
+
+- **Método**: GET
+- **Query**: `limit=200`
+- **Resultado**: Erro 400 - Limite inválido
+
+## 🔧 Scripts Automáticos
+
+### Pré-request Script
+
+Executado antes de cada request:
+
+```javascript
+// Script executado antes de cada request
+console.log('Executando request para:', pm.request.url);
+```
+
+### Test Script
+
+Executado após cada request:
+
+```javascript
+// Script executado após cada request
+console.log('Response status:', pm.response.status);
+
+// Salva o ID da pessoa criada para uso posterior
+if (pm.response.status === 201 && pm.response.json().id) {
+  pm.collectionVariables.set('personId', pm.response.json().id);
+  console.log('Person ID salvo:', pm.response.json().id);
 }
 ```
 
-### **Login de Usuário**
+## 📊 Exemplos de Dados
+
+### Cliente Pessoa Física
 
 ```json
 {
-  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "user": {
-    "id": "68cb3e5ff3a1b5397d4cbc49",
-    "email": "test@example.com",
-    "name": "Test User",
-    "createdAt": "2025-01-18T15:30:00.000Z",
-    "updatedAt": "2025-01-18T15:30:00.000Z"
-  }
+  "type": "customer",
+  "name": "João Silva",
+  "document": "123.456.789-00",
+  "pessoaJuridica": false,
+  "blacklist": false,
+  "notes": "Cliente VIP",
+  "addresses": [
+    {
+      "street": "Rua das Flores",
+      "number": "123",
+      "complement": "Apto 45",
+      "neighborhood": "Centro",
+      "city": "São Paulo",
+      "state": "SP",
+      "zipCode": "01234-567",
+      "country": "Brasil",
+      "isDefault": true
+    }
+  ],
+  "contacts": [
+    {
+      "name": "João Silva",
+      "phone": "(11) 99999-9999",
+      "email": "joao@email.com",
+      "sector": "Comercial",
+      "isWhatsApp": true,
+      "isDefault": true
+    }
+  ]
 }
 ```
 
-## ⚠️ Códigos de Erro
+### Fornecedor Pessoa Jurídica
 
-| Código | Descrição                |
-| ------ | ------------------------ |
-| `200`  | Sucesso                  |
-| `201`  | Criado com sucesso       |
-| `400`  | Dados inválidos          |
-| `401`  | Não autorizado           |
-| `404`  | Usuário não encontrado   |
-| `500`  | Erro interno do servidor |
+```json
+{
+  "type": "supplier",
+  "name": "Fornecedor ABC Ltda",
+  "document": "12.345.678/0001-90",
+  "corporateName": "Fornecedor ABC Ltda",
+  "tradeName": "ABC Fornecedor",
+  "stateRegistration": "123.456.789.012",
+  "municipalRegistration": "987654321",
+  "isExemptFromIE": false,
+  "pessoaJuridica": true,
+  "blacklist": false,
+  "notes": "Fornecedor de materiais",
+  "addresses": [
+    {
+      "street": "Av. Industrial",
+      "number": "1000",
+      "neighborhood": "Distrito Industrial",
+      "city": "São Paulo",
+      "state": "SP",
+      "zipCode": "04567-890",
+      "country": "Brasil",
+      "isDefault": true
+    }
+  ],
+  "contacts": [
+    {
+      "name": "Maria Santos",
+      "phone": "(11) 88888-8888",
+      "email": "maria@abcfornecedor.com",
+      "sector": "Vendas",
+      "isWhatsApp": false,
+      "isDefault": true
+    },
+    {
+      "name": "Pedro Costa",
+      "phone": "(11) 77777-7777",
+      "email": "pedro@abcfornecedor.com",
+      "sector": "Financeiro",
+      "isWhatsApp": true,
+      "isDefault": false
+    }
+  ]
+}
+```
 
-## 🔧 Troubleshooting
+## 🚨 Troubleshooting
 
-### **Problema: Token não é salvo automaticamente**
+### Problemas Comuns
 
-- **Solução**: Verifique se o login retornou status 200
-- **Verificar**: Console do Postman para logs
+1. **Erro 400 - Campos obrigatórios**
+   - Verifique se `name` e `pessoaJuridica` estão preenchidos
 
-### **Problema: Usuário não é encontrado**
+2. **Erro 409 - Documento duplicado**
+   - Use um documento diferente ou delete a pessoa existente
 
-- **Solução**: Execute primeiro `Register User`
-- **Verificar**: Se o `userId` foi salvo nas variáveis
+3. **Erro 400 - Email inválido**
+   - Verifique o formato do email (deve ter @ e domínio)
 
-### **Problema: Erro de conexão**
+4. **Erro 400 - Múltiplos padrões**
+   - Apenas um endereço/contato pode ter `isDefault: true`
 
-- **Solução**: Verifique se a API está rodando
-- **Verificar**: URL base nas variáveis da coleção
+5. **Busca com acentos não funciona**
+   - Use URL encoding: `Jo%C3%A3o` em vez de `João`
+
+6. **Variável personId não está sendo salva**
+   - Execute primeiro um "Create Person" com sucesso
+
+### Dicas de Uso
+
+1. **Execute em ordem**: Comece sempre criando dados antes de testar buscas
+2. **Use variáveis**: A `personId` é salva automaticamente para facilitar testes
+3. **Teste validações**: Execute os "Test Scenarios" para verificar comportamentos
+4. **Monitore logs**: Use o console do Postman para ver logs dos scripts
+5. **Backup de dados**: Crie dados de teste antes de executar testes destrutivos
 
 ## 📝 Notas Importantes
 
-- **Autenticação**: Alguns endpoints requerem token JWT
-- **Validação**: Todos os dados são validados com Zod
-- **Scripts**: Executam automaticamente em cada requisição
-- **Variáveis**: São preenchidas automaticamente pelos scripts
+- A collection está configurada para `localhost:3000`
+- Todos os endpoints requerem autenticação (JWT)
+- Soft delete preserva dados para auditoria
+- Buscas são case-insensitive para nomes e razão social
+- Documentos devem ser únicos quando preenchidos
+- Apenas um endereço/contato pode ser padrão por pessoa
 
 ---
 
-**Desenvolvido com ❤️ para facilitar os testes da API**
+_Esta documentação foi criada em 19/01/2025 - Collection Postman completa e testada._

@@ -27,7 +27,7 @@
 
 ### ✨ **API REST Completa**
 
-- ✅ **CRUD completo** para usuários
+- ✅ **CRUD completo** para usuários e pessoas (clientes/fornecedores)
 - ✅ **Paginação** automática
 - ✅ **Validação** de dados de entrada com Zod
 - ✅ **Tratamento de erros** padronizado
@@ -66,6 +66,8 @@
 - ✅ **Índices** otimizados
 - ✅ **Middleware** de criptografia de senhas
 - ✅ **Repository Pattern** implementado
+- ✅ **Módulo Person** completo (clientes e fornecedores)
+- ✅ **Soft delete** para preservação de dados
 
 ### 🔧 **Qualidade de Código**
 
@@ -87,10 +89,12 @@
 
 ### 📚 **Documentação**
 
-- ✅ **Coleção Postman** completa
+- ✅ **Coleção Postman** completa para usuários e pessoas
 - ✅ **Guias** de configuração e troubleshooting
 - ✅ **Exemplos** de uso da API
 - ✅ **Scripts de teste** automatizados
+- ✅ **Documentação técnica** detalhada do módulo Person
+- ✅ **Guia de testes** com collection Postman específica
 
 ## 🏗️ Arquitetura
 
@@ -115,6 +119,24 @@ src/
 │   │   │   └── user.interface.ts
 │   │   └── user.schema.ts
 │   └── user.module.ts
+├── person/                    # Módulo de pessoas (clientes/fornecedores)
+│   ├── schemas/              # Schemas e interfaces
+│   │   ├── person.schema.ts  # Schema principal
+│   │   ├── address.schema.ts # Schema de endereços
+│   │   ├── contact.schema.ts # Schema de contatos
+│   │   └── models/
+│   │       └── person.interface.ts
+│   ├── repositories/         # Camada de dados
+│   │   ├── person.repository.ts
+│   │   └── mongoose/
+│   │       └── person.mongoose.repository.ts
+│   ├── utils/                # Utilitários
+│   │   ├── text-normalizer.ts
+│   │   └── text-normalizer.example.ts
+│   ├── person.service.ts     # Lógica de negócio
+│   ├── person.controller.ts  # Controlador REST
+│   ├── person.module.ts      # Módulo NestJS
+│   └── index.ts              # Exports do módulo
 ├── auth/                      # Módulo de autenticação
 │   ├── controllers/          # Controladores REST
 │   │   └── auth.controller.ts
@@ -241,6 +263,21 @@ curl http://localhost:3000/
 | `DELETE` | `/users/:id`     | Deletar usuário          | ✅ JWT       | ADMIN         | 3/min      |
 | `GET`    | `/users`         | Listar todos os usuários | ✅ JWT       | ADMIN         | 3/min      |
 
+#### **👤 Person Management (Clientes/Fornecedores)**
+
+| Método   | Endpoint                         | Descrição                    | Autenticação | Roles    | Rate Limit |
+| -------- | -------------------------------- | ---------------------------- | ------------ | -------- | ---------- |
+| `POST`   | `/persons`                       | Criar pessoa                 | ✅ JWT       | Qualquer | 10/min     |
+| `GET`    | `/persons`                       | Listar pessoas (paginado)    | ✅ JWT       | Qualquer | 10/min     |
+| `GET`    | `/persons/:id`                   | Buscar pessoa por ID         | ✅ JWT       | Qualquer | 10/min     |
+| `PUT`    | `/persons/:id`                   | Atualizar pessoa             | ✅ JWT       | Qualquer | 10/min     |
+| `DELETE` | `/persons/:id`                   | Deletar pessoa (soft delete) | ✅ JWT       | Qualquer | 3/min      |
+| `GET`    | `/persons/search/name`           | Buscar por nome              | ✅ JWT       | Qualquer | 10/min     |
+| `GET`    | `/persons/search/document`       | Buscar por documento         | ✅ JWT       | Qualquer | 10/min     |
+| `GET`    | `/persons/search/corporate-name` | Buscar por razão social      | ✅ JWT       | Qualquer | 10/min     |
+| `GET`    | `/persons/search/phone`          | Buscar por telefone          | ✅ JWT       | Qualquer | 10/min     |
+| `GET`    | `/persons/search`                | Busca unificada              | ✅ JWT       | Qualquer | 10/min     |
+
 ### **📦 Modelo de Dados**
 
 #### **Usuário (User)**
@@ -263,7 +300,149 @@ enum UserRole {
 }
 ```
 
+#### **Pessoa (Person) - Clientes/Fornecedores**
+
+```typescript
+interface IPerson {
+  id: string; // ID único (gerado automaticamente)
+  type: 'customer' | 'supplier'; // Tipo: cliente ou fornecedor
+  name: string; // Nome da pessoa física ou nome fantasia
+  document?: string; // CPF ou CNPJ (único quando preenchido)
+  corporateName?: string; // Razão Social
+  tradeName?: string; // Nome Fantasia
+  stateRegistration?: string; // Inscrição Estadual
+  municipalRegistration?: string; // Inscrição Municipal
+  isExemptFromIE?: boolean; // Isento de Inscrição Estadual
+  pessoaJuridica: boolean; // Indica se é pessoa jurídica
+  blacklist: boolean; // Indica se está em blacklist
+  isActive: boolean; // Indica se está ativo
+  deletedAt?: Date; // Data do soft delete
+  notes?: string; // Observações gerais
+  addresses: IAddress[]; // Lista de endereços
+  contacts: IContact[]; // Lista de contatos
+  createdAt?: Date; // Data de criação
+  updatedAt?: Date; // Data de atualização
+}
+
+interface IAddress {
+  street?: string; // Nome da rua
+  number?: string; // Número
+  complement?: string; // Complemento
+  neighborhood?: string; // Bairro
+  city?: string; // Cidade
+  state?: string; // Estado
+  zipCode?: string; // CEP
+  country?: string; // País (padrão: "Brasil")
+  isDefault: boolean; // Endereço principal (padrão: true)
+}
+
+interface IContact {
+  name?: string; // Nome do contato
+  phone?: string; // Telefone
+  email?: string; // Email (com validação regex)
+  sector?: string; // Setor (ex: "Vendas", "Financeiro")
+  isWhatsApp?: boolean; // É WhatsApp? (padrão: false)
+  isDefault: boolean; // Contato principal (padrão: true)
+}
+```
+
 ### **📝 Exemplos de Uso**
+
+#### **Criar Cliente (Pessoa Física)**
+
+```bash
+curl -X POST http://localhost:3000/persons \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -d '{
+    "type": "customer",
+    "name": "João Silva",
+    "document": "123.456.789-00",
+    "pessoaJuridica": false,
+    "blacklist": false,
+    "notes": "Cliente VIP",
+    "addresses": [
+      {
+        "street": "Rua das Flores",
+        "number": "123",
+        "complement": "Apto 45",
+        "neighborhood": "Centro",
+        "city": "São Paulo",
+        "state": "SP",
+        "zipCode": "01234-567",
+        "country": "Brasil",
+        "isDefault": true
+      }
+    ],
+    "contacts": [
+      {
+        "name": "João Silva",
+        "phone": "(11) 99999-9999",
+        "email": "joao@email.com",
+        "sector": "Comercial",
+        "isWhatsApp": true,
+        "isDefault": true
+      }
+    ]
+  }'
+```
+
+#### **Criar Fornecedor (Pessoa Jurídica)**
+
+```bash
+curl -X POST http://localhost:3000/persons \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -d '{
+    "type": "supplier",
+    "name": "Fornecedor ABC Ltda",
+    "document": "12.345.678/0001-90",
+    "corporateName": "Fornecedor ABC Ltda",
+    "tradeName": "ABC Fornecedor",
+    "stateRegistration": "123.456.789.012",
+    "municipalRegistration": "987654321",
+    "isExemptFromIE": false,
+    "pessoaJuridica": true,
+    "blacklist": false,
+    "notes": "Fornecedor de materiais",
+    "addresses": [
+      {
+        "street": "Av. Industrial",
+        "number": "1000",
+        "neighborhood": "Distrito Industrial",
+        "city": "São Paulo",
+        "state": "SP",
+        "zipCode": "04567-890",
+        "country": "Brasil",
+        "isDefault": true
+      }
+    ],
+    "contacts": [
+      {
+        "name": "Maria Santos",
+        "phone": "(11) 88888-8888",
+        "email": "maria@abcfornecedor.com",
+        "sector": "Vendas",
+        "isWhatsApp": false,
+        "isDefault": true
+      }
+    ]
+  }'
+```
+
+#### **Buscar Pessoas por Nome**
+
+```bash
+curl -X GET "http://localhost:3000/persons/search/name?q=João" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+#### **Listar Pessoas com Filtros**
+
+```bash
+curl -X GET "http://localhost:3000/persons?type=customer&pessoaJuridica=false&page=1&limit=10" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
 
 #### **Registrar Usuário**
 
@@ -422,14 +601,27 @@ Consulte a [documentação completa de testes](docs/testing/README.md) para:
 - Resultados e métricas
 - Solução de problemas
 
-### **📋 Coleção Postman**
+### **📋 Coleções Postman**
 
-Importe a coleção `postman-collection.json` no Postman para testar todos os endpoints:
+#### **Coleção Principal**
+
+Importe a coleção `postman-collection.json` no Postman para testar endpoints de usuários e autenticação:
 
 1. **Abrir Postman**
 2. **Importar** → `postman-collection.json`
 3. **Configurar** variável `{{baseUrl}}` = `http://localhost:3000`
 4. **Executar** testes
+
+#### **Coleção do Módulo Person**
+
+Importe a coleção `postman-person-collection.json` para testar o módulo de pessoas (clientes/fornecedores):
+
+1. **Abrir Postman**
+2. **Importar** → `postman-person-collection.json`
+3. **Configurar** variável `{{baseUrl}}` = `http://localhost:3000`
+4. **Executar** testes
+
+**📚 Documentação completa:** [Guia do Postman - Módulo Person](./docs/api/POSTMAN_GUIDE.md)
 
 ### **🔧 Testes via Terminal**
 
@@ -449,6 +641,26 @@ curl -X POST http://localhost:3000/auth/register \
 curl -X POST http://localhost:3000/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"test@example.com","password":"password123"}'
+
+# Criar cliente (após login)
+curl -X POST http://localhost:3000/persons \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -d '{
+    "type": "customer",
+    "name": "João Silva",
+    "pessoaJuridica": false,
+    "addresses": [{"street": "Rua Teste", "number": "123", "city": "São Paulo", "state": "SP", "isDefault": true}],
+    "contacts": [{"name": "João", "phone": "(11) 99999-9999", "email": "joao@test.com", "sector": "Comercial", "isDefault": true}]
+  }'
+
+# Buscar pessoas por nome
+curl -X GET "http://localhost:3000/persons/search/name?q=João" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+
+# Listar pessoas
+curl -X GET "http://localhost:3000/persons?type=customer&page=1&limit=5" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
 ```
 
 ### **🛡️ Teste de Rate Limiting**
@@ -544,11 +756,13 @@ npm run test:e2e       # Executar testes E2E
 - **[⚙️ Configuração](./docs/configuration/README.md)** - Setup e configuração do projeto
 - **[📡 API](./docs/api/README.md)** - Documentação e uso da API
 - **[🧪 Testes](./docs/testing/README.md)** - Como executar e escrever testes
+- **[👤 Módulo Person](./docs/api/PERSON_MODULE.md)** - Documentação completa do módulo de pessoas
+- **[📮 Guia Postman - Person](./docs/api/POSTMAN_GUIDE.md)** - Guia detalhado da collection Postman
 
 ### **🔧 Ferramentas de Desenvolvimento**
 
 - **VS Code Extensions**: Prettier, ESLint, MongoDB for VS Code
-- **Postman**: Coleção completa para testes da API
+- **Postman**: Coleções completas para testes da API (usuários e pessoas)
 - **MongoDB Compass**: Interface gráfica para MongoDB
 
 ## 🤝 Contribuição

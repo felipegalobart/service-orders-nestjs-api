@@ -1,0 +1,637 @@
+{
+  "info": {
+    "name": "Person Module API",
+    "description": "Collection para testar todos os endpoints do módulo Person (Clientes e Fornecedores)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "personId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "CRUD Operations",
+      "item": [
+        {
+          "name": "Create Person - Customer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"customer\",\n  \"name\": \"João Silva\",\n  \"document\": \"123.456.789-00\",\n  \"pessoaJuridica\": false,\n  \"blacklist\": false,\n  \"notes\": \"Cliente VIP\",\n  \"addresses\": [\n    {\n      \"street\": \"Rua das Flores\",\n      \"number\": \"123\",\n      \"complement\": \"Apto 45\",\n      \"neighborhood\": \"Centro\",\n      \"city\": \"São Paulo\",\n      \"state\": \"SP\",\n      \"zipCode\": \"01234-567\",\n      \"country\": \"Brasil\",\n      \"isDefault\": true\n    }\n  ],\n  \"contacts\": [\n    {\n      \"name\": \"João Silva\",\n      \"phone\": \"(11) 99999-9999\",\n      \"email\": \"joao@email.com\",\n      \"sector\": \"Comercial\",\n      \"isWhatsApp\": true,\n      \"isDefault\": true\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/persons",
+              "host": ["{{baseUrl}}"],
+              "path": ["persons"]
+            },
+            "description": "Cria um novo cliente pessoa física"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Person - Supplier",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"supplier\",\n  \"name\": \"Fornecedor ABC Ltda\",\n  \"document\": \"12.345.678/0001-90\",\n  \"corporateName\": \"Fornecedor ABC Ltda\",\n  \"tradeName\": \"ABC Fornecedor\",\n  \"stateRegistration\": \"123.456.789.012\",\n  \"municipalRegistration\": \"987654321\",\n  \"isExemptFromIE\": false,\n  \"pessoaJuridica\": true,\n  \"blacklist\": false,\n  \"notes\": \"Fornecedor de materiais\",\n  \"addresses\": [\n    {\n      \"street\": \"Av. Industrial\",\n      \"number\": \"1000\",\n      \"neighborhood\": \"Distrito Industrial\",\n      \"city\": \"São Paulo\",\n      \"state\": \"SP\",\n      \"zipCode\": \"04567-890\",\n      \"country\": \"Brasil\",\n      \"isDefault\": true\n    }\n  ],\n  \"contacts\": [\n    {\n      \"name\": \"Maria Santos\",\n      \"phone\": \"(11) 88888-8888\",\n      \"email\": \"maria@abcfornecedor.com\",\n      \"sector\": \"Vendas\",\n      \"isWhatsApp\": false,\n      \"isDefault\": true\n    },\n    {\n      \"name\": \"Pedro Costa\",\n      \"phone\": \"(11) 77777-7777\",\n      \"email\": \"pedro@abcfornecedor.com\",\n      \"sector\": \"Financeiro\",\n      \"isWhatsApp\": true,\n      \"isDefault\": false\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/persons",
+              "host": ["{{baseUrl}}"],
+              "path": ["persons"]
+            },
+            "description": "Cria um novo fornecedor pessoa jurídica"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Persons",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/persons",
+              "host": ["{{baseUrl}}"],
+              "path": ["persons"]
+            },
+            "description": "Lista todas as pessoas com paginação"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Persons - Paginated",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/persons?page=1&limit=5",
+              "host": ["{{baseUrl}}"],
+              "path": ["persons"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "5"
+                }
+              ]
+            },
+            "description": "Lista pessoas com paginação específica"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Person by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/persons/{{personId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["persons", "{{personId}}"]
+            },
+            "description": "Busca uma pessoa específica por ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Person",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"João Silva Santos\",\n  \"notes\": \"Cliente VIP - Atualizado\",\n  \"addresses\": [\n    {\n      \"street\": \"Rua das Flores\",\n      \"number\": \"123\",\n      \"complement\": \"Apto 45\",\n      \"neighborhood\": \"Centro\",\n      \"city\": \"São Paulo\",\n      \"state\": \"SP\",\n      \"zipCode\": \"01234-567\",\n      \"country\": \"Brasil\",\n      \"isDefault\": true\n    },\n    {\n      \"street\": \"Rua Nova\",\n      \"number\": \"456\",\n      \"neighborhood\": \"Vila Nova\",\n      \"city\": \"São Paulo\",\n      \"state\": \"SP\",\n      \"zipCode\": \"02345-678\",\n      \"country\": \"Brasil\",\n      \"isDefault\": false\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/persons/{{personId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["persons", "{{personId}}"]
+            },
+            "description": "Atualiza dados de uma pessoa"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Person (Soft Delete)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/persons/{{personId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["persons", "{{personId}}"]
+            },
+            "description": "Remove uma pessoa (soft delete)"
+          },
+          "response": []
+        }
+      ],
+      "description": "Operações CRUD básicas para pessoas"
+    },
+    {
+      "name": "Search Operations",
+      "item": [
+        {
+          "name": "Search by Name",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/persons/search/name?q=João",
+              "host": ["{{baseUrl}}"],
+              "path": ["persons", "search", "name"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "João"
+                }
+              ]
+            },
+            "description": "Busca pessoas por nome"
+          },
+          "response": []
+        },
+        {
+          "name": "Search by Name - Accented",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/persons/search/name?q=Jo%C3%A3o",
+              "host": ["{{baseUrl}}"],
+              "path": ["persons", "search", "name"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "Jo%C3%A3o"
+                }
+              ]
+            },
+            "description": "Busca pessoas por nome com acentos (URL encoded)"
+          },
+          "response": []
+        },
+        {
+          "name": "Search by Document",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/persons/search/document?q=123.456.789-00",
+              "host": ["{{baseUrl}}"],
+              "path": ["persons", "search", "document"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "123.456.789-00"
+                }
+              ]
+            },
+            "description": "Busca pessoas por documento (CPF/CNPJ)"
+          },
+          "response": []
+        },
+        {
+          "name": "Search by Corporate Name",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/persons/search/corporate-name?q=ABC",
+              "host": ["{{baseUrl}}"],
+              "path": ["persons", "search", "corporate-name"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "ABC"
+                }
+              ]
+            },
+            "description": "Busca pessoas por razão social"
+          },
+          "response": []
+        },
+        {
+          "name": "Search by Phone",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/persons/search/phone?q=99999-9999",
+              "host": ["{{baseUrl}}"],
+              "path": ["persons", "search", "phone"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "99999-9999"
+                }
+              ]
+            },
+            "description": "Busca pessoas por telefone"
+          },
+          "response": []
+        },
+        {
+          "name": "Unified Search",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/persons/search?q=João",
+              "host": ["{{baseUrl}}"],
+              "path": ["persons", "search"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "João"
+                }
+              ]
+            },
+            "description": "Busca unificada em todos os campos de texto"
+          },
+          "response": []
+        },
+        {
+          "name": "Unified Search - Document",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/persons/search?q=12345678900",
+              "host": ["{{baseUrl}}"],
+              "path": ["persons", "search"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "12345678900"
+                }
+              ]
+            },
+            "description": "Busca unificada por documento sem formatação"
+          },
+          "response": []
+        }
+      ],
+      "description": "Operações de busca específicas e unificadas"
+    },
+    {
+      "name": "Filter Operations",
+      "item": [
+        {
+          "name": "Filter by Type - Customer",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/persons?type=customer",
+              "host": ["{{baseUrl}}"],
+              "path": ["persons"],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "customer"
+                }
+              ]
+            },
+            "description": "Filtra apenas clientes"
+          },
+          "response": []
+        },
+        {
+          "name": "Filter by Type - Supplier",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/persons?type=supplier",
+              "host": ["{{baseUrl}}"],
+              "path": ["persons"],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "supplier"
+                }
+              ]
+            },
+            "description": "Filtra apenas fornecedores"
+          },
+          "response": []
+        },
+        {
+          "name": "Filter by Pessoa Juridica",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/persons?pessoaJuridica=true",
+              "host": ["{{baseUrl}}"],
+              "path": ["persons"],
+              "query": [
+                {
+                  "key": "pessoaJuridica",
+                  "value": "true"
+                }
+              ]
+            },
+            "description": "Filtra apenas pessoas jurídicas"
+          },
+          "response": []
+        },
+        {
+          "name": "Filter by Blacklist",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/persons?blacklist=false",
+              "host": ["{{baseUrl}}"],
+              "path": ["persons"],
+              "query": [
+                {
+                  "key": "blacklist",
+                  "value": "false"
+                }
+              ]
+            },
+            "description": "Filtra pessoas não bloqueadas"
+          },
+          "response": []
+        },
+        {
+          "name": "Combined Filters",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/persons?type=customer&pessoaJuridica=false&blacklist=false&page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["persons"],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "customer"
+                },
+                {
+                  "key": "pessoaJuridica",
+                  "value": "false"
+                },
+                {
+                  "key": "blacklist",
+                  "value": "false"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Filtros combinados com paginação"
+          },
+          "response": []
+        }
+      ],
+      "description": "Operações de filtro por diferentes critérios"
+    },
+    {
+      "name": "Test Scenarios",
+      "item": [
+        {
+          "name": "Test Validation - Missing Required Fields",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"customer\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/persons",
+              "host": ["{{baseUrl}}"],
+              "path": ["persons"]
+            },
+            "description": "Testa validação com campos obrigatórios ausentes"
+          },
+          "response": []
+        },
+        {
+          "name": "Test Validation - Duplicate Document",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Maria Silva\",\n  \"document\": \"123.456.789-00\",\n  \"pessoaJuridica\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/persons",
+              "host": ["{{baseUrl}}"],
+              "path": ["persons"]
+            },
+            "description": "Testa validação de documento duplicado"
+          },
+          "response": []
+        },
+        {
+          "name": "Test Validation - Invalid Email",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Teste Email\",\n  \"pessoaJuridica\": false,\n  \"contacts\": [\n    {\n      \"name\": \"Contato Teste\",\n      \"phone\": \"(11) 99999-9999\",\n      \"email\": \"email-invalido\",\n      \"sector\": \"Teste\",\n      \"isDefault\": true\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/persons",
+              "host": ["{{baseUrl}}"],
+              "path": ["persons"]
+            },
+            "description": "Testa validação de email inválido"
+          },
+          "response": []
+        },
+        {
+          "name": "Test Validation - Multiple Default Addresses",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Teste Endereços\",\n  \"pessoaJuridica\": false,\n  \"addresses\": [\n    {\n      \"street\": \"Rua 1\",\n      \"number\": \"123\",\n      \"city\": \"São Paulo\",\n      \"state\": \"SP\",\n      \"isDefault\": true\n    },\n    {\n      \"street\": \"Rua 2\",\n      \"number\": \"456\",\n      \"city\": \"São Paulo\",\n      \"state\": \"SP\",\n      \"isDefault\": true\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/persons",
+              "host": ["{{baseUrl}}"],
+              "path": ["persons"]
+            },
+            "description": "Testa validação de múltiplos endereços padrão"
+          },
+          "response": []
+        },
+        {
+          "name": "Test Search - Empty Query",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/persons/search/name?q=",
+              "host": ["{{baseUrl}}"],
+              "path": ["persons", "search", "name"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Testa busca com query vazia"
+          },
+          "response": []
+        },
+        {
+          "name": "Test Search - Short Query",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/persons/search/name?q=a",
+              "host": ["{{baseUrl}}"],
+              "path": ["persons", "search", "name"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "a"
+                }
+              ]
+            },
+            "description": "Testa busca com query muito curta"
+          },
+          "response": []
+        },
+        {
+          "name": "Test Pagination - Invalid Page",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/persons?page=0",
+              "host": ["{{baseUrl}}"],
+              "path": ["persons"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                }
+              ]
+            },
+            "description": "Testa paginação com página inválida"
+          },
+          "response": []
+        },
+        {
+          "name": "Test Pagination - Invalid Limit",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/persons?limit=200",
+              "host": ["{{baseUrl}}"],
+              "path": ["persons"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "200"
+                }
+              ]
+            },
+            "description": "Testa paginação com limite inválido"
+          },
+          "response": []
+        }
+      ],
+      "description": "Cenários de teste para validações e casos extremos"
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Script executado antes de cada request",
+          "console.log('Executando request para:', pm.request.url);"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Script executado após cada request",
+          "console.log('Response status:', pm.response.status);",
+          "",
+          "// Salva o ID da pessoa criada para uso posterior",
+          "if (pm.response.status === 201 && pm.response.json().id) {",
+          "    pm.collectionVariables.set('personId', pm.response.json().id);",
+          "    console.log('Person ID salvo:', pm.response.json().id);",
+          "}"
+        ]
+      }
+    }
+  ]
+}
