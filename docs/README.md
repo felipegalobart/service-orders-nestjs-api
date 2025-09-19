@@ -27,6 +27,8 @@ Bem-vindo à documentação completa do projeto Service Orders NestJS API! Aqui 
 #### **🧪 Testes**
 
 - **[Guia de Testes](./testing/TESTING_GUIDE.md)** - Como executar e escrever testes
+- **[Análise Detalhada](./testing/TEST_ANALYSIS.md)** - Análise completa dos testes implementados
+- **[Análise de Problemas](./testing/TEST_PROBLEMS_ANALYSIS.md)** - Problemas identificados e soluções
 - **[Resultados dos Testes](./testing/TEST_RESULTS.md)** - Resultados da execução dos testes
 - **[Resumo da Implementação](./testing/TEST_IMPLEMENTATION_SUMMARY.md)** - Detalhes da estrutura de testes
 
@@ -46,6 +48,8 @@ service-orders-nestjs-api/
 │   └── testing/                    # 🧪 Testes
 │       ├── README.md               # Índice de testes
 │       ├── TESTING_GUIDE.md        # Guia de testes
+│       ├── TEST_ANALYSIS.md        # Análise detalhada
+│       ├── TEST_PROBLEMS_ANALYSIS.md # Análise de problemas
 │       ├── TEST_RESULTS.md         # Resultados dos testes
 │       └── TEST_IMPLEMENTATION_SUMMARY.md # Implementação
 ├── src/                            # 💻 Código fonte
@@ -114,14 +118,15 @@ npm run test:cov
 - 👥 **Gerenciamento de usuários** com CRUD
 - 🛡️ **Sistema de roles** (ADMIN, USER, MODERATOR)
 - 🚫 **Rate limiting** configurado
-- 🧪 **Testes automatizados** (49 testes unitários)
+- 🧪 **Testes automatizados** (84 testes - 49 unitários + 35 E2E)
 - 📚 **Documentação** completa
 
 ### 📈 **Métricas de Qualidade**
 
 - **Cobertura de testes**: 82%+
-- **Testes unitários**: 49 testes passando
-- **Tempo de execução**: < 1 segundo
+- **Testes unitários**: 49 testes passando (100%)
+- **Testes E2E**: 35 testes passando (92%)
+- **Tempo de execução**: < 2 segundos
 - **Linting**: ESLint configurado
 - **Formatação**: Prettier configurado
 

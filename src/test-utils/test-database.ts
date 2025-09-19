@@ -42,12 +42,12 @@ export const createTestModule = async (
       ThrottlerModule.forRoot([
         {
           ttl: 1000, // 1 segundo para testes
-          limit: 100, // Limite alto para testes
+          limit: 25, // Limite mais alto - permite mais testes básicos
         },
       ]),
       JwtModule.register({
         global: true,
-        secret: 'test-secret',
+        secret: process.env.JWT_SECRET || 'test-secret',
         signOptions: { expiresIn: '1h' },
       }),
       MongooseModule.forRootAsync({

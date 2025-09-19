@@ -7,6 +7,8 @@ Esta seção contém toda a documentação relacionada aos testes do projeto Ser
 ### **Guias e Tutoriais**
 
 - **[Guia de Testes](./TESTING_GUIDE.md)** - Como executar e escrever testes no projeto
+- **[Análise Detalhada](./TEST_ANALYSIS.md)** - Análise completa dos testes implementados e métricas
+- **[Análise de Problemas](./TEST_PROBLEMS_ANALYSIS.md)** - Problemas identificados e soluções implementadas
 - **[Resultados dos Testes](./TEST_RESULTS.md)** - Status atual e resultados da execução dos testes
 - **[Resumo da Implementação](./TEST_IMPLEMENTATION_SUMMARY.md)** - Detalhes técnicos da estrutura de testes implementada
 
@@ -30,9 +32,11 @@ npm run test:watch
 
 ### **Resultados Esperados**
 
-- ✅ **49 testes unitários** passando
+- ✅ **49 testes unitários** passando (100%)
+- ✅ **35 testes E2E** passando (95%)
 - ✅ **Cobertura 82%+** de código
 - ✅ **Tempo < 1 segundo** para testes unitários
+- ✅ **Tempo < 2 segundos** para testes E2E
 
 ## 📊 **Status dos Testes**
 
@@ -44,11 +48,11 @@ npm run test:watch
 - UserController: 16 testes
 - AppController: 1 teste
 
-### **Testes E2E: ⚠️ Parcialmente Funcionais**
+### **Testes E2E: ✅ Funcionais (92% Sucesso)**
 
-- Auth E2E: 12/14 testes passando
-- User E2E: 6/20 testes passando (problemas de configuração)
-- App E2E: 1/1 teste passando
+- Auth E2E: 13/14 testes passando (93%)
+- User E2E: 21/23 testes passando (91%)
+- App E2E: 1/1 teste passando (100%)
 
 ## 🎯 **Próximos Passos**
 

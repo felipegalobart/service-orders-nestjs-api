@@ -40,6 +40,17 @@ describe('User (e2e)', () => {
       .post('/auth/register')
       .send(userData);
 
+    // Validate user creation response
+    if (
+      userResponse.status !== 201 ||
+      !userResponse.body.access_token ||
+      !userResponse.body.user
+    ) {
+      throw new Error(
+        `Failed to create test user. Status: ${userResponse.status}, Body: ${JSON.stringify(userResponse.body)}`,
+      );
+    }
+
     userToken = userResponse.body.access_token;
     userId = userResponse.body.user.id;
 
@@ -52,6 +63,13 @@ describe('User (e2e)', () => {
     const adminResponse = await request(app.getHttpServer())
       .post('/auth/register')
       .send(adminData);
+
+    // Validate admin creation response
+    if (adminResponse.status !== 201 || !adminResponse.body.access_token) {
+      throw new Error(
+        `Failed to create test admin. Status: ${adminResponse.status}, Body: ${JSON.stringify(adminResponse.body)}`,
+      );
+    }
 
     adminToken = adminResponse.body.access_token;
   }
@@ -255,12 +273,19 @@ describe('User (e2e)', () => {
     beforeEach(async () => {
       // Create a user to delete
       const userData = TestData.createValidCreateUserData({
-        email: 'todelete@example.com',
+        email: `todelete${Date.now()}@example.com`, // Use timestamp to avoid duplicates
       });
 
       const response = await request(app.getHttpServer())
         .post('/auth/register')
         .send(userData);
+
+      // Validate response before accessing user data
+      if (response.status !== 201 || !response.body.user) {
+        throw new Error(
+          `Failed to create user for deletion. Status: ${response.status}, Body: ${JSON.stringify(response.body)}`,
+        );
+      }
 
       userToDelete = response.body.user.id;
     });
@@ -324,7 +349,7 @@ describe('User (e2e)', () => {
 
   describe('Rate Limiting Tests', () => {
     it('should apply rate limiting to user endpoints', async () => {
-      const promises = Array.from({ length: 15 }, () =>
+      const promises = Array.from({ length: 30 }, () =>
         request(app.getHttpServer())
           .get('/users/profile')
           .set('Authorization', `Bearer ${userToken}`),

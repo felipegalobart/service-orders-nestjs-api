@@ -224,7 +224,7 @@ describe('Auth (e2e)', () => {
       };
 
       // Make multiple requests to trigger rate limiting
-      const promises = Array.from({ length: 10 }, (_, i) =>
+      const promises = Array.from({ length: 20 }, (_, i) =>
         request(app.getHttpServer())
           .post('/auth/register')
           .send({
@@ -251,7 +251,7 @@ describe('Auth (e2e)', () => {
       };
 
       // Make multiple requests to trigger rate limiting
-      const promises = Array.from({ length: 10 }, () =>
+      const promises = Array.from({ length: 30 }, () =>
         request(app.getHttpServer()).post('/auth/login').send(loginData),
       );
 
