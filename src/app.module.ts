@@ -9,6 +9,7 @@ import { appConfig } from './config/app.config';
 import { JwtModule } from '@nestjs/jwt';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
+import { PersonModule } from './person/person.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { RolesGuard } from './auth/guards/roles.guard';
 
@@ -39,6 +40,7 @@ import { RolesGuard } from './auth/guards/roles.guard';
     }),
     UserModule,
     AuthModule,
+    PersonModule,
   ],
   controllers: [AppController],
   providers: [

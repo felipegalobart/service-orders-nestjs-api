@@ -3,6 +3,7 @@ import {
   NotFoundException,
   ConflictException,
   BadRequestException,
+  Inject,
 } from '@nestjs/common';
 import type {
   IPersonRepository,
@@ -18,7 +19,10 @@ import type {
 
 @Injectable()
 export class PersonService {
-  constructor(private readonly personRepository: IPersonRepository) {}
+  constructor(
+    @Inject('IPersonRepository')
+    private readonly personRepository: IPersonRepository,
+  ) {}
 
   // CRUD básico
   async create(personData: ICreatePerson): Promise<IPerson> {
