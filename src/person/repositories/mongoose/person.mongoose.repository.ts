@@ -8,7 +8,6 @@ import {
   ICreatePerson,
   IUpdatePerson,
 } from '../../schemas/models/person.interface';
-import { normalizeText } from '../../utils/text-normalizer';
 
 @Injectable()
 export class PersonMongooseRepository implements IPersonRepository {
@@ -99,16 +98,9 @@ export class PersonMongooseRepository implements IPersonRepository {
 
   // Busca específica
   async findByName(name: string): Promise<IPerson[]> {
-    const normalizedName = normalizeText(name);
-
     return this.personModel
       .find({
-        $or: [
-          // Busca normalizada (ignora acentos)
-          { name: { $regex: normalizedName, $options: 'i' } },
-          // Busca original (fallback)
-          { name: { $regex: name, $options: 'i' } },
-        ],
+        name: { $regex: name, $options: 'i' },
         isActive: true,
         deletedAt: { $exists: false },
       })
@@ -126,16 +118,9 @@ export class PersonMongooseRepository implements IPersonRepository {
   }
 
   async findByCorporateName(corporateName: string): Promise<IPerson[]> {
-    const normalizedCorporateName = normalizeText(corporateName);
-
     return this.personModel
       .find({
-        $or: [
-          // Busca normalizada (ignora acentos)
-          { corporateName: { $regex: normalizedCorporateName, $options: 'i' } },
-          // Busca original (fallback)
-          { corporateName: { $regex: corporateName, $options: 'i' } },
-        ],
+        corporateName: { $regex: corporateName, $options: 'i' },
         isActive: true,
         deletedAt: { $exists: false },
       })
@@ -153,26 +138,16 @@ export class PersonMongooseRepository implements IPersonRepository {
   }
 
   async searchPerson(searchTerm: string): Promise<IPerson[]> {
-    const normalizedTerm = normalizeText(searchTerm);
-
     return this.personModel
       .find({
         $or: [
-          // Busca normalizada (ignora acentos) - campos de texto
-          { name: { $regex: normalizedTerm, $options: 'i' } },
-          { corporateName: { $regex: normalizedTerm, $options: 'i' } },
-          { tradeName: { $regex: normalizedTerm, $options: 'i' } },
-          { 'contacts.name': { $regex: normalizedTerm, $options: 'i' } },
-          { 'contacts.sector': { $regex: normalizedTerm, $options: 'i' } },
-
-          // Busca original (fallback) - campos de texto
+          // Busca em campos de texto
           { name: { $regex: searchTerm, $options: 'i' } },
           { corporateName: { $regex: searchTerm, $options: 'i' } },
           { tradeName: { $regex: searchTerm, $options: 'i' } },
           { 'contacts.name': { $regex: searchTerm, $options: 'i' } },
           { 'contacts.sector': { $regex: searchTerm, $options: 'i' } },
-
-          // Buscas exatas (não precisam normalizar)
+          // Buscas exatas
           { document: searchTerm },
           { stateRegistration: searchTerm },
           { municipalRegistration: searchTerm },
