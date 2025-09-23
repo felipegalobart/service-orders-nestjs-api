@@ -1,19 +1,16 @@
-# Multi-stage build for production optimization
-FROM node:20-alpine AS base
+# Use Node.js 20 Alpine as base image
+FROM node:20-alpine
 
-# Install dependencies only when needed
-FROM base AS deps
+# Install dependencies for building
 RUN apk add --no-cache libc6-compat
+
+# Set working directory
 WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
-RUN npm ci --only=production && npm cache clean --force
 
-# Build stage
-FROM base AS builder
-WORKDIR /app
-COPY package*.json ./
+# Install all dependencies (including dev dependencies for build)
 RUN npm ci
 
 # Copy source code
@@ -22,18 +19,18 @@ COPY . .
 # Build the application
 RUN npm run build
 
-# Production stage
-FROM base AS runner
-WORKDIR /app
+# Verify build output
+RUN ls -la dist/
+
+# Install only production dependencies
+RUN npm ci --only=production && npm cache clean --force
 
 # Create non-root user for security
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nestjs
 
-# Copy built application and dependencies
-COPY --from=deps --chown=nestjs:nodejs /app/node_modules ./node_modules
-COPY --from=builder --chown=nestjs:nodejs /app/dist ./dist
-COPY --from=builder --chown=nestjs:nodejs /app/package*.json ./
+# Change ownership of the app directory
+RUN chown -R nestjs:nodejs /app
 
 # Switch to non-root user
 USER nestjs
