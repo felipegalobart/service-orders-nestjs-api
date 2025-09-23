@@ -750,14 +750,44 @@ npm run test:e2e       # Executar testes E2E
 
 ## 📖 Guias Adicionais
 
-### **📚 Documentação Detalhada**
+### **📚 Documentação Completa**
 
-- **[📁 Documentação Completa](./docs/README.md)** - Índice de toda a documentação
+#### **🏠 Documentação Principal**
+
+- **[📁 Índice Geral](./docs/README.md)** - Índice de toda a documentação
+- **[🏗️ Estrutura do Projeto](./docs/STRUCTURE.md)** - Arquitetura e organização do código
+
+#### **⚙️ Configuração e Setup**
+
 - **[⚙️ Configuração](./docs/configuration/README.md)** - Setup e configuração do projeto
-- **[📡 API](./docs/api/README.md)** - Documentação e uso da API
-- **[🧪 Testes](./docs/testing/README.md)** - Como executar e escrever testes
+- **[🎨 Prettier Setup](./docs/configuration/PRETTIER_SETUP.md)** - Configuração de formatação
+- **[🔧 Configurações Avançadas](./docs/configuration/CONFIG.md)** - Configurações detalhadas
+
+#### **📡 API e Endpoints**
+
+- **[📡 API Principal](./docs/api/README.md)** - Documentação geral da API
 - **[👤 Módulo Person](./docs/api/PERSON_MODULE.md)** - Documentação completa do módulo de pessoas
-- **[📮 Guia Postman - Person](./docs/api/POSTMAN_GUIDE.md)** - Guia detalhado da collection Postman
+- **[📮 Guia Postman](./docs/api/POSTMAN_GUIDE.md)** - Guia detalhado das collections Postman
+
+#### **🐳 Docker e Deployment**
+
+- **[🐳 Docker](./docs/deployment/DOCKER.md)** - Guia completo de containerização
+- **[🏠 Homelab](./docs/deployment/HOMELAB_DEPLOYMENT.md)** - Deploy específico para homelab
+- **[🔧 Troubleshooting](./docs/deployment/TROUBLESHOOTING.md)** - Solução de problemas comuns
+- **[📋 Deploy Guide](./docs/deployment/README.md)** - Índice de deployment
+
+#### **🔐 Segurança**
+
+- **[🛡️ Roles e Permissões](./docs/security/ROLES_AND_PERMISSIONS.md)** - Sistema de autorização completo
+
+#### **📖 Guias de Testes**
+
+- **[🧪 Testes](./docs/testing/README.md)** - Como executar e escrever testes
+- **[📊 Análise de Testes](./docs/testing/TEST_ANALYSIS.md)** - Análise detalhada dos testes
+- **[📈 Resultados](./docs/testing/TEST_RESULTS.md)** - Resultados e métricas
+- **[🔧 Implementação](./docs/testing/TEST_IMPLEMENTATION_SUMMARY.md)** - Resumo da implementação
+- **[⚠️ Problemas](./docs/testing/TEST_PROBLEMS_ANALYSIS.md)** - Análise de problemas encontrados
+- **[📖 Guia Completo](./docs/testing/TESTING_GUIDE.md)** - Guia detalhado de testes
 
 ### **🔧 Ferramentas de Desenvolvimento**
 

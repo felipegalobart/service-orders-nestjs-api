@@ -1,8 +1,31 @@
-# Use Node.js 20 Alpine as base image
-FROM node:20-alpine
+# Multi-stage build for production optimization
+# Use Node.js 22 LTS (Jod) - most recent LTS version with long-term support
+# Debian Bookworm Slim is more secure than Alpine for production
+FROM node:22.11.0-bookworm-slim AS base
+
+# Install dependencies for building and runtime
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    dumb-init \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install production dependencies only
+RUN npm ci --omit=dev && npm cache clean --force
+
+# Build stage
+FROM node:22.11.0-bookworm-slim AS builder
 
 # Install dependencies for building
-RUN apk add --no-cache libc6-compat
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 \
+    make \
+    g++ \
+    && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
 WORKDIR /app
@@ -19,15 +42,29 @@ COPY . .
 # Build the application
 RUN npm run build
 
-# Verify build output
-RUN ls -la dist/
+# Production stage
+FROM node:22.11.0-bookworm-slim AS runner
 
-# Install only production dependencies
-RUN npm ci --only=production && npm cache clean --force
+# Install runtime dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    dumb-init \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
+WORKDIR /app
 
 # Create non-root user for security
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nestjs
+RUN groupadd --system --gid 1001 nodejs && \
+    useradd --system --uid 1001 --gid nodejs nestjs
+
+# Copy package files
+COPY package*.json ./
+
+# Install only production dependencies
+RUN npm ci --omit=dev && npm cache clean --force
+
+# Copy built application from builder stage
+COPY --from=builder --chown=nestjs:nodejs /app/dist ./dist
 
 # Change ownership of the app directory
 RUN chown -R nestjs:nodejs /app
@@ -41,6 +78,9 @@ EXPOSE 3000
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD node -e "require('http').get('http://localhost:3000/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })" || exit 1
+
+# Use dumb-init to handle signals properly
+ENTRYPOINT ["dumb-init", "--"]
 
 # Start the application
 CMD ["node", "dist/src/main.js"]

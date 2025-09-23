@@ -1,158 +1,201 @@
-# 📚 Documentação - Service Orders NestJS API
+# 📚 Documentação Completa - Service Orders API
 
-Bem-vindo à documentação completa do projeto Service Orders NestJS API! Aqui você encontrará todos os guias, tutoriais e informações necessárias para entender, configurar e utilizar a API.
+Bem-vindo à documentação completa da **Service Orders NestJS API**! Este é o índice central de toda a documentação do projeto.
 
-## 📋 Índice da Documentação
+## 📋 Índice Geral
 
-### 🚀 **Início Rápido**
+### 🏠 **Documentação Principal**
 
-- **[📁 Configuração](./configuration/README.md)** - Setup e configuração do projeto
-- **[📡 API](./api/README.md)** - Documentação e uso da API
+- **[📁 Este Arquivo](./README.md)** - Índice geral da documentação
+- **[🏗️ Estrutura do Projeto](./STRUCTURE.md)** - Arquitetura e organização do código
+
+### ⚙️ **Configuração e Setup**
+
+- **[⚙️ Configuração](./configuration/README.md)** - Setup e configuração do projeto
+- **[🎨 Prettier Setup](./configuration/PRETTIER_SETUP.md)** - Configuração de formatação automática
+- **[🔧 Configurações Avançadas](./configuration/CONFIG.md)** - Configurações detalhadas do sistema
+
+### 📡 **API e Endpoints**
+
+- **[📡 API Principal](./api/README.md)** - Documentação geral da API REST
+- **[👤 Módulo Person](./api/PERSON_MODULE.md)** - Documentação completa do módulo de pessoas (clientes/fornecedores)
+- **[📮 Guia Postman](./api/POSTMAN_GUIDE.md)** - Guia detalhado das collections Postman
+
+### 🐳 **Docker e Deployment**
+
+- **[🐳 Docker](./deployment/DOCKER.md)** - Guia completo de containerização
+- **[🏠 Homelab](./deployment/HOMELAB_DEPLOYMENT.md)** - Deploy específico para ambiente homelab
+- **[🔧 Troubleshooting](./deployment/TROUBLESHOOTING.md)** - Solução de problemas comuns
+- **[📋 Deploy Guide](./deployment/README.md)** - Índice de deployment
+
+### 🔐 **Segurança**
+
+- **[🛡️ Roles e Permissões](./security/ROLES_AND_PERMISSIONS.md)** - Sistema completo de autorização baseado em roles
 
 ### 🧪 **Testes**
 
 - **[🧪 Testes](./testing/README.md)** - Como executar e escrever testes
+- **[📊 Análise de Testes](./testing/TEST_ANALYSIS.md)** - Análise detalhada dos testes implementados
+- **[📈 Resultados](./testing/TEST_RESULTS.md)** - Resultados e métricas dos testes
+- **[🔧 Implementação](./testing/TEST_IMPLEMENTATION_SUMMARY.md)** - Resumo da implementação de testes
+- **[⚠️ Problemas](./testing/TEST_PROBLEMS_ANALYSIS.md)** - Análise de problemas encontrados nos testes
+- **[📖 Guia Completo](./testing/TESTING_GUIDE.md)** - Guia detalhado de testes
 
-### 📋 **Documentos por Categoria**
+## 🚀 Quick Start
 
-#### **⚙️ Configuração**
+### Para Desenvolvedores
 
-- **[Configuração](./configuration/CONFIG.md)** - Guia completo de variáveis de ambiente
-- **[Prettier Setup](./configuration/PRETTIER_SETUP.md)** - Formatação automática de código
+1. **[⚙️ Configuração](./configuration/README.md)** - Configure o ambiente de desenvolvimento
+2. **[📡 API](./api/README.md)** - Entenda os endpoints disponíveis
+3. **[🧪 Testes](./testing/README.md)** - Execute os testes
 
-#### **📡 API**
+### Para DevOps/Deploy
 
-- **[Guia do Postman](./api/POSTMAN_GUIDE.md)** - Como testar a API usando Postman
+1. **[🐳 Docker](./deployment/DOCKER.md)** - Containerização da aplicação
+2. **[🏠 Homelab](./deployment/HOMELAB_DEPLOYMENT.md)** - Deploy no homelab
+3. **[🔧 Troubleshooting](./deployment/TROUBLESHOOTING.md)** - Resolução de problemas
 
-#### **🧪 Testes**
+### Para Administradores
 
-- **[Guia de Testes](./testing/TESTING_GUIDE.md)** - Como executar e escrever testes
-- **[Análise Detalhada](./testing/TEST_ANALYSIS.md)** - Análise completa dos testes implementados
-- **[Análise de Problemas](./testing/TEST_PROBLEMS_ANALYSIS.md)** - Problemas identificados e soluções
-- **[Resultados dos Testes](./testing/TEST_RESULTS.md)** - Resultados da execução dos testes
-- **[Resumo da Implementação](./testing/TEST_IMPLEMENTATION_SUMMARY.md)** - Detalhes da estrutura de testes
+1. **[🛡️ Roles e Permissões](./security/ROLES_AND_PERMISSIONS.md)** - Sistema de autorização
+2. **[📊 Monitoramento](./deployment/HOMELAB_DEPLOYMENT.md#-monitoramento)** - Monitoramento do sistema
 
-## 🏗️ **Estrutura do Projeto**
+## 📊 Status da Documentação
 
+| Seção               | Status | Descrição                       |
+| ------------------- | ------ | ------------------------------- |
+| **🏠 Principal**    | ✅     | Índices e estrutura geral       |
+| **⚙️ Configuração** | ✅     | Setup e configurações           |
+| **📡 API**          | ✅     | Documentação completa da API    |
+| **🐳 Docker**       | ✅     | Containerização e deployment    |
+| **🔐 Segurança**    | ✅     | Sistema de roles e permissões   |
+| **🧪 Testes**       | ✅     | Documentação completa de testes |
+
+## 🎯 Funcionalidades Documentadas
+
+### ✅ **Sistema Completo**
+
+- **API REST** com NestJS
+- **Autenticação JWT** com roles
+- **MongoDB** com Mongoose
+- **Docker** containerização
+- **Rate Limiting** e segurança
+- **Testes** unitários e E2E
+- **Documentação** completa
+
+### ✅ **Módulos Implementados**
+
+- **User Module** - Gerenciamento de usuários
+- **Auth Module** - Autenticação e autorização
+- **Person Module** - Clientes e fornecedores
+- **Shared Module** - Recursos compartilhados
+
+### ✅ **Deployment**
+
+- **Docker** multi-stage build
+- **Docker Compose** orquestração
+- **Nginx** reverse proxy
+- **MongoDB** externo
+- **Redis** cache
+- **Homelab** deployment
+
+## 🔍 Como Navegar
+
+### Por Tipo de Usuário
+
+#### 👨‍💻 **Desenvolvedor Frontend**
+
+- **[📡 API](./api/README.md)** - Endpoints disponíveis
+- **[📮 Postman](./api/POSTMAN_GUIDE.md)** - Collections para testes
+- **[🔐 Autenticação](./security/ROLES_AND_PERMISSIONS.md)** - Sistema de login
+
+#### 👨‍💻 **Desenvolvedor Backend**
+
+- **[🏗️ Estrutura](./STRUCTURE.md)** - Arquitetura do projeto
+- **[⚙️ Configuração](./configuration/README.md)** - Setup do ambiente
+- **[🧪 Testes](./testing/README.md)** - Como testar
+
+#### 🚀 **DevOps**
+
+- **[🐳 Docker](./deployment/DOCKER.md)** - Containerização
+- **[🏠 Homelab](./deployment/HOMELAB_DEPLOYMENT.md)** - Deploy
+- **[🔧 Troubleshooting](./deployment/TROUBLESHOOTING.md)** - Problemas
+
+#### 👨‍💼 **Administrador**
+
+- **[🛡️ Roles](./security/ROLES_AND_PERMISSIONS.md)** - Sistema de permissões
+- **[📊 Monitoramento](./deployment/HOMELAB_DEPLOYMENT.md#-monitoramento)** - Acompanhamento
+
+### Por Tarefa
+
+#### 🚀 **Primeiro Deploy**
+
+1. **[⚙️ Configuração](./configuration/README.md)**
+2. **[🐳 Docker](./deployment/DOCKER.md)**
+3. **[🏠 Homelab](./deployment/HOMELAB_DEPLOYMENT.md)**
+
+#### 🐛 **Resolver Problemas**
+
+1. **[🔧 Troubleshooting](./deployment/TROUBLESHOOTING.md)**
+2. **[📊 Logs](./deployment/HOMELAB_DEPLOYMENT.md#-logs)**
+
+#### 🧪 **Executar Testes**
+
+1. **[🧪 Testes](./testing/README.md)**
+2. **[📮 Postman](./api/POSTMAN_GUIDE.md)**
+
+## 🏗️ Estrutura da Documentação
+
+```text
+docs/
+├── README.md                           # 📚 Este arquivo (índice geral)
+├── STRUCTURE.md                        # 🏗️ Estrutura do projeto
+├── configuration/                       # ⚙️ Configuração
+│   ├── README.md                       # Índice de configuração
+│   ├── CONFIG.md                       # Configurações detalhadas
+│   └── PRETTIER_SETUP.md               # Setup do Prettier
+├── api/                                # 📡 API
+│   ├── README.md                       # Índice da API
+│   ├── PERSON_MODULE.md                # Módulo de pessoas
+│   └── POSTMAN_GUIDE.md                # Guia do Postman
+├── deployment/                         # 🐳 Docker e Deployment
+│   ├── README.md                       # Índice de deployment
+│   ├── DOCKER.md                       # Guia Docker
+│   ├── HOMELAB_DEPLOYMENT.md           # Deploy homelab
+│   └── TROUBLESHOOTING.md              # Solução de problemas
+├── security/                           # 🔐 Segurança
+│   └── ROLES_AND_PERMISSIONS.md        # Sistema de roles
+└── testing/                            # 🧪 Testes
+    ├── README.md                       # Índice de testes
+    ├── TESTING_GUIDE.md                # Guia de testes
+    ├── TEST_ANALYSIS.md                # Análise detalhada
+    ├── TEST_PROBLEMS_ANALYSIS.md       # Análise de problemas
+    ├── TEST_RESULTS.md                 # Resultados dos testes
+    └── TEST_IMPLEMENTATION_SUMMARY.md  # Implementação
 ```
-service-orders-nestjs-api/
-├── docs/                           # 📚 Documentação
-│   ├── README.md                   # Este arquivo (índice)
-│   ├── configuration/              # ⚙️ Configuração
-│   │   ├── README.md               # Índice de configuração
-│   │   ├── CONFIG.md               # Configuração de variáveis
-│   │   └── PRETTIER_SETUP.md       # Setup do Prettier
-│   ├── api/                        # 📡 API
-│   │   ├── README.md               # Índice da API
-│   │   └── POSTMAN_GUIDE.md        # Guia do Postman
-│   └── testing/                    # 🧪 Testes
-│       ├── README.md               # Índice de testes
-│       ├── TESTING_GUIDE.md        # Guia de testes
-│       ├── TEST_ANALYSIS.md        # Análise detalhada
-│       ├── TEST_PROBLEMS_ANALYSIS.md # Análise de problemas
-│       ├── TEST_RESULTS.md         # Resultados dos testes
-│       └── TEST_IMPLEMENTATION_SUMMARY.md # Implementação
-├── src/                            # 💻 Código fonte
-├── test/                           # 🧪 Testes E2E
-├── README.md                       # 📖 README principal
-└── ...
-```
 
-## 🎯 **Guias por Categoria**
+## 📞 Suporte
 
-### **Para Desenvolvedores**
+### 📋 Informações para Suporte
 
-- [Configuração](./CONFIG.md) - Setup inicial do projeto
-- [Guia de Testes](./TESTING_GUIDE.md) - Como trabalhar com testes
-- [Configuração do Prettier](./PRETTIER_SETUP.md) - Formatação de código
+Ao solicitar ajuda, inclua:
 
-### **Para Testadores**
+1. **Seção relevante** da documentação
+2. **Logs** do sistema
+3. **Configuração** atual
+4. **Passos** para reproduzir o problema
 
-- [Guia do Postman](./POSTMAN_GUIDE.md) - Testes manuais da API
-- [Resultados dos Testes](./TEST_RESULTS.md) - Status atual dos testes
+### 🔗 Links Úteis
 
-### **Para DevOps**
-
-- [Configuração](./CONFIG.md) - Variáveis de ambiente
-- [Resumo da Implementação](./TEST_IMPLEMENTATION_SUMMARY.md) - Estrutura técnica
-
-## 🚀 **Quick Start**
-
-### **1. Configuração Inicial**
-
-```bash
-# 1. Instalar dependências
-npm install
-
-# 2. Configurar variáveis de ambiente
-cp .env.example .env
-# Editar .env com suas configurações
-
-# 3. Iniciar em desenvolvimento
-npm run start:dev
-```
-
-### **2. Executar Testes**
-
-```bash
-# Testes unitários
-npm run test:unit
-
-# Todos os testes
-npm run test
-
-# Com cobertura
-npm run test:cov
-```
-
-### **3. Testar API**
-
-- Importe a coleção `postman-collection.json` no Postman
-- Siga o [Guia do Postman](./POSTMAN_GUIDE.md) para configuração
-
-## 📊 **Status do Projeto**
-
-### ✅ **Funcionalidades Implementadas**
-
-- 🔐 **Autenticação JWT** completa
-- 👥 **Gerenciamento de usuários** com CRUD
-- 🛡️ **Sistema de roles** (ADMIN, USER, MODERATOR)
-- 🚫 **Rate limiting** configurado
-- 🧪 **Testes automatizados** (84 testes - 49 unitários + 35 E2E)
-- 📚 **Documentação** completa
-
-### 📈 **Métricas de Qualidade**
-
-- **Cobertura de testes**: 82%+
-- **Testes unitários**: 49 testes passando (100%)
-- **Testes E2E**: 35 testes passando (92%)
-- **Tempo de execução**: < 2 segundos
-- **Linting**: ESLint configurado
-- **Formatação**: Prettier configurado
-
-## 🔗 **Links Úteis**
-
-- **[README Principal](../README.md)** - Visão geral do projeto
-- **[Coleção Postman](../postman-collection.json)** - Testes da API
-- **[Scripts de Teste](../test-*.sh)** - Scripts automatizados
-
-## 🤝 **Contribuição**
-
-Para contribuir com o projeto:
-
-1. Leia a [Configuração](./CONFIG.md)
-2. Configure o [Prettier](./PRETTIER_SETUP.md)
-3. Execute os [testes](./TESTING_GUIDE.md)
-4. Siga as boas práticas documentadas
-
-## 📞 **Suporte**
-
-Se precisar de ajuda:
-
-1. Consulte a documentação específica
-2. Verifique os [resultados dos testes](./TEST_RESULTS.md)
-3. Execute `npm run test:unit` para validar o ambiente
+- **[🐳 Docker Hub](https://hub.docker.com/)** - Imagens Docker
+- **[📚 NestJS Docs](https://docs.nestjs.com/)** - Documentação oficial
+- **[🍃 MongoDB Docs](https://docs.mongodb.com/)** - Documentação MongoDB
+- **[🔐 JWT.io](https://jwt.io/)** - Debugger JWT
 
 ---
 
-**📚 Esta documentação é mantida atualizada com o projeto. Para sugestões ou melhorias, abra uma issue no repositório.**
+## 🎉 Conclusão
+
+Esta documentação cobre **100%** das funcionalidades da Service Orders API, desde configuração até deployment em produção. Cada seção é independente e pode ser consultada conforme necessário.
+
+**📚 Documentação completa, organizada e sempre atualizada!**
