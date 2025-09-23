@@ -104,10 +104,10 @@ MongoServerError: Command find requires authentication
 
 ```bash
 # Verificar string de conexão
-MONGODB_URI=mongodb://serviceuser:servicepass@192.168.31.75:27017/service-orders?authSource=admin
+MONGODB_URI=mongodb://username:password@192.168.1.100:27017/service-orders?authSource=admin
 
 # Testar conexão
-mongosh "mongodb://serviceuser:servicepass@192.168.31.75:27017/service-orders?authSource=admin"
+mongosh "mongodb://username:password@192.168.1.100:27017/service-orders?authSource=admin"
 ```
 
 ### 2. MongoDB não conecta
@@ -116,10 +116,10 @@ mongosh "mongodb://serviceuser:servicepass@192.168.31.75:27017/service-orders?au
 
 ```bash
 # Testar conectividade
-nc -z 192.168.31.75 27017
+nc -z 192.168.1.100 27017
 
 # Testar com telnet
-telnet 192.168.31.75 27017
+telnet 192.168.1.100 27017
 
 # Verificar firewall
 sudo ufw status
@@ -150,7 +150,7 @@ Database service-orders does not exist
 
 ```bash
 # Criar database
-mongosh "mongodb://serviceuser:servicepass@192.168.31.75:27017/service-orders?authSource=admin"
+mongosh "mongodb://username:password@192.168.1.100:27017/service-orders?authSource=admin"
 
 # Executar script de inicialização
 mongo < docker/mongo-init.js
@@ -173,9 +173,9 @@ UnauthorizedException: Invalid token
 echo $JWT_SECRET
 
 # Gerar novo token
-curl -X POST http://192.168.31.75:3000/auth/login \
+curl -X POST http://192.168.1.100:3000/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email":"admin@homelab.com","password":"admin123"}'
+  -d '{"email":"admin@example.com","password":"password123"}'
 
 # Verificar expiração do token
 # Tokens expiram em 7 dias por padrão
@@ -194,13 +194,13 @@ ForbiddenException: Insufficient permissions
 ```bash
 # Verificar role do usuário
 curl -H "Authorization: Bearer $TOKEN" \
-  http://192.168.31.75:3000/users/profile
+  http://192.168.1.100:3000/users/profile
 
 # Promover usuário para admin
 curl -X PUT -H "Authorization: Bearer $ADMIN_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"role":"admin"}' \
-  http://192.168.31.75:3000/users/USER_ID
+  http://192.168.1.100:3000/users/USER_ID
 ```
 
 ### 3. Usuário não encontrado
@@ -216,10 +216,10 @@ NotFoundException: User not found
 ```bash
 # Verificar se usuário existe
 curl -H "Authorization: Bearer $ADMIN_TOKEN" \
-  http://192.168.31.75:3000/users
+  http://192.168.1.100:3000/users
 
 # Criar novo usuário
-curl -X POST http://192.168.31.75:3000/auth/register \
+curl -X POST http://192.168.1.100:3000/auth/register \
   -H "Content-Type: application/json" \
   -d '{"email":"user@example.com","password":"password123","name":"User","role":"user"}'
 ```
@@ -232,10 +232,10 @@ curl -X POST http://192.168.31.75:3000/auth/register \
 
 ```bash
 # Testar conectividade
-curl http://192.168.31.75:3000/health
+curl http://192.168.1.100:3000/health
 
 # Verificar se porta está aberta
-nc -z 192.168.31.75 3000
+nc -z 192.168.1.100 3000
 
 # Verificar firewall
 sudo ufw status
@@ -259,7 +259,7 @@ docker-compose restart app
 **Erro:**
 
 ```bash
-curl: (7) Failed to connect to 192.168.31.75 port 80: Connection refused
+curl: (7) Failed to connect to 192.168.1.100 port 80: Connection refused
 ```
 
 **Diagnóstico:**
@@ -463,9 +463,9 @@ docker stats --no-stream
 
 # 3. Conectividade
 echo "3. Testando conectividade:"
-curl -f http://192.168.31.75:3000/health && echo "✅ API OK" || echo "❌ API FALHA"
-curl -f http://192.168.31.75:80/health && echo "✅ Nginx OK" || echo "❌ Nginx FALHA"
-nc -z 192.168.31.75 27017 && echo "✅ MongoDB OK" || echo "❌ MongoDB FALHA"
+curl -f http://192.168.1.100:3000/health && echo "✅ API OK" || echo "❌ API FALHA"
+curl -f http://192.168.1.100:80/health && echo "✅ Nginx OK" || echo "❌ Nginx FALHA"
+nc -z 192.168.1.100 27017 && echo "✅ MongoDB OK" || echo "❌ MongoDB FALHA"
 
 # 4. Logs recentes
 echo "4. Logs recentes (últimas 10 linhas):"
@@ -510,7 +510,7 @@ docker-compose up --build -d
 sleep 15
 
 # 7. Verificar saúde
-curl http://192.168.31.75:3000/health
+curl http://192.168.1.100:3000/health
 
 echo "✅ Reset concluído!"
 ```

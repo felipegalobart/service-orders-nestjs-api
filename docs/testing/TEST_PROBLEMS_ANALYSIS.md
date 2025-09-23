@@ -24,7 +24,7 @@ O JWT Strategy e o JWT Module estão usando secrets diferentes, causando falha n
 # Token gerado com 'test-secret' (JWT Module)
 Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
-# JWT Strategy tentando validar com 'your-super-secret-jwt-key-here'
+# JWT Strategy tentando validar com 'your-super-secret-jwt-key-here-example'
 Resultado: 401 Unauthorized
 ```
 
@@ -34,7 +34,7 @@ Resultado: 401 Unauthorized
 
 ```typescript
 secretOrKey: process.env.JWT_SECRET || 'default-secret',
-// ↑ Usa secret do .env: 'your-super-secret-jwt-key-here'
+// ↑ Usa secret do .env: 'your-super-secret-jwt-key-here-example'
 ```
 
 #### **JWT Module nos Testes** (`src/test-utils/test-database.ts:50`):

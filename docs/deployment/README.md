@@ -29,9 +29,9 @@ Esta seção contém toda a documentação relacionada ao deployment da aplicaç
 
 ### Configuração Atual
 
-- **IP**: `192.168.31.75`
+- **IP**: `192.168.1.100`
 - **Porta**: `3000` (aplicação), `80` (Nginx)
-- **MongoDB**: Externo (`mongodb://serviceuser:servicepass@192.168.31.75:27017/service-orders`)
+- **MongoDB**: Externo (`mongodb://username:password@192.168.1.100:27017/service-orders`)
 - **Redis**: Containerizado
 - **Nginx**: Reverse proxy
 
@@ -54,10 +54,10 @@ Esta seção contém toda a documentação relacionada ao deployment da aplicaç
 docker-compose logs -f
 
 # Testar conectividade
-curl http://192.168.31.75:3000/health
+curl http://192.168.1.100:3000/health
 
 # Testar via Nginx
-curl http://192.168.31.75:80/health
+curl http://192.168.1.100:80/health
 ```
 
 ## 📋 Checklist de Deployment

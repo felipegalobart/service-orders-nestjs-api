@@ -206,11 +206,11 @@ export class UserService {
 ### Criar Usuário Admin
 
 ```bash
-curl -X POST http://192.168.31.75:3000/auth/register \
+curl -X POST http://192.168.1.100:3000/auth/register \
   -H "Content-Type: application/json" \
   -d '{
-    "email": "admin@homelab.com",
-    "password": "admin123",
+    "email": "admin@example.com",
+    "password": "password123",
     "name": "Super Admin",
     "role": "admin"
   }'
@@ -220,12 +220,12 @@ curl -X POST http://192.168.31.75:3000/auth/register \
 
 ```bash
 # Login como admin
-ADMIN_TOKEN=$(curl -s -X POST http://192.168.31.75:3000/auth/login \
+ADMIN_TOKEN=$(curl -s -X POST http://192.168.1.100:3000/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email":"admin@homelab.com","password":"admin123"}' | jq -r '.access_token')
+  -d '{"email":"admin@example.com","password":"password123"}' | jq -r '.access_token')
 
 # Promover usuário
-curl -X PUT http://192.168.31.75:3000/users/USER_ID \
+curl -X PUT http://192.168.1.100:3000/users/USER_ID \
   -H "Authorization: Bearer $ADMIN_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"role":"admin"}'
@@ -235,18 +235,18 @@ curl -X PUT http://192.168.31.75:3000/users/USER_ID \
 
 ```bash
 # 1. Criar usuário comum
-USER_TOKEN=$(curl -s -X POST http://192.168.31.75:3000/auth/register \
+USER_TOKEN=$(curl -s -X POST http://192.168.1.100:3000/auth/register \
   -H "Content-Type: application/json" \
   -d '{"email":"user@test.com","password":"password123","name":"User","role":"user"}' | jq -r '.access_token')
 
 # 2. Tentar listar usuários (deve falhar)
 curl -H "Authorization: Bearer $USER_TOKEN" \
-  http://192.168.31.75:3000/users
+  http://192.168.1.100:3000/users
 # Resposta: 403 Forbidden
 
 # 3. Ver próprio perfil (deve funcionar)
 curl -H "Authorization: Bearer $USER_TOKEN" \
-  http://192.168.31.75:3000/users/profile
+  http://192.168.1.100:3000/users/profile
 # Resposta: 200 OK
 ```
 
@@ -326,23 +326,23 @@ echo "🧪 Testando sistema de roles..."
 
 # Criar usuários com diferentes roles
 echo "1. Criando usuários:"
-ADMIN_TOKEN=$(curl -s -X POST http://192.168.31.75:3000/auth/register \
+ADMIN_TOKEN=$(curl -s -X POST http://192.168.1.100:3000/auth/register \
   -H "Content-Type: application/json" \
   -d '{"email":"admin@test.com","password":"password123","name":"Admin","role":"admin"}' | jq -r '.access_token')
 
-USER_TOKEN=$(curl -s -X POST http://192.168.31.75:3000/auth/register \
+USER_TOKEN=$(curl -s -X POST http://192.168.1.100:3000/auth/register \
   -H "Content-Type: application/json" \
   -d '{"email":"user@test.com","password":"password123","name":"User","role":"user"}' | jq -r '.access_token')
 
 # Testar permissões de admin
 echo "2. Testando permissões de admin:"
-echo "   - Listar usuários: $(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $ADMIN_TOKEN" http://192.168.31.75:3000/users)"
-echo "   - Ver perfil: $(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $ADMIN_TOKEN" http://192.168.31.75:3000/users/profile)"
+echo "   - Listar usuários: $(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $ADMIN_TOKEN" http://192.168.1.100:3000/users)"
+echo "   - Ver perfil: $(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $ADMIN_TOKEN" http://192.168.1.100:3000/users/profile)"
 
 # Testar permissões de user
 echo "3. Testando permissões de user:"
-echo "   - Listar usuários: $(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $USER_TOKEN" http://192.168.31.75:3000/users)"
-echo "   - Ver perfil: $(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $USER_TOKEN" http://192.168.31.75:3000/users/profile)"
+echo "   - Listar usuários: $(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $USER_TOKEN" http://192.168.1.100:3000/users)"
+echo "   - Ver perfil: $(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $USER_TOKEN" http://192.168.1.100:3000/users/profile)"
 
 echo "✅ Testes de roles concluídos!"
 ```
@@ -354,7 +354,7 @@ echo "✅ Testes de roles concluídos!"
 ```bash
 # Ver perfil do usuário atual
 curl -H "Authorization: Bearer $TOKEN" \
-  http://192.168.31.75:3000/users/profile | jq '.role'
+  http://192.168.1.100:3000/users/profile | jq '.role'
 ```
 
 ### Verificar Permissões
@@ -362,7 +362,7 @@ curl -H "Authorization: Bearer $TOKEN" \
 ```bash
 # Testar endpoint específico
 curl -v -H "Authorization: Bearer $TOKEN" \
-  http://192.168.31.75:3000/users
+  http://192.168.1.100:3000/users
 ```
 
 ### Logs de Autorização
@@ -444,7 +444,7 @@ echo "📊 Dashboard de Roles"
 # Contar usuários por role
 echo "Usuários por role:"
 curl -s -H "Authorization: Bearer $ADMIN_TOKEN" \
-  http://192.168.31.75:3000/users | jq 'group_by(.role) | map({role: .[0].role, count: length})'
+  http://192.168.1.100:3000/users | jq 'group_by(.role) | map({role: .[0].role, count: length})'
 
 # Últimas atividades
 echo "Últimas atividades:"
@@ -475,7 +475,7 @@ docker-compose logs app | grep -E "(auth|role)" | tail -10
 
 ```typescript
 // JWT Configuration
-JWT_SECRET=your-super-secret-jwt-key-here
+JWT_SECRET=your-super-secret-jwt-key-here-example
 JWT_EXPIRES_IN=7d
 
 // Rate Limiting por Role

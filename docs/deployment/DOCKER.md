@@ -109,14 +109,14 @@ Crie o arquivo `.env.production`:
 
 ```bash
 # MongoDB Configuration
-MONGODB_URI=mongodb://serviceuser:servicepass@192.168.31.75:27017/service-orders?authSource=admin
+MONGODB_URI=mongodb://username:password@192.168.1.100:27017/service-orders
 
 # Application
 NODE_ENV=production
 PORT=3000
 
 # JWT Authentication
-JWT_SECRET=your-super-secret-jwt-key-here
+JWT_SECRET=your-super-secret-jwt-key-here-example
 JWT_EXPIRES_IN=7d
 
 # Rate Limiting
@@ -124,13 +124,13 @@ THROTTLE_TTL=60
 THROTTLE_LIMIT=10
 
 # Redis
-REDIS_PASSWORD=your-redis-password
+REDIS_PASSWORD=your-redis-password-example
 
 # Security
 BCRYPT_ROUNDS=12
 
 # CORS
-CORS_ORIGIN=http://192.168.31.75:80
+CORS_ORIGIN=http://192.168.1.100:80
 
 # Logging
 LOG_LEVEL=info
@@ -225,8 +225,8 @@ else
 fi
 
 echo "🎉 Deploy concluído com sucesso!"
-echo "🌐 API disponível em: http://192.168.31.75:3000"
-echo "🌐 Nginx disponível em: http://192.168.31.75:80"
+echo "🌐 API disponível em: http://192.168.1.100:3000"
+echo "🌐 Nginx disponível em: http://192.168.1.100:80"
 ```
 
 ### Comandos Manuais
@@ -264,10 +264,10 @@ docker-compose up --build -d
 
 ```bash
 # Verificar conectividade
-nc -z 192.168.31.75 27017
+nc -z 192.168.1.100 27017
 
 # Verificar credenciais
-mongosh "mongodb://serviceuser:servicepass@192.168.31.75:27017/service-orders?authSource=admin"
+mongosh "mongodb://username:password@192.168.1.100:27017/service-orders?authSource=admin"
 ```
 
 #### 3. main.js não encontrado
@@ -312,10 +312,10 @@ docker exec service-orders-api ping nginx
 
 ```bash
 # API Health
-curl http://192.168.31.75:3000/health
+curl http://192.168.1.100:3000/health
 
 # Via Nginx
-curl http://192.168.31.75:80/health
+curl http://192.168.1.100:80/health
 
 # Status dos containers
 docker-compose ps
@@ -338,18 +338,18 @@ docker system df
 
 ```bash
 # Criar usuário admin
-curl -X POST http://192.168.31.75:3000/auth/register \
+curl -X POST http://192.168.1.100:3000/auth/register \
   -H "Content-Type: application/json" \
-  -d '{"email":"admin@homelab.com","password":"admin123","name":"Admin","role":"admin"}'
+  -d '{"email":"admin@example.com","password":"password123","name":"Admin","role":"admin"}'
 
 # Login
-curl -X POST http://192.168.31.75:3000/auth/login \
+curl -X POST http://192.168.1.100:3000/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email":"admin@homelab.com","password":"admin123"}'
+  -d '{"email":"admin@example.com","password":"password123"}'
 
 # Testar endpoint protegido
 curl -H "Authorization: Bearer YOUR_JWT_TOKEN" \
-  http://192.168.31.75:3000/users/profile
+  http://192.168.1.100:3000/users/profile
 ```
 
 ## 🔄 Atualizações
@@ -368,7 +368,7 @@ git pull origin main
 ./deploy-homelab.sh
 
 # 4. Verificar funcionamento
-curl http://192.168.31.75:3000/health
+curl http://192.168.1.100:3000/health
 ```
 
 ### Rollback
