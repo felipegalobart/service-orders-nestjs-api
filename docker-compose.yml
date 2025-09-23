@@ -1,8 +1,6 @@
 services:
   # NestJS Application
   app:
-    env_file:
-      - .env.production
     build:
       context: .
       dockerfile: Dockerfile
@@ -10,6 +8,8 @@ services:
     restart: unless-stopped
     ports:
       - '3000:3000'
+    env_file:
+      - .env.production
     environment:
       - NODE_ENV=${NODE_ENV}
       - PORT=${PORT}
