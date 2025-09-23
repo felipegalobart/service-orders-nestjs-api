@@ -27,9 +27,16 @@ if ! command -v docker &> /dev/null; then
 fi
 
 # Check if Docker Compose is installed
-if ! command -v docker-compose &> /dev/null && ! docker compose version &> /dev/null; then
+if ! docker compose version &> /dev/null && ! command -v docker-compose &> /dev/null; then
     echo -e "${RED}❌ Docker Compose is not installed. Please install Docker Compose first.${NC}"
     exit 1
+fi
+
+# Determine which compose command to use
+if docker compose version &> /dev/null; then
+    COMPOSE_CMD="docker compose"
+else
+    COMPOSE_CMD="docker-compose"
 fi
 
 echo -e "${GREEN}✅ Docker and Docker Compose are installed${NC}"
@@ -53,15 +60,15 @@ fi
 
 # Stop existing containers
 echo -e "${BLUE}🛑 Stopping existing containers...${NC}"
-docker-compose down 2>/dev/null || true
+$COMPOSE_CMD down 2>/dev/null || true
 
 # Remove old images to force rebuild
 echo -e "${BLUE}🗑️  Removing old images...${NC}"
-docker-compose down --rmi all 2>/dev/null || true
+$COMPOSE_CMD down --rmi all 2>/dev/null || true
 
 # Build and start services
 echo -e "${BLUE}🔨 Building and starting services...${NC}"
-docker-compose up --build -d
+$COMPOSE_CMD up --build -d
 
 # Wait for services to be healthy
 echo -e "${BLUE}⏳ Waiting for services to be healthy...${NC}"
@@ -76,19 +83,19 @@ if curl -f http://localhost:3000/health > /dev/null 2>&1; then
 else
     echo -e "${RED}❌ API health check failed${NC}"
     echo -e "${YELLOW}📋 Checking logs...${NC}"
-    docker-compose logs app
+    $COMPOSE_CMD logs app
     exit 1
 fi
 
 # Check MongoDB
-if docker-compose exec mongodb mongosh --eval "db.adminCommand('ping')" > /dev/null 2>&1; then
+if $COMPOSE_CMD exec mongodb mongosh --eval "db.adminCommand('ping')" > /dev/null 2>&1; then
     echo -e "${GREEN}✅ MongoDB is healthy${NC}"
 else
     echo -e "${RED}❌ MongoDB health check failed${NC}"
 fi
 
 # Check Redis
-if docker-compose exec redis redis-cli ping > /dev/null 2>&1; then
+if $COMPOSE_CMD exec redis redis-cli ping > /dev/null 2>&1; then
     echo -e "${GREEN}✅ Redis is healthy${NC}"
 else
     echo -e "${RED}❌ Redis health check failed${NC}"
@@ -105,16 +112,16 @@ echo "  • Redis: localhost:6379"
 echo "  • Nginx: http://localhost:80"
 echo ""
 echo -e "${BLUE}🔧 Management Commands:${NC}"
-echo "  • View logs: docker-compose logs -f"
-echo "  • Stop services: docker-compose down"
-echo "  • Restart services: docker-compose restart"
-echo "  • Update services: docker-compose pull && docker-compose up -d"
+echo "  • View logs: $COMPOSE_CMD logs -f"
+echo "  • Stop services: $COMPOSE_CMD down"
+echo "  • Restart services: $COMPOSE_CMD restart"
+echo "  • Update services: $COMPOSE_CMD pull && $COMPOSE_CMD up -d"
 echo ""
 echo -e "${BLUE}📋 Useful Commands:${NC}"
-echo "  • Check status: docker-compose ps"
-echo "  • View API logs: docker-compose logs -f app"
-echo "  • Access MongoDB: docker-compose exec mongodb mongosh"
-echo "  • Access Redis: docker-compose exec redis redis-cli"
+echo "  • Check status: $COMPOSE_CMD ps"
+echo "  • View API logs: $COMPOSE_CMD logs -f app"
+echo "  • Access MongoDB: $COMPOSE_CMD exec mongodb mongosh"
+echo "  • Access Redis: $COMPOSE_CMD exec redis redis-cli"
 echo ""
 echo -e "${YELLOW}⚠️  Security Notes:${NC}"
 echo "  • Change default passwords in production"
