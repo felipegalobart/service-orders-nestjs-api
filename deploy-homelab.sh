@@ -87,11 +87,13 @@ else
     exit 1
 fi
 
-# Check MongoDB
-if $COMPOSE_CMD exec mongodb mongosh --eval "db.adminCommand('ping')" > /dev/null 2>&1; then
-    echo -e "${GREEN}✅ MongoDB is healthy${NC}"
+# Check MongoDB (external)
+echo -e "${BLUE}🏥 Checking external MongoDB connection...${NC}"
+if nc -z localhost 27017 2>/dev/null; then
+    echo -e "${GREEN}✅ External MongoDB is accessible on port 27017${NC}"
 else
-    echo -e "${RED}❌ MongoDB health check failed${NC}"
+    echo -e "${YELLOW}⚠️  External MongoDB not accessible on port 27017${NC}"
+    echo -e "${YELLOW}   Make sure your MongoDB is running and accessible${NC}"
 fi
 
 # Check Redis
@@ -107,7 +109,7 @@ echo -e "${GREEN}🎉 Deployment completed successfully!${NC}"
 echo "================================================"
 echo -e "${BLUE}📊 Service Information:${NC}"
 echo "  • API: http://localhost:3000"
-echo "  • MongoDB: localhost:27017"
+echo "  • MongoDB: localhost:27017 (external)"
 echo "  • Redis: localhost:6379"
 echo "  • Nginx: http://localhost:80"
 echo ""
@@ -120,7 +122,7 @@ echo ""
 echo -e "${BLUE}📋 Useful Commands:${NC}"
 echo "  • Check status: $COMPOSE_CMD ps"
 echo "  • View API logs: $COMPOSE_CMD logs -f app"
-echo "  • Access MongoDB: $COMPOSE_CMD exec mongodb mongosh"
+echo "  • Access MongoDB: mongosh mongodb://localhost:27017/service-orders"
 echo "  • Access Redis: $COMPOSE_CMD exec redis redis-cli"
 echo ""
 echo -e "${YELLOW}⚠️  Security Notes:${NC}"

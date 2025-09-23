@@ -13,16 +13,16 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3000
-      - MONGODB_URI=mongodb://mongodb:27017/service-orders
+      - MONGODB_URI=${MONGODB_URI:-mongodb://host.docker.internal:27017/service-orders}
       - JWT_SECRET=${JWT_SECRET:-your-super-secret-jwt-key-change-in-production}
       - JWT_EXPIRES_IN=${JWT_EXPIRES_IN:-7d}
       - THROTTLE_TTL=${THROTTLE_TTL:-60}
       - THROTTLE_LIMIT=${THROTTLE_LIMIT:-10}
     depends_on:
-      mongodb:
-        condition: service_healthy
       redis:
         condition: service_healthy
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     networks:
       - service-orders-network
     healthcheck:
@@ -33,29 +33,6 @@ services:
           '-e',
           "require('http').get('http://localhost:3000/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })",
         ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-
-  # MongoDB Database
-  mongodb:
-    image: mongo:7.0
-    container_name: service-orders-mongodb
-    restart: unless-stopped
-    ports:
-      - '27017:27017'
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=${MONGO_ROOT_USERNAME:-admin}
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD:-password123}
-      - MONGO_INITDB_DATABASE=service-orders
-    volumes:
-      - mongodb_data:/data/db
-      - ./docker/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
-    networks:
-      - service-orders-network
-    healthcheck:
-      test: ['CMD', 'mongosh', '--eval', "db.adminCommand('ping')"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -97,8 +74,6 @@ services:
       - service-orders-network
 
 volumes:
-  mongodb_data:
-    driver: local
   redis_data:
     driver: local
 
