@@ -1,6 +1,8 @@
 services:
   # NestJS Application
   app:
+    env_file:
+      - .env.production
     build:
       context: .
       dockerfile: Dockerfile
@@ -36,6 +38,8 @@ services:
 
   # Redis Cache (for rate limiting and caching)
   redis:
+    env_file:
+      - .env.production
     image: redis:7.2-alpine
     container_name: service-orders-redis
     restart: unless-stopped
