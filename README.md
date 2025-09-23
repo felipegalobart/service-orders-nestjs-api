@@ -100,7 +100,7 @@
 
 ### **📐 Clean Architecture**
 
-```
+```text
 src/
 ├── config/                    # Configurações globais
 │   ├── app.config.ts         # Configuração da aplicação
@@ -679,7 +679,7 @@ done
 
 ## 📁 Estrutura do Projeto
 
-```
+```text
 service-orders-nestjs-api/
 ├── src/
 │   ├── config/                    # Configurações
@@ -821,10 +821,6 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 
 ---
 
-**Desenvolvido com ❤️ usando NestJS, MongoDB, TypeScript e Rate Limiting**
+## Desenvolvido com ❤️ usando NestJS, MongoDB, TypeScript e Rate Limiting
 
-<p align="center">
-  <a href="https://nestjs.com/" target="blank">
-    <img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" />
-  </a>
-</p>
+[![NestJS](https://nestjs.com/img/logo-small.svg)](https://nestjs.com/)

@@ -201,25 +201,25 @@ Para alterar a URL base:
 
 #### Validation Tests
 
-**Test Validation - Missing Required Fields**
+##### Test Validation - Missing Required Fields
 
 - **Método**: POST
 - **Body**: Apenas `type: "customer"`
 - **Resultado**: Erro 400 - Campos obrigatórios ausentes
 
-**Test Validation - Duplicate Document**
+##### Test Validation - Duplicate Document
 
 - **Método**: POST
 - **Body**: Documento já existente
 - **Resultado**: Erro 409 - Documento duplicado
 
-**Test Validation - Invalid Email**
+##### Test Validation - Invalid Email
 
 - **Método**: POST
 - **Body**: Email com formato inválido
 - **Resultado**: Erro 400 - Email inválido
 
-**Test Validation - Multiple Default Addresses**
+##### Test Validation - Multiple Default Addresses
 
 - **Método**: POST
 - **Body**: Múltiplos endereços com `isDefault: true`
@@ -227,13 +227,13 @@ Para alterar a URL base:
 
 #### Search Validation Tests
 
-**Test Search - Empty Query**
+##### Test Search - Empty Query
 
 - **Método**: GET
 - **Query**: `q=` (vazio)
 - **Resultado**: Erro 400 - Query muito curta
 
-**Test Search - Short Query**
+##### Test Search - Short Query
 
 - **Método**: GET
 - **Query**: `q=a` (1 caractere)
@@ -241,13 +241,13 @@ Para alterar a URL base:
 
 #### Pagination Validation Tests
 
-**Test Pagination - Invalid Page**
+##### Test Pagination - Invalid Page
 
 - **Método**: GET
 - **Query**: `page=0`
 - **Resultado**: Erro 400 - Página inválida
 
-**Test Pagination - Invalid Limit**
+##### Test Pagination - Invalid Limit
 
 - **Método**: GET
 - **Query**: `limit=200`

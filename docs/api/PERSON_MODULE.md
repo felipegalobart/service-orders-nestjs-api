@@ -226,7 +226,7 @@ Cada pessoa pode ter múltiplos contatos.
 
 ### Base URL
 
-```
+```text
 /persons
 ```
 
@@ -585,7 +585,7 @@ Cada pessoa pode ter múltiplos contatos.
 
 ### Estrutura de Arquivos
 
-```
+```text
 src/person/
 ├── schemas/
 │   ├── person.schema.ts
@@ -700,7 +700,7 @@ Uma collection completa do Postman está disponível no arquivo `postman-person-
 
 ### Estrutura de Arquivos Completa
 
-```
+```text
 src/person/
 ├── schemas/
 │   ├── person.schema.ts
@@ -723,7 +723,7 @@ src/person/
 
 ### Arquivos de Documentação
 
-```
+```text
 docs/api/
 └── PERSON_MODULE.md (esta documentação)
 
