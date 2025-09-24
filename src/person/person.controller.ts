@@ -19,12 +19,14 @@ import type {
   IUpdatePerson,
 } from './schemas/models/person.interface';
 import type { IPersonFilters } from './repositories/person.repository';
+import { ThrottleUser } from '../shared/decorators/throttle.decorator';
 
 @Controller('persons')
 export class PersonController {
   constructor(private readonly personService: PersonService) {}
 
   // CRUD básico
+  @ThrottleUser()
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async create(
@@ -33,6 +35,7 @@ export class PersonController {
     return this.personService.create(personData);
   }
 
+  @ThrottleUser()
   @Get()
   async findAll(
     @Query('page', new ParseIntPipe({ optional: true })) page?: number,
@@ -73,6 +76,7 @@ export class PersonController {
     return this.personService.findByPhone(phone);
   }
 
+  @ThrottleUser()
   @Get('search')
   async searchPerson(@Query('q') searchTerm: string): Promise<IPerson[]> {
     return this.personService.searchPerson(searchTerm);

@@ -4,6 +4,10 @@ import { z } from 'zod';
 import { ZodValidationPipe } from '../shared/pipe/zod-validation.pipe';
 import { Public } from './decorators/public.decorator';
 import { UserRole } from './enums/user-role.enum';
+import {
+  ThrottleAuth,
+  ThrottlePublic,
+} from '../shared/decorators/throttle.decorator';
 
 // Schema para login
 const loginSchema = z.object({
@@ -27,12 +31,14 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Public()
+  @ThrottleAuth()
   @Post('login')
   async login(@Body(new ZodValidationPipe(loginSchema)) loginDto: LoginDto) {
     return this.authService.login(loginDto);
   }
 
   @Public()
+  @ThrottlePublic()
   @Post('register')
   async register(
     @Body(new ZodValidationPipe(registerSchema)) registerDto: RegisterDto,

@@ -22,8 +22,8 @@ import { RolesGuard } from './auth/guards/roles.guard';
     }),
     ThrottlerModule.forRoot([
       {
-        ttl: 10000, // 10 segundos
-        limit: 2, // 2 requests por 10 segundos (para teste)
+        ttl: process.env.NODE_ENV === 'production' ? 60000 : 10000, // 1 minuto em produção, 10 segundos em desenvolvimento
+        limit: process.env.NODE_ENV === 'production' ? 100 : 2, // 100 requests/min em produção, 2 requests/10s em desenvolvimento
       },
     ]),
     JwtModule.register({
