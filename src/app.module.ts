@@ -20,12 +20,16 @@ import { RolesGuard } from './auth/guards/roles.guard';
       load: [appConfig],
       envFilePath: '.env',
     }),
-    ThrottlerModule.forRoot([
-      {
-        ttl: process.env.NODE_ENV === 'production' ? 60000 : 10000, // 1 minuto em produção, 10 segundos em desenvolvimento
-        limit: process.env.NODE_ENV === 'production' ? 100 : 2, // 100 requests/min em produção, 2 requests/10s em desenvolvimento
-      },
-    ]),
+    ThrottlerModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => [
+        {
+          ttl: configService.get<number>('throttlerTtl') || 60000, // Usar configuração do .env ou padrão 1 minuto
+          limit: configService.get<number>('throttlerLimit') || 10, // Usar configuração do .env ou padrão 10 requests
+        },
+      ],
+      inject: [ConfigService],
+    }),
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET,
