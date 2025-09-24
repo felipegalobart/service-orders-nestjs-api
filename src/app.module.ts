@@ -25,7 +25,7 @@ import { RolesGuard } from './auth/guards/roles.guard';
       useFactory: (configService: ConfigService) => [
         {
           ttl: configService.get<number>('throttlerTtl') || 60000, // Usar configuração do .env ou padrão 1 minuto
-          limit: configService.get<number>('throttlerLimit') || 10, // Usar configuração do .env ou padrão 10 requests
+          limit: configService.get<number>('throttlerLimit') || 20, // Usar configuração do .env ou padrão 10 requests
         },
       ],
       inject: [ConfigService],

@@ -11,11 +11,11 @@ export const ThrottlePublic = () =>
 
 // Decorator para endpoints administrativos (muito restritivo)
 export const ThrottleAdmin = () =>
-  Throttle({ default: { limit: 3, ttl: 60000 } }); // 3 requests por minuto
+  Throttle({ default: { limit: 200, ttl: 60000 } }); // 3 requests por minuto
 
 // Decorator para endpoints de usuário (padrão)
 export const ThrottleUser = () =>
-  Throttle({ default: { limit: 10, ttl: 60000 } }); // 10 requests por minuto
+  Throttle({ default: { limit: 200, ttl: 60000 } }); // 10 requests por minuto
 
 // Decorator para bypass do throttling (endpoints críticos)
 export const SkipThrottle = () => SetMetadata('skipThrottle', true);
