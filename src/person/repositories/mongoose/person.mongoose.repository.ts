@@ -33,7 +33,7 @@ export class PersonMongooseRepository implements IPersonRepository {
 
   async findAll(
     page: number = 1,
-    limit: number = 10,
+    limit: number = 50,
     filters: IPersonFilters = {},
   ): Promise<{ data: IPerson[]; total: number; page: number; limit: number }> {
     const query: Record<string, any> = {
@@ -52,13 +52,17 @@ export class PersonMongooseRepository implements IPersonRepository {
       query.blacklist = filters.blacklist;
     }
 
-    const skip = (page - 1) * limit;
+    // Validar e limitar o número de registros por página
+    const MAX_LIMIT = 100;
+    const validatedLimit = Math.min(limit, MAX_LIMIT);
+
+    const skip = (page - 1) * validatedLimit;
 
     const [data, total] = await Promise.all([
       this.personModel
         .find(query)
         .skip(skip)
-        .limit(limit)
+        .limit(validatedLimit)
         .sort({ createdAt: -1 })
         .exec(),
       this.personModel.countDocuments(query).exec(),
@@ -68,7 +72,7 @@ export class PersonMongooseRepository implements IPersonRepository {
       data,
       total,
       page,
-      limit,
+      limit: validatedLimit,
     };
   }
 
@@ -137,26 +141,51 @@ export class PersonMongooseRepository implements IPersonRepository {
       .exec();
   }
 
-  async searchPerson(searchTerm: string): Promise<IPerson[]> {
-    return this.personModel
-      .find({
-        $or: [
-          // Busca em campos de texto
-          { name: { $regex: searchTerm, $options: 'i' } },
-          { corporateName: { $regex: searchTerm, $options: 'i' } },
-          { tradeName: { $regex: searchTerm, $options: 'i' } },
-          { 'contacts.name': { $regex: searchTerm, $options: 'i' } },
-          { 'contacts.sector': { $regex: searchTerm, $options: 'i' } },
-          // Buscas exatas
-          { document: searchTerm },
-          { stateRegistration: searchTerm },
-          { municipalRegistration: searchTerm },
-          { 'contacts.phone': searchTerm },
-          { 'contacts.email': searchTerm },
-        ],
-        isActive: true,
-        deletedAt: { $exists: false },
-      })
-      .exec();
+  async searchPerson(
+    searchTerm: string,
+    page: number = 1,
+    limit: number = 50,
+  ): Promise<{ data: IPerson[]; total: number; page: number; limit: number }> {
+    const query = {
+      $or: [
+        // Busca em campos de texto
+        { name: { $regex: searchTerm, $options: 'i' } },
+        { corporateName: { $regex: searchTerm, $options: 'i' } },
+        { tradeName: { $regex: searchTerm, $options: 'i' } },
+        { 'contacts.name': { $regex: searchTerm, $options: 'i' } },
+        { 'contacts.sector': { $regex: searchTerm, $options: 'i' } },
+        // Buscas exatas
+        { document: searchTerm },
+        { stateRegistration: searchTerm },
+        { municipalRegistration: searchTerm },
+        { 'contacts.phone': searchTerm },
+        { 'contacts.email': searchTerm },
+      ],
+      isActive: true,
+      deletedAt: { $exists: false },
+    };
+
+    // Validar e limitar o número de registros por página
+    const MAX_LIMIT = 100;
+    const validatedLimit = Math.min(limit, MAX_LIMIT);
+
+    const skip = (page - 1) * validatedLimit;
+
+    const [data, total] = await Promise.all([
+      this.personModel
+        .find(query)
+        .skip(skip)
+        .limit(validatedLimit)
+        .sort({ createdAt: -1 })
+        .exec(),
+      this.personModel.countDocuments(query).exec(),
+    ]);
+
+    return {
+      data,
+      total,
+      page,
+      limit: validatedLimit,
+    };
   }
 }

@@ -21,7 +21,11 @@ export interface IPersonRepository {
   findByDocument(document: string): Promise<IPerson[]>;
   findByCorporateName(corporateName: string): Promise<IPerson[]>;
   findByPhone(phone: string): Promise<IPerson[]>;
-  searchPerson(searchTerm: string): Promise<IPerson[]>;
+  searchPerson(
+    searchTerm: string,
+    page?: number,
+    limit?: number,
+  ): Promise<{ data: IPerson[]; total: number; page: number; limit: number }>;
 }
 
 export interface IPersonFilters {
