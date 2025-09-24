@@ -78,8 +78,12 @@ export class PersonController {
 
   @ThrottleUser()
   @Get('search')
-  async searchPerson(@Query('q') searchTerm: string): Promise<IPerson[]> {
-    return this.personService.searchPerson(searchTerm);
+  async searchPerson(
+    @Query('q') searchTerm: string,
+    @Query('page', new ParseIntPipe({ optional: true })) page?: number,
+    @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
+  ): Promise<{ data: IPerson[]; total: number; page: number; limit: number }> {
+    return this.personService.searchPerson(searchTerm, page, limit);
   }
 
   // Rotas com parâmetros dinâmicos (DEVEM vir DEPOIS das rotas específicas)

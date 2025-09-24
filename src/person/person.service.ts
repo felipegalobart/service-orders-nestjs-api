@@ -133,14 +133,18 @@ export class PersonService {
     return this.personRepository.findByPhone(phone.trim());
   }
 
-  async searchPerson(searchTerm: string): Promise<IPerson[]> {
+  async searchPerson(
+    searchTerm: string,
+    page: number = 1,
+    limit: number = 50,
+  ): Promise<{ data: IPerson[]; total: number; page: number; limit: number }> {
     if (!searchTerm || searchTerm.trim().length < 2) {
       throw new BadRequestException(
         'Termo de busca deve ter pelo menos 2 caracteres',
       );
     }
 
-    return this.personRepository.searchPerson(searchTerm.trim());
+    return this.personRepository.searchPerson(searchTerm.trim(), page, limit);
   }
 
   // Métodos privados para validações
