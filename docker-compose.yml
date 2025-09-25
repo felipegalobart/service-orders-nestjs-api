@@ -9,7 +9,7 @@ services:
     ports:
       - '3000:3000'
     env_file:
-      - .env.production
+      - .env
     environment:
       - NODE_ENV=${NODE_ENV}
       - PORT=${PORT}
@@ -39,7 +39,7 @@ services:
   # Redis Cache (for rate limiting and caching)
   redis:
     env_file:
-      - .env.production
+      - .env
     image: redis:7.2-alpine
     container_name: service-orders-redis
     restart: unless-stopped
