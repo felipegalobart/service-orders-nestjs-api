@@ -7,7 +7,7 @@ services:
     container_name: service-orders-api
     restart: unless-stopped
     ports:
-      - '3000:3000'
+      - '3000:3000' # API direta - sem proxy interno
     env_file:
       - .env
     environment:
@@ -16,7 +16,7 @@ services:
       - MONGODB_URI=${MONGODB_URI}
       - JWT_SECRET=${JWT_SECRET}
       - JWT_EXPIRES_IN=${JWT_EXPIRES_IN}
-      - THROTTLE_TTL=${THROTTLE_TTL}
+      - THROTTLE_TTL=${THROTTLE_LIMIT}
       - THROTTLE_LIMIT=${THROTTLE_LIMIT}
     depends_on:
       redis:
@@ -56,21 +56,6 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
-
-  # Nginx Reverse Proxy (optional)
-  nginx:
-    image: nginx:alpine
-    container_name: service-orders-nginx
-    restart: unless-stopped
-    ports:
-      - '80:80'
-    volumes:
-      - ./docker/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./docker/ssl:/etc/nginx/ssl:ro
-    depends_on:
-      - app
-    networks:
-      - service-orders-network
 
 volumes:
   redis_data:
