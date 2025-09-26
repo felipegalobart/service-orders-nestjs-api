@@ -7,7 +7,7 @@ export interface IAddress {
   state?: string;
   zipCode?: string;
   country?: string;
-  isDefault: boolean;
+  isDefault?: boolean;
 }
 
 export interface IContact {
@@ -21,17 +21,17 @@ export interface IContact {
 
 export interface IPerson {
   id: string;
-  type: 'customer' | 'supplier';
-  name: string;
+  type?: 'customer' | 'supplier';
+  name?: string;
   document?: string;
   corporateName?: string;
   tradeName?: string;
   stateRegistration?: string;
   municipalRegistration?: string;
   isExemptFromIE?: boolean;
-  pessoaJuridica: boolean;
-  blacklist: boolean;
-  isActive: boolean;
+  pessoaJuridica?: boolean;
+  blacklist?: boolean;
+  isActive?: boolean;
   deletedAt?: Date;
   notes?: string;
   addresses: IAddress[];
@@ -43,14 +43,14 @@ export interface IPerson {
 // Interface para dados de criação
 export interface ICreatePerson {
   type?: 'customer' | 'supplier';
-  name: string;
+  name?: string;
   document?: string;
   corporateName?: string;
   tradeName?: string;
   stateRegistration?: string;
   municipalRegistration?: string;
   isExemptFromIE?: boolean;
-  pessoaJuridica: boolean;
+  pessoaJuridica?: boolean;
   blacklist?: boolean;
   notes?: string;
   addresses?: IAddress[];

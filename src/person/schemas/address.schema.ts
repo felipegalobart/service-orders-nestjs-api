@@ -29,8 +29,8 @@ export class Address {
   @Prop({ type: String, default: 'Brasil' })
   country?: string;
 
-  @Prop({ type: Boolean, required: true, default: true })
-  isDefault: boolean;
+  @Prop({ type: Boolean, default: true })
+  isDefault?: boolean;
 }
 
 export const AddressSchema = SchemaFactory.createForClass(Address);

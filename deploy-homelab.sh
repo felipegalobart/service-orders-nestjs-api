@@ -58,6 +58,30 @@ else
     exit 1
 fi
 
+# Update code from repository
+echo -e "${BLUE}📥 Pulling latest changes from repository...${NC}"
+
+# Check if this is a git repository
+if [ -d ".git" ]; then
+    # Check if we're on main branch
+    CURRENT_BRANCH=$(git branch --show-current)
+    if [ "$CURRENT_BRANCH" != "main" ]; then
+        echo -e "${YELLOW}⚠️  Current branch is '$CURRENT_BRANCH', switching to main...${NC}"
+        git checkout main
+    fi
+    
+    # Pull latest changes
+    if git pull origin main; then
+        echo -e "${GREEN}✅ Code updated successfully from main branch${NC}"
+    else
+        echo -e "${YELLOW}⚠️  Git pull failed or no changes available${NC}"
+        echo -e "${YELLOW}   Continuing with current code...${NC}"
+    fi
+else
+    echo -e "${YELLOW}⚠️  Not a git repository, skipping code update${NC}"
+    echo -e "${YELLOW}   Continuing with current code...${NC}"
+fi
+
 # Stop existing containers
 echo -e "${BLUE}🛑 Stopping existing containers...${NC}"
 $COMPOSE_CMD down 2>/dev/null || true
@@ -118,6 +142,7 @@ echo "  • View logs: $COMPOSE_CMD logs -f"
 echo "  • Stop services: $COMPOSE_CMD down"
 echo "  • Restart services: $COMPOSE_CMD restart"
 echo "  • Update services: $COMPOSE_CMD pull && $COMPOSE_CMD up -d"
+echo "  • Deploy with latest code: ./deploy-homelab.sh"
 echo ""
 echo -e "${BLUE}📋 Useful Commands:${NC}"
 echo "  • Check status: $COMPOSE_CMD ps"

@@ -17,12 +17,11 @@ export class Person {
     type: String,
     enum: ['customer', 'supplier'],
     default: 'customer',
-    required: true,
   })
-  type: 'customer' | 'supplier';
+  type?: 'customer' | 'supplier';
 
-  @Prop({ type: String, required: true })
-  name: string;
+  @Prop({ type: String })
+  name?: string;
 
   @Prop({
     type: String,
@@ -46,14 +45,14 @@ export class Person {
   @Prop({ type: Boolean })
   isExemptFromIE?: boolean;
 
-  @Prop({ type: Boolean, required: true })
-  pessoaJuridica: boolean;
+  @Prop({ type: Boolean, default: false })
+  pessoaJuridica?: boolean;
 
-  @Prop({ type: Boolean, required: true, default: false })
-  blacklist: boolean;
+  @Prop({ type: Boolean, default: false })
+  blacklist?: boolean;
 
-  @Prop({ type: Boolean, required: true, default: true })
-  isActive: boolean;
+  @Prop({ type: Boolean, default: true })
+  isActive?: boolean;
 
   @Prop({ type: Date })
   deletedAt?: Date;

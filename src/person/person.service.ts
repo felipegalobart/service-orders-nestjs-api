@@ -230,30 +230,26 @@ export class PersonService {
         defaultCount++;
       }
 
-      // Validar campos obrigatórios se endereço não está vazio
-      const hasRequiredFields =
-        address.street || address.number || address.city || address.state;
-      if (hasRequiredFields) {
-        if (!address.street) {
-          throw new BadRequestException(
-            `Endereço ${index + 1}: Rua é obrigatória`,
-          );
-        }
-        if (!address.number) {
-          throw new BadRequestException(
-            `Endereço ${index + 1}: Número é obrigatório`,
-          );
-        }
-        if (!address.city) {
-          throw new BadRequestException(
-            `Endereço ${index + 1}: Cidade é obrigatória`,
-          );
-        }
-        if (!address.state) {
-          throw new BadRequestException(
-            `Endereço ${index + 1}: Estado é obrigatório`,
-          );
-        }
+      // Validação mais flexível - apenas verificar se pelo menos um campo foi preenchido
+      const hasAnyField =
+        address.street ||
+        address.number ||
+        address.city ||
+        address.state ||
+        address.neighborhood ||
+        address.zipCode ||
+        address.complement;
+
+      // Se nenhum campo foi preenchido, é um endereço vazio - permitir
+      if (!hasAnyField) {
+        return;
+      }
+
+      // Validações opcionais - apenas se campos específicos forem fornecidos
+      if (address.zipCode && !/^\d{5}-?\d{3}$/.test(address.zipCode)) {
+        throw new BadRequestException(
+          `Endereço ${index + 1}: CEP deve ter formato válido (00000-000)`,
+        );
       }
     });
 
@@ -272,30 +268,20 @@ export class PersonService {
         defaultCount++;
       }
 
-      // Validar campos obrigatórios se contato não está vazio
-      const hasRequiredFields =
+      // Validação mais flexível - apenas verificar se pelo menos um campo foi preenchido
+      const hasAnyField =
         contact.name || contact.phone || contact.email || contact.sector;
-      if (hasRequiredFields) {
-        if (!contact.name) {
-          throw new BadRequestException(
-            `Contato ${index + 1}: Nome é obrigatório`,
-          );
-        }
-        if (!contact.phone) {
-          throw new BadRequestException(
-            `Contato ${index + 1}: Telefone é obrigatório`,
-          );
-        }
-        if (!contact.email) {
-          throw new BadRequestException(
-            `Contato ${index + 1}: Email é obrigatório`,
-          );
-        }
-        if (!contact.sector) {
-          throw new BadRequestException(
-            `Contato ${index + 1}: Setor é obrigatório`,
-          );
-        }
+
+      // Se nenhum campo foi preenchido, é um contato vazio - permitir
+      if (!hasAnyField) {
+        return;
+      }
+
+      // Se pelo menos um campo foi preenchido, validar formato do email se fornecido
+      if (contact.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact.email)) {
+        throw new BadRequestException(
+          `Contato ${index + 1}: Email deve ter formato válido`,
+        );
       }
     });
 
@@ -311,6 +297,7 @@ export class PersonService {
       ...personData,
       type: personData.type || 'customer',
       blacklist: personData.blacklist ?? false,
+      pessoaJuridica: personData.pessoaJuridica ?? false,
       // Arrays já têm padrão [] no schema
       addresses: personData.addresses || [],
       contacts: personData.contacts || [],
