@@ -6,15 +6,18 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted # ← Mudança aqui
     steps:
       - uses: actions/checkout@v3
 
-      - name: Setup SSH
-        uses: webfactory/ssh-agent@v0.7.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
       - name: Deploy to homelab
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd service-orders-nestjs-api && git pull && docker-compose up -d"
+          cd service-orders-nestjs-api
+          git pull origin main
+          docker-compose down
+          docker-compose up -d
+
+      - name: Health check
+        run: |
+          sleep 30
+          curl -f http://localhost:3000/health || exit 1
