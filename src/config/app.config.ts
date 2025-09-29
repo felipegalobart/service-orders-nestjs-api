@@ -27,7 +27,7 @@ export const appConfig = (): IAppConfig => ({
   corsOrigin: process.env.CORS_ORIGIN || 'http://localhost:3000',
   logLevel: process.env.LOG_LEVEL || 'debug',
   throttlerTtl: parseInt(process.env.THROTTLE_TTL || '60000', 10), // 1 minuto em ms
-  throttlerLimit: parseInt(process.env.THROTTLE_LIMIT || '10', 10), // 10 requests por minuto
+  throttlerLimit: parseInt(process.env.THROTTLE_LIMIT || '20', 10), // 20 requests por minuto
 
   // Redis Configuration
   redisHost: process.env.REDIS_HOST || '192.168.31.75',
