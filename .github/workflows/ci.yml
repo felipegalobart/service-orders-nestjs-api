@@ -14,8 +14,8 @@ jobs:
         run: |
           cd ~/service-orders-nestjs-api
           git pull origin main
-          docker-compose down
-          docker-compose up -d
+          docker compose down
+          docker compose up -d
 
       - name: Health check
         run: |
