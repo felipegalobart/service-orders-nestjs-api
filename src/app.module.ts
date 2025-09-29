@@ -12,6 +12,8 @@ import { AuthModule } from './auth/auth.module';
 import { PersonModule } from './person/person.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { RolesGuard } from './auth/guards/roles.guard';
+import { RedisService } from './shared/services/redis.service';
+import { ThrottlerRedisStorage } from './shared/services/throttler-redis.storage';
 
 @Module({
   imports: [
@@ -22,13 +24,14 @@ import { RolesGuard } from './auth/guards/roles.guard';
     }),
     ThrottlerModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => [
+      useFactory: (configService: ConfigService, redisService: RedisService) => [
         {
           ttl: configService.get<number>('throttlerTtl') || 60000, // Usar configuração do .env ou padrão 1 minuto
           limit: configService.get<number>('throttlerLimit') || 20, // Usar configuração do .env ou padrão 10 requests
+          storage: new ThrottlerRedisStorage(redisService), // Usar Redis como storage
         },
       ],
-      inject: [ConfigService],
+      inject: [ConfigService, RedisService],
     }),
     JwtModule.register({
       global: true,
@@ -49,6 +52,7 @@ import { RolesGuard } from './auth/guards/roles.guard';
   controllers: [AppController],
   providers: [
     AppService,
+    RedisService,
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,

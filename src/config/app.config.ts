@@ -9,6 +9,11 @@ export interface IAppConfig {
   logLevel: string;
   throttlerTtl: number;
   throttlerLimit: number;
+
+  // Redis Configuration
+  redisHost: string;
+  redisPort: number;
+  redisPassword: string;
 }
 
 export const appConfig = (): IAppConfig => ({
@@ -23,4 +28,9 @@ export const appConfig = (): IAppConfig => ({
   logLevel: process.env.LOG_LEVEL || 'debug',
   throttlerTtl: parseInt(process.env.THROTTLE_TTL || '60000', 10), // 1 minuto em ms
   throttlerLimit: parseInt(process.env.THROTTLE_LIMIT || '10', 10), // 10 requests por minuto
+
+  // Redis Configuration
+  redisHost: process.env.REDIS_HOST || '192.168.31.75',
+  redisPort: parseInt(process.env.REDIS_PORT || '6379', 10),
+  redisPassword: process.env.REDIS_PASSWORD || '',
 });
