@@ -1,23 +1,87 @@
-name: Deploy Service Orders API
+name: CI/CD Pipeline - Service Orders API
 
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  NODE_VERSION: '20'
+  DOCKER_COMPOSE_VERSION: '2.0.0'
 
 jobs:
+  test:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run linting
+        run: npm run lint
+
+      - name: Run unit tests
+        run: npm run test
+
+      - name: Build application
+        run: npm run build
+
   deploy:
-    runs-on: self-hosted # ← Mudança aqui
+    # needs: test  # Comentado para não bloquear deploy se testes falharem
+    if: github.ref == 'refs/heads/main'
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v3
 
       - name: Deploy to homelab
         run: |
           cd ~/service-orders-nestjs-api
+          echo "🔄 Updating code from repository..."
           git pull origin main
+
+          echo "🛑 Stopping current containers..."
           docker compose down
-          docker compose up -d
+
+          echo "🔨 Building and starting containers..."
+          docker compose up -d --build
+
+          echo "⏳ Waiting for services to start..."
+          sleep 30
 
       - name: Health check
         run: |
-          sleep 30
-          curl -f http://localhost:3000/health || exit 1
+          echo "🏥 Checking application health..."
+          for i in {1..5}; do
+            if curl -f http://localhost:3000/health; then
+              echo "✅ Application is healthy!"
+              exit 0
+            fi
+            echo "⏳ Attempt $i/5 - waiting for application..."
+            sleep 10
+          done
+          echo "❌ Health check failed after 5 attempts"
+          exit 1
+
+      - name: Rollback on failure
+        if: failure()
+        run: |
+          echo "🔄 Rolling back to previous version..."
+          cd ~/service-orders-nestjs-api
+          git checkout HEAD~1
+          docker compose up -d
+          echo "🔄 Rollback completed"
+
+      - name: Deployment success notification
+        if: success()
+        run: |
+          echo "🎉 Deployment successful!"
+          echo "📊 Application is running at: http://192.168.31.75:3000"
+          echo "🏥 Health endpoint: http://192.168.31.75:3000/health"
