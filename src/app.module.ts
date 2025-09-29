@@ -25,7 +25,10 @@ import { ThrottlerRedisStorage } from './shared/services/throttler-redis.storage
     }),
     ThrottlerModule.forRootAsync({
       imports: [ConfigModule, RedisModule],
-      useFactory: (configService: ConfigService, redisService: RedisService) => [
+      useFactory: (
+        configService: ConfigService,
+        redisService: RedisService,
+      ) => [
         {
           ttl: configService.get<number>('throttlerTtl') || 60000, // Usar configuração do .env ou padrão 1 minuto
           limit: configService.get<number>('throttlerLimit') || 20, // Usar configuração do .env ou padrão 20 requests
