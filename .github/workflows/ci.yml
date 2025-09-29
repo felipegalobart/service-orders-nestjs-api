@@ -12,7 +12,7 @@ jobs:
 
       - name: Deploy to homelab
         run: |
-          cd service-orders-nestjs-api
+          cd ~/service-orders-nestjs-api
           git pull origin main
           docker-compose down
           docker-compose up -d
