@@ -9,6 +9,7 @@ import {
   ServiceOrderSchema,
 } from './schemas/service-order.schema';
 import { Counter, CounterSchema } from './schemas/counter.schema';
+import { PersonModule } from '../person/person.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { Counter, CounterSchema } from './schemas/counter.schema';
       { name: ServiceOrder.name, schema: ServiceOrderSchema },
       { name: Counter.name, schema: CounterSchema },
     ]),
+    PersonModule,
   ],
   controllers: [ServiceOrderController],
   providers: [

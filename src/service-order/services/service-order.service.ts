@@ -19,6 +19,7 @@ import {
   PaymentType,
 } from '../schemas/service-order.schema';
 import { SequenceGeneratorService } from './sequence-generator.service';
+import { PersonService } from '../../person/person.service';
 
 @Injectable()
 export class ServiceOrderService {
@@ -26,12 +27,13 @@ export class ServiceOrderService {
     @Inject('IServiceOrderRepository')
     private readonly serviceOrderRepository: IServiceOrderRepository,
     private readonly sequenceGenerator: SequenceGeneratorService,
+    private readonly personService: PersonService,
   ) {}
 
   // CRUD básico
   async create(serviceOrderData: ICreateServiceOrder): Promise<IServiceOrder> {
     // 1. Validações de negócio
-    this.validateCreateServiceOrder(serviceOrderData);
+    await this.validateCreateServiceOrder(serviceOrderData);
 
     // 2. Gerar número sequencial
     const orderNumber = await this.sequenceGenerator.getNextSequenceNumber();
@@ -342,12 +344,24 @@ export class ServiceOrderService {
   }
 
   // Métodos privados para validações
-  private validateCreateServiceOrder(
+  private async validateCreateServiceOrder(
     serviceOrderData: ICreateServiceOrder,
-  ): void {
+  ): Promise<void> {
     // Validar campos obrigatórios
     if (!serviceOrderData.customerId) {
       throw new BadRequestException('ID do cliente é obrigatório');
+    }
+
+    // Validar se o cliente existe no banco de dados
+    try {
+      await this.personService.findById(serviceOrderData.customerId);
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw new BadRequestException(
+          `Cliente com ID ${serviceOrderData.customerId} não encontrado no banco de dados`,
+        );
+      }
+      throw error;
     }
 
     if (
