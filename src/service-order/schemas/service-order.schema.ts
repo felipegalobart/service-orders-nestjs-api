@@ -1,5 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
+import { ServiceItem, ServiceItemSchema } from './service-item.schema';
 
 // Enums
 export enum ServiceOrderStatus {
@@ -211,62 +216,112 @@ export class ServiceOrder {
   updatedAt?: Date;
 
   // Array de serviços executados
-  @Prop({ type: [Object], default: [] })
-  services: any[];
-
-  // Método para calcular totais
-  calculateTotals(): void {
-    if (this.services && this.services.length > 0) {
-      // Calcular total dos serviços
-      let servicesSum = 0;
-
-      this.services.forEach((service: IServiceItem) => {
-        const quantity = service.quantity || 1;
-        const value = parseFloat(service.value?.toString() || '0');
-        const discount = parseFloat(service.discount?.toString() || '0');
-        const addition = parseFloat(service.addition?.toString() || '0');
-
-        // Calcular total do serviço individual
-        const serviceTotal = quantity * value + addition - discount;
-        servicesSum += serviceTotal;
-
-        // Atualizar total do serviço individual
-        service.total = Types.Decimal128.fromString(serviceTotal.toString());
-      });
-
-      // Atualizar soma dos serviços
-      this.servicesSum = Types.Decimal128.fromString(servicesSum.toString());
-
-      // Calcular total geral
-      const totalDiscount = parseFloat(this.totalDiscount?.toString() || '0');
-      const totalAddition = parseFloat(this.totalAddition?.toString() || '0');
-      const totalAmountLeft = servicesSum + totalAddition - totalDiscount;
-
-      this.totalAmountLeft = Types.Decimal128.fromString(
-        totalAmountLeft.toString(),
-      );
-    } else {
-      // Se não há serviços, zerar totais
-      this.servicesSum = Types.Decimal128.fromString('0');
-      this.totalAmountLeft = Types.Decimal128.fromString('0');
-    }
-  }
+  @Prop({ type: [ServiceItemSchema], default: [] })
+  services: ServiceItem[];
 }
 
 // Schema factory
 export const ServiceOrderSchema = SchemaFactory.createForClass(ServiceOrder);
 
+// Adicionar método calculateTotals ao schema
+ServiceOrderSchema.methods.calculateTotals = function (this: any) {
+  if (this.services && this.services.length > 0) {
+    // Calcular total dos serviços
+    let servicesSum = 0;
+
+    this.services.forEach((service: any) => {
+      const quantity = service.quantity || 1;
+      const value = parseFloat(service.value?.toString() || '0');
+      const discount = parseFloat(service.discount?.toString() || '0');
+      const addition = parseFloat(service.addition?.toString() || '0');
+
+      // Calcular total do serviço individual
+      const serviceTotal = quantity * value + addition - discount;
+      servicesSum += serviceTotal;
+
+      // Atualizar total do serviço individual
+      service.total = Types.Decimal128.fromString(serviceTotal.toString());
+    });
+
+    // Atualizar soma dos serviços
+    this.servicesSum = Types.Decimal128.fromString(servicesSum.toString());
+
+    // Calcular total geral
+    const totalDiscount = parseFloat(this.totalDiscount?.toString() || '0');
+    const totalAddition = parseFloat(this.totalAddition?.toString() || '0');
+    const totalAmountLeft = servicesSum + totalAddition - totalDiscount;
+
+    this.totalAmountLeft = Types.Decimal128.fromString(
+      totalAmountLeft.toString(),
+    );
+  } else {
+    // Se não há serviços, zerar totais
+    this.servicesSum = Types.Decimal128.fromString('0');
+    this.totalAmountLeft = Types.Decimal128.fromString('0');
+  }
+};
+
 // Middleware para calcular totais automaticamente
 ServiceOrderSchema.pre('save', function () {
-  if (this.calculateTotals && typeof this.calculateTotals === 'function') {
-    this.calculateTotals();
+  if (
+    (this as any).calculateTotals &&
+    typeof (this as any).calculateTotals === 'function'
+  ) {
+    (this as any).calculateTotals();
   }
 });
 
-// Middleware para findOneAndUpdate desabilitado temporariamente
-// ServiceOrderSchema.pre('findOneAndUpdate', function () {
-//   // Lógica de cálculo de totais para updates
-// });
+// Middleware para findOneAndUpdate
+ServiceOrderSchema.pre('findOneAndUpdate', function (this: any) {
+  const update = this.getUpdate();
+
+  // Se há serviços sendo atualizados, recalcular totais
+  if (update && (update.services || update.$set?.services)) {
+    const services = update.services || update.$set?.services || [];
+
+    if (services && services.length > 0) {
+      let servicesSum = 0;
+
+      services.forEach((service: any) => {
+        const quantity = service.quantity || 1;
+        const value = parseFloat(service.value?.toString() || '0');
+        const discount = parseFloat(service.discount?.toString() || '0');
+        const addition = parseFloat(service.addition?.toString() || '0');
+
+        const serviceTotal = quantity * value + addition - discount;
+        servicesSum += serviceTotal;
+
+        service.total = Types.Decimal128.fromString(serviceTotal.toString());
+      });
+
+      // Atualizar campos de totais
+      const totalDiscount = parseFloat(
+        update.totalDiscount?.toString() ||
+          update.$set?.totalDiscount?.toString() ||
+          '0',
+      );
+      const totalAddition = parseFloat(
+        update.totalAddition?.toString() ||
+          update.$set?.totalAddition?.toString() ||
+          '0',
+      );
+      const totalAmountLeft = servicesSum + totalAddition - totalDiscount;
+
+      this.set({
+        servicesSum: Types.Decimal128.fromString(servicesSum.toString()),
+        totalAmountLeft: Types.Decimal128.fromString(
+          totalAmountLeft.toString(),
+        ),
+      });
+    } else {
+      // Se não há serviços, zerar totais
+      this.set({
+        servicesSum: Types.Decimal128.fromString('0'),
+        totalAmountLeft: Types.Decimal128.fromString('0'),
+      });
+    }
+  }
+});
 
 // Índices para performance
 ServiceOrderSchema.index({ orderNumber: 1 }, { unique: true });
