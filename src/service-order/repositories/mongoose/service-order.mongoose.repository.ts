@@ -503,35 +503,57 @@ export class ServiceOrderMongooseRepository implements IServiceOrderRepository {
     page: number = 1,
     limit: number = 50,
   ): Promise<IPaginatedResult> {
-    const query = {
-      $or: [
-        { equipment: { $regex: searchTerm, $options: 'i' } },
-        { model: { $regex: searchTerm, $options: 'i' } },
-        { brand: { $regex: searchTerm, $options: 'i' } },
-        { serialNumber: { $regex: searchTerm, $options: 'i' } },
-        { observations: { $regex: searchTerm, $options: 'i' } },
-        { notes: { $regex: searchTerm, $options: 'i' } },
-      ],
-      isActive: true,
-      deletedAt: { $exists: false },
-    };
+    const pipeline = [
+      {
+        $lookup: {
+          from: 'persons',
+          localField: 'customerId',
+          foreignField: '_id',
+          as: 'customer',
+        },
+      },
+      {
+        $match: {
+          $or: [
+            // Campos específicos da busca
+            { 'customer.name': { $regex: searchTerm, $options: 'i' } },
+            { equipment: { $regex: searchTerm, $options: 'i' } },
+            { model: { $regex: searchTerm, $options: 'i' } },
+            { status: { $regex: searchTerm, $options: 'i' } },
+          ],
+          isActive: true,
+          deletedAt: { $exists: false },
+        },
+      },
+      {
+        $project: {
+          customer: 0, // Remove dados do cliente do resultado
+        },
+      },
+    ];
 
     const MAX_LIMIT = 100;
     const validatedLimit = Math.min(limit, MAX_LIMIT);
     const skip = (page - 1) * validatedLimit;
 
-    const [data, total] = await Promise.all([
+    const [data, totalResult] = await Promise.all([
       this.serviceOrderModel
-        .find(query)
-        .skip(skip)
-        .limit(validatedLimit)
-        .sort({ createdAt: -1 })
+        .aggregate([
+          ...pipeline,
+          { $skip: skip },
+          { $limit: validatedLimit },
+          { $sort: { createdAt: -1 } },
+        ])
         .exec(),
-      this.serviceOrderModel.countDocuments(query).exec(),
+      this.serviceOrderModel
+        .aggregate([...pipeline, { $count: 'total' }])
+        .exec(),
     ]);
 
+    const total = (totalResult[0] as { total: number })?.total || 0;
+
     return {
-      data,
+      data: data as IServiceOrder[],
       total,
       page,
       limit: validatedLimit,
