@@ -22,17 +22,19 @@ export enum FinancialStatus {
 }
 
 export enum PaymentMethod {
-  DEBITO = 'débito',
-  CREDITO = 'credito',
-  DINHEIRO = 'dinheiro',
+  DEBITO = 'debit',
+  CREDITO = 'credit',
+  DINHEIRO = 'cash',
   PIX = 'pix',
   BOLETO = 'boleto',
+  TRANSFERENCIA = 'transfer',
+  CHEQUE = 'check',
 }
 
 export enum PaymentType {
-  CASH = 'À VISTA',
-  INSTALLMENT = 'PARCELADO',
-  PENDING = 'PENDENTE',
+  CASH = 'cash',
+  INSTALLMENT = 'installment',
+  STORE_CREDIT = 'store_credit',
 }
 
 // Tipo do documento
