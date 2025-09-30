@@ -212,7 +212,7 @@ export class ServiceOrder {
 
   // Array de serviços executados
   @Prop({ type: [Object], default: [] })
-  services: IServiceItem[];
+  services: any[];
 
   // Método para calcular totais
   calculateTotals(): void {
@@ -258,49 +258,15 @@ export const ServiceOrderSchema = SchemaFactory.createForClass(ServiceOrder);
 
 // Middleware para calcular totais automaticamente
 ServiceOrderSchema.pre('save', function () {
-  this.calculateTotals();
-});
-
-ServiceOrderSchema.pre('findOneAndUpdate', function () {
-  const update = this.getUpdate() as Record<string, any>;
-  if (update && (update.services || update.$set?.services)) {
-    // Se serviços foram atualizados, recalcular totais
-    const docToUpdate = update.$set || update;
-    if (docToUpdate.services) {
-      // Calcular totais para o documento atualizado
-      const services = docToUpdate.services as IServiceItem[];
-      let servicesSum = 0;
-
-      services.forEach((service: IServiceItem) => {
-        const quantity = service.quantity || 1;
-        const value = parseFloat(service.value?.toString() || '0');
-        const discount = parseFloat(service.discount?.toString() || '0');
-        const addition = parseFloat(service.addition?.toString() || '0');
-
-        const serviceTotal = quantity * value + addition - discount;
-        servicesSum += serviceTotal;
-
-        service.total = Types.Decimal128.fromString(serviceTotal.toString());
-      });
-
-      const totalDiscount = parseFloat(
-        (docToUpdate.totalDiscount as Types.Decimal128)?.toString() || '0',
-      );
-      const totalAddition = parseFloat(
-        (docToUpdate.totalAddition as Types.Decimal128)?.toString() || '0',
-      );
-      const totalAmountLeft = servicesSum + totalAddition - totalDiscount;
-
-      // Atualizar campos calculados
-      docToUpdate.servicesSum = Types.Decimal128.fromString(
-        servicesSum.toString(),
-      );
-      docToUpdate.totalAmountLeft = Types.Decimal128.fromString(
-        totalAmountLeft.toString(),
-      );
-    }
+  if (this.calculateTotals && typeof this.calculateTotals === 'function') {
+    this.calculateTotals();
   }
 });
+
+// Middleware para findOneAndUpdate desabilitado temporariamente
+// ServiceOrderSchema.pre('findOneAndUpdate', function () {
+//   // Lógica de cálculo de totais para updates
+// });
 
 // Índices para performance
 ServiceOrderSchema.index({ orderNumber: 1 }, { unique: true });

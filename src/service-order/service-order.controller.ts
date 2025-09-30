@@ -77,7 +77,7 @@ export class ServiceOrderController {
   }
 
   // Endpoints de busca específica (DEVEM vir ANTES das rotas com :id)
-  @Get('search/order-number')
+  @Get('by-order-number')
   async findByOrderNumber(
     @Query('q') orderNumber: string,
   ): Promise<IServiceOrder> {
@@ -92,59 +92,59 @@ export class ServiceOrderController {
     return order;
   }
 
-  @Get('search/customer')
+  @Get('by-customer')
   async findByCustomer(
     @Query('q') customerId: string,
   ): Promise<IServiceOrder[]> {
     return this.serviceOrderService.findByCustomerId(customerId);
   }
 
-  @Get('search/status')
+  @Get('by-status')
   async findByStatus(
     @Query('q') status: ServiceOrderStatus,
   ): Promise<IServiceOrder[]> {
     return this.serviceOrderService.findByStatus(status);
   }
 
-  @Get('search/equipment')
+  @Get('by-equipment')
   async findByEquipment(
     @Query('q') equipment: string,
   ): Promise<IServiceOrder[]> {
     return this.serviceOrderService.findByEquipment(equipment);
   }
 
-  @Get('search/model')
+  @Get('by-model')
   async findByModel(@Query('q') model: string): Promise<IServiceOrder[]> {
     return this.serviceOrderService.findByModel(model);
   }
 
-  @Get('search/brand')
+  @Get('by-brand')
   async findByBrand(@Query('q') brand: string): Promise<IServiceOrder[]> {
     return this.serviceOrderService.findByBrand(brand);
   }
 
-  @Get('search/serial-number')
+  @Get('by-serial-number')
   async findBySerialNumber(
     @Query('q') serialNumber: string,
   ): Promise<IServiceOrder> {
     return this.serviceOrderService.findBySerialNumber(serialNumber);
   }
 
-  @Get('search/customer-name')
+  @Get('by-customer-name')
   async findByCustomerName(
     @Query('q') customerName: string,
   ): Promise<IServiceOrder[]> {
     return this.serviceOrderService.findByCustomerName(customerName);
   }
 
-  @Get('search/customer-corporate-name')
+  @Get('by-customer-corporate-name')
   async findByCustomerCorporateName(
     @Query('q') corporateName: string,
   ): Promise<IServiceOrder[]> {
     return this.serviceOrderService.findByCustomerCorporateName(corporateName);
   }
 
-  @Get('search/customer-trade-name')
+  @Get('by-customer-trade-name')
   async findByCustomerTradeName(
     @Query('q') tradeName: string,
   ): Promise<IServiceOrder[]> {
@@ -174,8 +174,7 @@ export class ServiceOrderController {
     currentNumber: number;
     exists: boolean;
   }> {
-    const info = await this.serviceOrderService.getSequenceInfo();
-    return info;
+    return this.serviceOrderService.getSequenceInfo();
   }
 
   // Rotas com parâmetros dinâmicos (DEVEM vir DEPOIS das rotas específicas)

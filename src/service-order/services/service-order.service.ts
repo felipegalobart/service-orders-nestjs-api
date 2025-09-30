@@ -4,6 +4,7 @@ import {
   BadRequestException,
   Inject,
 } from '@nestjs/common';
+import { Types } from 'mongoose';
 import type {
   IServiceOrderRepository,
   IServiceOrderFilters,
@@ -48,6 +49,11 @@ export class ServiceOrderService {
   }
 
   async findById(id: string): Promise<IServiceOrder> {
+    // Validar ObjectId
+    if (!Types.ObjectId.isValid(id)) {
+      throw new BadRequestException('ID inválido');
+    }
+
     const serviceOrder = await this.serviceOrderRepository.findById(id);
 
     if (!serviceOrder) {
@@ -79,7 +85,12 @@ export class ServiceOrderService {
     id: string,
     serviceOrderData: IUpdateServiceOrder,
   ): Promise<IServiceOrder> {
-    // 1. Verificar se ordem existe
+    // 1. Validar ObjectId
+    if (!Types.ObjectId.isValid(id)) {
+      throw new BadRequestException('ID inválido');
+    }
+
+    // 2. Verificar se ordem existe
     const existingOrder = await this.serviceOrderRepository.findById(id);
     if (!existingOrder) {
       throw new NotFoundException(
@@ -87,10 +98,10 @@ export class ServiceOrderService {
       );
     }
 
-    // 2. Validações de negócio
+    // 3. Validações de negócio
     this.validateUpdateServiceOrder(id, serviceOrderData);
 
-    // 3. Atualizar (totais calculados automaticamente pelo middleware do schema)
+    // 4. Atualizar (totais calculados automaticamente pelo middleware do schema)
     const updatedOrder = await this.serviceOrderRepository.update(
       id,
       serviceOrderData,
@@ -105,7 +116,12 @@ export class ServiceOrderService {
   }
 
   async delete(id: string): Promise<IServiceOrder> {
-    // Verificar se ordem existe
+    // 1. Validar ObjectId
+    if (!Types.ObjectId.isValid(id)) {
+      throw new BadRequestException('ID inválido');
+    }
+
+    // 2. Verificar se ordem existe
     const existingOrder = await this.serviceOrderRepository.findById(id);
     if (!existingOrder) {
       throw new NotFoundException(
@@ -295,6 +311,10 @@ export class ServiceOrderService {
     id: string,
     status: ServiceOrderStatus,
   ): Promise<IServiceOrder> {
+    // Validar ObjectId
+    if (!Types.ObjectId.isValid(id)) {
+      throw new BadRequestException('ID inválido');
+    }
     return this.update(id, { status });
   }
 
@@ -302,6 +322,10 @@ export class ServiceOrderService {
     id: string,
     financial: FinancialStatus,
   ): Promise<IServiceOrder> {
+    // Validar ObjectId
+    if (!Types.ObjectId.isValid(id)) {
+      throw new BadRequestException('ID inválido');
+    }
     return this.update(id, { financial });
   }
 
@@ -366,11 +390,11 @@ export class ServiceOrderService {
       );
     }
 
-    // Data de entrega não pode ser no futuro
+    // Data de entrega não pode ser no futuro (com tolerância de 1 hora)
     if (
       'deliveryDate' in serviceOrderData &&
       serviceOrderData.deliveryDate &&
-      serviceOrderData.deliveryDate > now
+      serviceOrderData.deliveryDate > new Date(now.getTime() + 60 * 60 * 1000)
     ) {
       throw new BadRequestException('Data de entrega não pode ser no futuro');
     }

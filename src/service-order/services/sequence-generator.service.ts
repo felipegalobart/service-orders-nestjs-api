@@ -18,7 +18,7 @@ export class SequenceGeneratorService {
     try {
       const counter = await this.counterModel
         .findOneAndUpdate(
-          { _id: 'serviceOrderSequence' }, // ID fixo para ordens de serviço
+          { name: 'serviceOrderSequence' }, // Nome fixo para ordens de serviço
           { $inc: { sequence_value: 1 } }, // Incrementa em 1
           {
             new: true, // Retorna o documento atualizado
@@ -44,7 +44,7 @@ export class SequenceGeneratorService {
   async getCurrentSequenceNumber(): Promise<number> {
     try {
       const counter = await this.counterModel
-        .findOne({ _id: 'serviceOrderSequence' })
+        .findOne({ name: 'serviceOrderSequence' })
         .exec();
 
       return counter ? counter.sequence_value : 0;
@@ -69,7 +69,7 @@ export class SequenceGeneratorService {
 
       const counter = await this.counterModel
         .findOneAndUpdate(
-          { _id: 'serviceOrderSequence' },
+          { name: 'serviceOrderSequence' },
           { sequence_value: number },
           {
             new: true,
@@ -114,7 +114,7 @@ export class SequenceGeneratorService {
   async sequenceExists(): Promise<boolean> {
     try {
       const counter = await this.counterModel
-        .findOne({ _id: 'serviceOrderSequence' })
+        .findOne({ name: 'serviceOrderSequence' })
         .exec();
 
       return !!counter;

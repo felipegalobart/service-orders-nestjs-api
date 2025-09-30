@@ -10,6 +10,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { PersonModule } from './person/person.module';
+import { ServiceOrderModule } from './service-order/service-order.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { RolesGuard } from './auth/guards/roles.guard';
 import { RedisModule } from './shared/redis.module';
@@ -52,6 +53,7 @@ import { ThrottlerRedisStorage } from './shared/services/throttler-redis.storage
     UserModule,
     AuthModule,
     PersonModule,
+    ServiceOrderModule,
   ],
   controllers: [AppController],
   providers: [

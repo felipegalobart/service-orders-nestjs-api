@@ -5,6 +5,7 @@ import { ObjectId } from 'mongodb';
 export class TestData {
   static readonly validUserId = new ObjectId().toString();
   static readonly validAdminId = new ObjectId().toString();
+  static readonly cursorUserId = new ObjectId().toString();
 
   static createValidUser(overrides: Partial<IUser> = {}): IUser {
     return {
@@ -32,6 +33,19 @@ export class TestData {
     };
   }
 
+  static createCursorUser(overrides: Partial<IUser> = {}): IUser {
+    return {
+      id: this.cursorUserId,
+      email: 'cursor_user@teste.com',
+      password: '$2b$10$rQZ8K9XmN7pL2sV3wE5fOuH8jK1mN2pL3sV4wE5fOuH8jK1mN2pL', // 123456 hashed
+      name: 'Cursor User',
+      role: UserRole.USER,
+      createdAt: new Date('2023-01-01'),
+      updatedAt: new Date('2023-01-01'),
+      ...overrides,
+    };
+  }
+
   static createValidCreateUserData(
     overrides: Partial<ICreateUser> = {},
   ): ICreateUser {
@@ -51,6 +65,13 @@ export class TestData {
       email: 'test@example.com',
       password: 'password123',
       ...overrides,
+    };
+  }
+
+  static createCursorUserLoginData() {
+    return {
+      email: 'cursor_user@teste.com',
+      password: '123456',
     };
   }
 

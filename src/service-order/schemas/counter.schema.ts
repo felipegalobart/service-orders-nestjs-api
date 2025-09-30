@@ -7,7 +7,8 @@ export type CounterDocument = HydratedDocument<Counter>;
 // Schema do Counter para controle de sequência numérica
 @Schema({ collection: 'counters' })
 export class Counter {
-  _id: string;
+  @Prop({ type: String, required: true, unique: true })
+  name: string;
 
   @Prop({ type: Number, default: 0 })
   sequence_value: number;
