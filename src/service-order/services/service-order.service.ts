@@ -305,6 +305,18 @@ export class ServiceOrderService {
     return this.update(id, { financial });
   }
 
+  // Métodos de integração com sequence generator
+  async getCurrentSequenceNumber(): Promise<number> {
+    return this.sequenceGenerator.getCurrentSequenceNumber();
+  }
+
+  async getSequenceInfo(): Promise<{ currentNumber: number; exists: boolean }> {
+    const currentNumber =
+      await this.sequenceGenerator.getCurrentSequenceNumber();
+    const exists = await this.sequenceGenerator.sequenceExists();
+    return { currentNumber, exists };
+  }
+
   // Métodos privados para validações
   private validateCreateServiceOrder(
     serviceOrderData: ICreateServiceOrder,

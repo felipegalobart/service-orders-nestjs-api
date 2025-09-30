@@ -284,10 +284,10 @@ ServiceOrderSchema.pre('findOneAndUpdate', function () {
       });
 
       const totalDiscount = parseFloat(
-        docToUpdate.totalDiscount?.toString() || '0',
+        (docToUpdate.totalDiscount as Types.Decimal128)?.toString() || '0',
       );
       const totalAddition = parseFloat(
-        docToUpdate.totalAddition?.toString() || '0',
+        (docToUpdate.totalAddition as Types.Decimal128)?.toString() || '0',
       );
       const totalAmountLeft = servicesSum + totalAddition - totalDiscount;
 
