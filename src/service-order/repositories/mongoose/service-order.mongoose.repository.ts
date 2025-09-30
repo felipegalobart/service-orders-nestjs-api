@@ -17,12 +17,15 @@ import {
   ServiceOrderStatus,
   FinancialStatus,
 } from '../../schemas/service-order.schema';
+import { Person, PersonDocument } from '../../../person/schemas/person.schema';
 
 @Injectable()
 export class ServiceOrderMongooseRepository implements IServiceOrderRepository {
   constructor(
     @InjectModel(ServiceOrder.name)
     private serviceOrderModel: Model<ServiceOrderDocument>,
+    @InjectModel(Person.name)
+    private personModel: Model<PersonDocument>,
   ) {}
 
   // CRUD básico
@@ -322,85 +325,79 @@ export class ServiceOrderMongooseRepository implements IServiceOrderRepository {
 
   // Busca por cliente
   async findByCustomerName(customerName: string): Promise<IServiceOrder[]> {
+    // Vamos tentar uma abordagem mais simples: buscar primeiro os clientes que correspondem ao nome
+    const matchingPersons = await this.personModel
+      .find({
+        name: { $regex: customerName, $options: 'i' },
+        isActive: true,
+      })
+      .select('_id');
+
+    if (matchingPersons.length === 0) {
+      return [];
+    }
+
+    const personIds = matchingPersons.map((p) => p._id.toString());
+
+    // Agora buscar as service orders desses clientes
     return this.serviceOrderModel
-      .aggregate([
-        {
-          $lookup: {
-            from: 'persons',
-            localField: 'customerId',
-            foreignField: '_id',
-            as: 'customer',
-          },
-        },
-        {
-          $match: {
-            'customer.name': { $regex: customerName, $options: 'i' },
-            isActive: true,
-            deletedAt: { $exists: false },
-          },
-        },
-        {
-          $project: {
-            customer: 0, // Remove o campo customer do resultado
-          },
-        },
-      ])
+      .find({
+        customerId: { $in: personIds },
+        isActive: true,
+        deletedAt: { $exists: false },
+      })
       .exec() as Promise<IServiceOrder[]>;
   }
 
   async findByCustomerCorporateName(
     corporateName: string,
   ): Promise<IServiceOrder[]> {
+    // Buscar primeiro os clientes que correspondem ao nome corporativo
+    const matchingPersons = await this.personModel
+      .find({
+        corporateName: { $regex: corporateName, $options: 'i' },
+        isActive: true,
+      })
+      .select('_id');
+
+    if (matchingPersons.length === 0) {
+      return [];
+    }
+
+    const personIds = matchingPersons.map((p) => p._id.toString());
+
+    // Agora buscar as service orders desses clientes
     return this.serviceOrderModel
-      .aggregate([
-        {
-          $lookup: {
-            from: 'persons',
-            localField: 'customerId',
-            foreignField: '_id',
-            as: 'customer',
-          },
-        },
-        {
-          $match: {
-            'customer.corporateName': { $regex: corporateName, $options: 'i' },
-            isActive: true,
-            deletedAt: { $exists: false },
-          },
-        },
-        {
-          $project: {
-            customer: 0,
-          },
-        },
-      ])
+      .find({
+        customerId: { $in: personIds },
+        isActive: true,
+        deletedAt: { $exists: false },
+      })
       .exec() as Promise<IServiceOrder[]>;
   }
 
   async findByCustomerTradeName(tradeName: string): Promise<IServiceOrder[]> {
+    // Buscar primeiro os clientes que correspondem ao nome fantasia
+    const matchingPersons = await this.personModel
+      .find({
+        tradeName: { $regex: tradeName, $options: 'i' },
+        isActive: true,
+      })
+      .select('_id');
+
+    if (matchingPersons.length === 0) {
+      return [];
+    }
+
+    const personIds = matchingPersons.map((p) => p._id.toString());
+
+    // Agora buscar as service orders desses clientes
     return this.serviceOrderModel
-      .aggregate([
-        {
-          $lookup: {
-            from: 'persons',
-            localField: 'customerId',
-            foreignField: '_id',
-            as: 'customer',
-          },
-        },
-        {
-          $match: {
-            'customer.tradeName': { $regex: tradeName, $options: 'i' },
-            isActive: true,
-            deletedAt: { $exists: false },
-          },
-        },
-        {
-          $project: {
-            customer: 0,
-          },
-        },
-      ])
+      .find({
+        customerId: { $in: personIds },
+        isActive: true,
+        deletedAt: { $exists: false },
+      })
       .exec() as Promise<IServiceOrder[]>;
   }
 

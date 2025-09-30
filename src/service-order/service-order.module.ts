@@ -10,12 +10,14 @@ import {
 } from './schemas/service-order.schema';
 import { Counter, CounterSchema } from './schemas/counter.schema';
 import { PersonModule } from '../person/person.module';
+import { Person, PersonSchema } from '../person/schemas/person.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: ServiceOrder.name, schema: ServiceOrderSchema },
       { name: Counter.name, schema: CounterSchema },
+      { name: Person.name, schema: PersonSchema },
     ]),
     PersonModule,
   ],
