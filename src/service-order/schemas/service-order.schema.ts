@@ -214,3 +214,98 @@ ServiceOrderSchema.index({ isActive: 1, deletedAt: 1 });
 ServiceOrderSchema.index({ financial: 1 });
 ServiceOrderSchema.index({ serialNumber: 1 });
 ServiceOrderSchema.index({ createdAt: -1 });
+
+// Interfaces TypeScript
+export interface IServiceOrder {
+  id: string;
+  orderNumber: number;
+  customerId: string;
+  equipment: string;
+  model?: string;
+  brand?: string;
+  serialNumber?: string;
+  voltage?: string;
+  accessories?: string;
+  customerObservations?: string;
+  reportedDefect?: string;
+  warranty?: boolean;
+  isReturn?: boolean;
+  status: ServiceOrderStatus;
+  entryDate: Date;
+  approvalDate?: Date;
+  expectedDeliveryDate?: Date;
+  deliveryDate?: Date;
+  deletedAt?: Date;
+  notes?: string;
+  financial: FinancialStatus;
+  paymentMethod?: PaymentMethod;
+  paymentConditions?: string;
+  serviceInvoice?: string;
+  saleInvoice?: string;
+  shippingInvoice?: string;
+  invoiceId?: string;
+  invoiceItemIds?: string[];
+  paymentType: PaymentType;
+  installmentCount: number;
+  paidInstallments: number;
+  servicesSum: Types.Decimal128;
+  totalDiscount: Types.Decimal128;
+  totalAddition: Types.Decimal128;
+  totalAmountPaid: Types.Decimal128;
+  totalAmountLeft: Types.Decimal128;
+  isActive: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export interface ICreateServiceOrder {
+  customerId: string;
+  equipment: string;
+  model?: string;
+  brand?: string;
+  serialNumber?: string;
+  voltage?: string;
+  accessories?: string;
+  customerObservations?: string;
+  reportedDefect?: string;
+  warranty?: boolean;
+  isReturn?: boolean;
+  expectedDeliveryDate?: Date;
+  notes?: string;
+  paymentMethod?: PaymentMethod;
+  paymentConditions?: string;
+  invoiceId?: string;
+  invoiceItemIds?: string[];
+  paymentType?: PaymentType;
+  installmentCount?: number;
+  paidInstallments?: number;
+}
+
+export interface IUpdateServiceOrder {
+  equipment?: string;
+  model?: string;
+  brand?: string;
+  serialNumber?: string;
+  voltage?: string;
+  accessories?: string;
+  customerObservations?: string;
+  reportedDefect?: string;
+  warranty?: boolean;
+  isReturn?: boolean;
+  status?: ServiceOrderStatus;
+  approvalDate?: Date;
+  expectedDeliveryDate?: Date;
+  deliveryDate?: Date;
+  notes?: string;
+  financial?: FinancialStatus;
+  paymentMethod?: PaymentMethod;
+  paymentConditions?: string;
+  serviceInvoice?: string;
+  saleInvoice?: string;
+  shippingInvoice?: string;
+  invoiceId?: string;
+  invoiceItemIds?: string[];
+  paymentType?: PaymentType;
+  installmentCount?: number;
+  paidInstallments?: number;
+}
