@@ -9,7 +9,8 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   constructor(private configService: ConfigService) {}
 
   async onModuleInit() {
-    const redisHost = this.configService.get<string>('redisHost') || 'localhost';
+    const redisHost =
+      this.configService.get<string>('redisHost') || 'localhost';
     const redisPort = this.configService.get<number>('redisPort') || 6379;
     const redisPassword = this.configService.get<string>('redisPassword');
 

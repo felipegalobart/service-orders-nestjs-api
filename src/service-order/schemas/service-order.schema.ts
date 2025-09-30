@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
-import { Types } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 
 // Enums
 export enum ServiceOrderStatus {
@@ -35,6 +34,16 @@ export enum PaymentType {
   CASH = 'cash',
   INSTALLMENT = 'installment',
   STORE_CREDIT = 'store_credit',
+}
+
+// Interface para ServiceItem
+export interface IServiceItem {
+  description: string;
+  quantity: number;
+  value: Types.Decimal128;
+  discount: Types.Decimal128;
+  addition: Types.Decimal128;
+  total: Types.Decimal128;
 }
 
 // Tipo do documento
@@ -200,10 +209,98 @@ export class ServiceOrder {
 
   @Prop({ type: Date })
   updatedAt?: Date;
+
+  // Array de serviços executados
+  @Prop({ type: [Object], default: [] })
+  services: IServiceItem[];
+
+  // Método para calcular totais
+  calculateTotals(): void {
+    if (this.services && this.services.length > 0) {
+      // Calcular total dos serviços
+      let servicesSum = 0;
+
+      this.services.forEach((service: IServiceItem) => {
+        const quantity = service.quantity || 1;
+        const value = parseFloat(service.value?.toString() || '0');
+        const discount = parseFloat(service.discount?.toString() || '0');
+        const addition = parseFloat(service.addition?.toString() || '0');
+
+        // Calcular total do serviço individual
+        const serviceTotal = quantity * value + addition - discount;
+        servicesSum += serviceTotal;
+
+        // Atualizar total do serviço individual
+        service.total = Types.Decimal128.fromString(serviceTotal.toString());
+      });
+
+      // Atualizar soma dos serviços
+      this.servicesSum = Types.Decimal128.fromString(servicesSum.toString());
+
+      // Calcular total geral
+      const totalDiscount = parseFloat(this.totalDiscount?.toString() || '0');
+      const totalAddition = parseFloat(this.totalAddition?.toString() || '0');
+      const totalAmountLeft = servicesSum + totalAddition - totalDiscount;
+
+      this.totalAmountLeft = Types.Decimal128.fromString(
+        totalAmountLeft.toString(),
+      );
+    } else {
+      // Se não há serviços, zerar totais
+      this.servicesSum = Types.Decimal128.fromString('0');
+      this.totalAmountLeft = Types.Decimal128.fromString('0');
+    }
+  }
 }
 
 // Schema factory
 export const ServiceOrderSchema = SchemaFactory.createForClass(ServiceOrder);
+
+// Middleware para calcular totais automaticamente
+ServiceOrderSchema.pre('save', function () {
+  this.calculateTotals();
+});
+
+ServiceOrderSchema.pre('findOneAndUpdate', function () {
+  const update = this.getUpdate() as Record<string, any>;
+  if (update && (update.services || update.$set?.services)) {
+    // Se serviços foram atualizados, recalcular totais
+    const docToUpdate = update.$set || update;
+    if (docToUpdate.services) {
+      // Calcular totais para o documento atualizado
+      const services = docToUpdate.services as IServiceItem[];
+      let servicesSum = 0;
+
+      services.forEach((service: IServiceItem) => {
+        const quantity = service.quantity || 1;
+        const value = parseFloat(service.value?.toString() || '0');
+        const discount = parseFloat(service.discount?.toString() || '0');
+        const addition = parseFloat(service.addition?.toString() || '0');
+
+        const serviceTotal = quantity * value + addition - discount;
+        servicesSum += serviceTotal;
+
+        service.total = Types.Decimal128.fromString(serviceTotal.toString());
+      });
+
+      const totalDiscount = parseFloat(
+        docToUpdate.totalDiscount?.toString() || '0',
+      );
+      const totalAddition = parseFloat(
+        docToUpdate.totalAddition?.toString() || '0',
+      );
+      const totalAmountLeft = servicesSum + totalAddition - totalDiscount;
+
+      // Atualizar campos calculados
+      docToUpdate.servicesSum = Types.Decimal128.fromString(
+        servicesSum.toString(),
+      );
+      docToUpdate.totalAmountLeft = Types.Decimal128.fromString(
+        totalAmountLeft.toString(),
+      );
+    }
+  }
+});
 
 // Índices para performance
 ServiceOrderSchema.index({ orderNumber: 1 }, { unique: true });
@@ -254,11 +351,13 @@ export interface IServiceOrder {
   totalAmountPaid: Types.Decimal128;
   totalAmountLeft: Types.Decimal128;
   isActive: boolean;
+  services: IServiceItem[];
   createdAt?: Date;
   updatedAt?: Date;
 }
 
 export interface ICreateServiceOrder {
+  orderNumber?: number;
   customerId: string;
   equipment: string;
   model?: string;
@@ -279,6 +378,9 @@ export interface ICreateServiceOrder {
   paymentType?: PaymentType;
   installmentCount?: number;
   paidInstallments?: number;
+  services?: IServiceItem[];
+  totalDiscount?: Types.Decimal128;
+  totalAddition?: Types.Decimal128;
 }
 
 export interface IUpdateServiceOrder {
@@ -308,4 +410,7 @@ export interface IUpdateServiceOrder {
   paymentType?: PaymentType;
   installmentCount?: number;
   paidInstallments?: number;
+  services?: IServiceItem[];
+  totalDiscount?: Types.Decimal128;
+  totalAddition?: Types.Decimal128;
 }

@@ -40,13 +40,11 @@ export class ServiceOrderService {
       ...serviceOrderData,
     });
 
-    // 4. Calcular totais
-    const orderWithTotals = this.calculateTotals(orderWithDefaults);
-
+    // 4. Criar ordem (totais calculados automaticamente pelo middleware do schema)
     return this.serviceOrderRepository.create({
-      ...orderWithTotals,
+      ...orderWithDefaults,
       orderNumber,
-    } as any);
+    });
   }
 
   async findById(id: string): Promise<IServiceOrder> {
@@ -92,16 +90,10 @@ export class ServiceOrderService {
     // 2. Validações de negócio
     this.validateUpdateServiceOrder(id, serviceOrderData);
 
-    // 3. Calcular totais se necessário
-    const orderWithTotals = this.calculateTotals({
-      ...existingOrder,
-      ...serviceOrderData,
-    });
-
-    // 4. Atualizar
+    // 3. Atualizar (totais calculados automaticamente pelo middleware do schema)
     const updatedOrder = await this.serviceOrderRepository.update(
       id,
-      orderWithTotals,
+      serviceOrderData,
     );
     if (!updatedOrder) {
       throw new NotFoundException(
@@ -303,11 +295,6 @@ export class ServiceOrderService {
     id: string,
     status: ServiceOrderStatus,
   ): Promise<IServiceOrder> {
-    const existingOrder = await this.findById(id);
-
-    // Validar transição de status
-    this.validateStatusTransition(existingOrder.status, status);
-
     return this.update(id, { status });
   }
 
@@ -315,11 +302,6 @@ export class ServiceOrderService {
     id: string,
     financial: FinancialStatus,
   ): Promise<IServiceOrder> {
-    const existingOrder = await this.findById(id);
-
-    // Validar transição de status financeiro
-    this.validateFinancialStatusTransition(existingOrder.financial, financial);
-
     return this.update(id, { financial });
   }
 
@@ -412,86 +394,6 @@ export class ServiceOrderService {
         );
       }
     }
-  }
-
-  private validateStatusTransition(
-    currentStatus: ServiceOrderStatus,
-    newStatus: ServiceOrderStatus,
-  ): void {
-    // Definir transições válidas
-    const validTransitions: Record<ServiceOrderStatus, ServiceOrderStatus[]> = {
-      [ServiceOrderStatus.CONFIRMAR]: [
-        ServiceOrderStatus.APROVADO,
-        ServiceOrderStatus.REPROVADO,
-      ],
-      [ServiceOrderStatus.APROVADO]: [
-        ServiceOrderStatus.PRONTO,
-        ServiceOrderStatus.REPROVADO,
-      ],
-      [ServiceOrderStatus.PRONTO]: [ServiceOrderStatus.ENTREGUE],
-      [ServiceOrderStatus.ENTREGUE]: [], // Status final
-      [ServiceOrderStatus.REPROVADO]: [ServiceOrderStatus.CONFIRMAR], // Pode voltar para confirmar
-    };
-
-    if (!validTransitions[currentStatus].includes(newStatus)) {
-      throw new BadRequestException(
-        `Transição de status de ${currentStatus} para ${newStatus} não é permitida`,
-      );
-    }
-  }
-
-  private validateFinancialStatusTransition(
-    currentFinancial: FinancialStatus,
-    newFinancial: FinancialStatus,
-  ): void {
-    // Definir transições válidas
-    const validTransitions: Record<FinancialStatus, FinancialStatus[]> = {
-      [FinancialStatus.EM_ABERTO]: [
-        FinancialStatus.PAGO,
-        FinancialStatus.PARCIALMENTE_PAGO,
-        FinancialStatus.VENCIDO,
-        FinancialStatus.CANCELADO,
-      ],
-      [FinancialStatus.DEVE]: [
-        FinancialStatus.PAGO,
-        FinancialStatus.PARCIALMENTE_PAGO,
-        FinancialStatus.FATURADO,
-        FinancialStatus.VENCIDO,
-        FinancialStatus.CANCELADO,
-      ],
-      [FinancialStatus.PARCIALMENTE_PAGO]: [
-        FinancialStatus.PAGO,
-        FinancialStatus.VENCIDO,
-        FinancialStatus.CANCELADO,
-      ],
-      [FinancialStatus.FATURADO]: [
-        FinancialStatus.PAGO,
-        FinancialStatus.PARCIALMENTE_PAGO,
-        FinancialStatus.VENCIDO,
-        FinancialStatus.CANCELADO,
-      ],
-      [FinancialStatus.VENCIDO]: [
-        FinancialStatus.PAGO,
-        FinancialStatus.PARCIALMENTE_PAGO,
-        FinancialStatus.CANCELADO,
-      ],
-      [FinancialStatus.PAGO]: [], // Status final
-      [FinancialStatus.CANCELADO]: [], // Status final
-    };
-
-    if (!validTransitions[currentFinancial].includes(newFinancial)) {
-      throw new BadRequestException(
-        `Transição de status financeiro de ${currentFinancial} para ${newFinancial} não é permitida`,
-      );
-    }
-  }
-
-  private calculateTotals(
-    serviceOrderData: ICreateServiceOrder | IUpdateServiceOrder,
-  ): ICreateServiceOrder | IUpdateServiceOrder {
-    // Por enquanto, retorna os dados sem cálculos
-    // Os cálculos serão feitos no schema ou em outro lugar
-    return serviceOrderData;
   }
 
   private applyDefaults(
