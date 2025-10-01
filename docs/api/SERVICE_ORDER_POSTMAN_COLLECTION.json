@@ -1,0 +1,559 @@
+{
+  "info": {
+    "name": "Service Orders API",
+    "description": "Coleção completa da API de Service Orders para testes no Postman",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{authToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "serviceOrderId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "customerId",
+      "value": "68d99ab33a6a2248cbc0a1f5",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"cursor_user@teste.com\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('authToken', response.access_token);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "CRUD Operations",
+      "item": [
+        {
+          "name": "Create Service Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"{{customerId}}\",\n  \"equipment\": \"Notebook Dell Inspiron 15\",\n  \"model\": \"Inspiron 15 3000\",\n  \"brand\": \"Dell\",\n  \"serialNumber\": \"DL123456789\",\n  \"voltage\": \"19V\",\n  \"accessories\": \"Carregador original, Mouse sem fio\",\n  \"customerObservations\": \"Notebook não liga, LED de energia não acende\",\n  \"reportedDefect\": \"Falha na fonte de alimentação\",\n  \"warranty\": true,\n  \"isReturn\": false,\n  \"entryDate\": \"2025-09-30T19:38:56.295Z\",\n  \"deliveryDate\": \"2025-10-02T18:00:00.000Z\",\n  \"notes\": \"Cliente existente no banco - dados corretos\",\n  \"financial\": \"em_aberto\",\n  \"paymentType\": \"cash\",\n  \"installmentCount\": 1,\n  \"services\": [\n    {\n      \"description\": \"Diagnóstico completo do equipamento\",\n      \"quantity\": 1,\n      \"value\": 80,\n      \"discount\": 0,\n      \"addition\": 0\n    },\n    {\n      \"description\": \"Substituição da fonte de alimentação\",\n      \"quantity\": 1,\n      \"value\": 120,\n      \"discount\": 10,\n      \"addition\": 0\n    },\n    {\n      \"description\": \"Limpeza interna e manutenção preventiva\",\n      \"quantity\": 1,\n      \"value\": 60,\n      \"discount\": 0,\n      \"addition\": 0\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/service-orders",
+              "host": ["{{baseUrl}}"],
+              "path": ["service-orders"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('serviceOrderId', response.id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get All Service Orders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/service-orders?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["service-orders"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Service Order by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/service-orders/{{serviceOrderId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["service-orders", "{{serviceOrderId}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Service Order",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"notes\": \"Ordem atualizada via Postman\",\n  \"services\": [\n    {\n      \"description\": \"Diagnóstico completo do equipamento\",\n      \"quantity\": 1,\n      \"value\": 80,\n      \"discount\": 0,\n      \"addition\": 0\n    },\n    {\n      \"description\": \"Substituição da fonte de alimentação\",\n      \"quantity\": 1,\n      \"value\": 120,\n      \"discount\": 10,\n      \"addition\": 0\n    },\n    {\n      \"description\": \"Limpeza interna e manutenção preventiva\",\n      \"quantity\": 1,\n      \"value\": 60,\n      \"discount\": 0,\n      \"addition\": 0\n    },\n    {\n      \"description\": \"Teste de funcionamento\",\n      \"quantity\": 1,\n      \"value\": 30,\n      \"discount\": 0,\n      \"addition\": 0\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/service-orders/{{serviceOrderId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["service-orders", "{{serviceOrderId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Service Order",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/service-orders/{{serviceOrderId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["service-orders", "{{serviceOrderId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Search Operations",
+      "item": [
+        {
+          "name": "Search by Order Number",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/service-orders/by-order-number?q=14",
+              "host": ["{{baseUrl}}"],
+              "path": ["service-orders", "by-order-number"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "14"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Search by Customer ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/service-orders/by-customer?customerId={{customerId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["service-orders", "by-customer"],
+              "query": [
+                {
+                  "key": "customerId",
+                  "value": "{{customerId}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Search by Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/service-orders/by-status?q=confirmar",
+              "host": ["{{baseUrl}}"],
+              "path": ["service-orders", "by-status"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "confirmar"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Search by Equipment",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/service-orders/by-equipment?q=Dell",
+              "host": ["{{baseUrl}}"],
+              "path": ["service-orders", "by-equipment"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "Dell"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Search by Model",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/service-orders/by-model?q=Inspiron",
+              "host": ["{{baseUrl}}"],
+              "path": ["service-orders", "by-model"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "Inspiron"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Search by Brand",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/service-orders/by-brand?q=Dell",
+              "host": ["{{baseUrl}}"],
+              "path": ["service-orders", "by-brand"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "Dell"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Search by Serial Number",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/service-orders/by-serial-number?q=DL123456789",
+              "host": ["{{baseUrl}}"],
+              "path": ["service-orders", "by-serial-number"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "DL123456789"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Search by Customer Name",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/service-orders/by-customer-name?q=Bruna",
+              "host": ["{{baseUrl}}"],
+              "path": ["service-orders", "by-customer-name"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "Bruna"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Search by Corporate Name",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/service-orders/by-customer-corporate-name?q=Empresa",
+              "host": ["{{baseUrl}}"],
+              "path": ["service-orders", "by-customer-corporate-name"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "Empresa"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Search by Trade Name",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/service-orders/by-customer-trade-name?q=Fantasia",
+              "host": ["{{baseUrl}}"],
+              "path": ["service-orders", "by-customer-trade-name"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "Fantasia"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "General Search",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/service-orders/search?q=Dell",
+              "host": ["{{baseUrl}}"],
+              "path": ["service-orders", "search"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "Dell"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Status Management",
+      "item": [
+        {
+          "name": "Update Technical Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"aprovado\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/service-orders/{{serviceOrderId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["service-orders", "{{serviceOrderId}}", "status"]
+            }
+          }
+        },
+        {
+          "name": "Update Financial Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"financial\": \"pago\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/service-orders/{{serviceOrderId}}/financial-status",
+              "host": ["{{baseUrl}}"],
+              "path": [
+                "service-orders",
+                "{{serviceOrderId}}",
+                "financial-status"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sequence Management",
+      "item": [
+        {
+          "name": "Get Current Sequence Number",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/service-orders/sequence/current",
+              "host": ["{{baseUrl}}"],
+              "path": ["service-orders", "sequence", "current"]
+            }
+          }
+        },
+        {
+          "name": "Get Sequence Info",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/service-orders/sequence/info",
+              "host": ["{{baseUrl}}"],
+              "path": ["service-orders", "sequence", "info"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Test Scenarios",
+      "item": [
+        {
+          "name": "Create Order Without Services",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"{{customerId}}\",\n  \"equipment\": \"Teste de validação com cliente existente\",\n  \"warranty\": false,\n  \"isReturn\": false,\n  \"entryDate\": \"2025-09-30T19:47:27.206Z\",\n  \"deliveryDate\": \"2025-10-02T18:00:00.000Z\",\n  \"financial\": \"em_aberto\",\n  \"paymentType\": \"cash\",\n  \"installmentCount\": 1,\n  \"services\": []\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/service-orders",
+              "host": ["{{baseUrl}}"],
+              "path": ["service-orders"]
+            }
+          }
+        },
+        {
+          "name": "Create Order with Discounts and Additions",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"{{customerId}}\",\n  \"equipment\": \"Smartphone Samsung Galaxy S21\",\n  \"model\": \"Galaxy S21\",\n  \"brand\": \"Samsung\",\n  \"serialNumber\": \"SM123456789\",\n  \"customerObservations\": \"Tela quebrada, não liga\",\n  \"reportedDefect\": \"Tela danificada e problema na bateria\",\n  \"warranty\": false,\n  \"isReturn\": false,\n  \"entryDate\": \"2025-09-30T20:00:00.000Z\",\n  \"deliveryDate\": \"2025-10-03T18:00:00.000Z\",\n  \"notes\": \"Cliente VIP - desconto especial\",\n  \"financial\": \"em_aberto\",\n  \"paymentType\": \"installment\",\n  \"installmentCount\": 3,\n  \"services\": [\n    {\n      \"description\": \"Substituição da tela\",\n      \"quantity\": 1,\n      \"value\": 300,\n      \"discount\": 50,\n      \"addition\": 0\n    },\n    {\n      \"description\": \"Substituição da bateria\",\n      \"quantity\": 1,\n      \"value\": 150,\n      \"discount\": 20,\n      \"addition\": 0\n    },\n    {\n      \"description\": \"Taxa de urgência\",\n      \"quantity\": 1,\n      \"value\": 0,\n      \"discount\": 0,\n      \"addition\": 30\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/service-orders",
+              "host": ["{{baseUrl}}"],
+              "path": ["service-orders"]
+            }
+          }
+        },
+        {
+          "name": "Update Order with Services",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"services\": [\n    {\n      \"description\": \"Diagnóstico completo\",\n      \"quantity\": 1,\n      \"value\": 50,\n      \"discount\": 0,\n      \"addition\": 0\n    },\n    {\n      \"description\": \"Reparo da placa mãe\",\n      \"quantity\": 1,\n      \"value\": 200,\n      \"discount\": 10,\n      \"addition\": 0\n    },\n    {\n      \"description\": \"Teste de funcionamento\",\n      \"quantity\": 1,\n      \"value\": 30,\n      \"discount\": 0,\n      \"addition\": 0\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/service-orders/{{serviceOrderId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["service-orders", "{{serviceOrderId}}"]
+            }
+          }
+        },
+        {
+          "name": "Change Customer Details",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"{{customerId}}\",\n  \"notes\": \"Cliente alterado via teste\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/service-orders/{{serviceOrderId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["service-orders", "{{serviceOrderId}}"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
+
