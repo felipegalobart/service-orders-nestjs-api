@@ -194,6 +194,19 @@ export class ServiceOrder {
   })
   totalAddition: Types.Decimal128;
 
+  // Campos de porcentagem
+  @Prop({
+    type: Types.Decimal128,
+    default: Types.Decimal128.fromString('0'),
+  })
+  discountPercentage: Types.Decimal128;
+
+  @Prop({
+    type: Types.Decimal128,
+    default: Types.Decimal128.fromString('0'),
+  })
+  additionPercentage: Types.Decimal128;
+
   @Prop({
     type: Types.Decimal128,
     default: Types.Decimal128.fromString('0'),
@@ -249,7 +262,24 @@ ServiceOrderSchema.methods.calculateTotals = function (this: any) {
     // Calcular total geral
     const totalDiscount = parseFloat(this.totalDiscount?.toString() || '0');
     const totalAddition = parseFloat(this.totalAddition?.toString() || '0');
-    const totalAmountLeft = servicesSum + totalAddition - totalDiscount;
+
+    // Aplicar porcentagens sobre o total dos serviços
+    const discountPercentage = parseFloat(
+      this.discountPercentage?.toString() || '0',
+    );
+    const additionPercentage = parseFloat(
+      this.additionPercentage?.toString() || '0',
+    );
+
+    const discountFromPercentage = (servicesSum * discountPercentage) / 100;
+    const additionFromPercentage = (servicesSum * additionPercentage) / 100;
+
+    const totalAmountLeft =
+      servicesSum +
+      totalAddition +
+      additionFromPercentage -
+      totalDiscount -
+      discountFromPercentage;
 
     this.totalAmountLeft = Types.Decimal128.fromString(
       totalAmountLeft.toString(),
@@ -305,7 +335,28 @@ ServiceOrderSchema.pre('findOneAndUpdate', function (this: any) {
           update.$set?.totalAddition?.toString() ||
           '0',
       );
-      const totalAmountLeft = servicesSum + totalAddition - totalDiscount;
+
+      // Aplicar porcentagens sobre o total dos serviços
+      const discountPercentage = parseFloat(
+        update.discountPercentage?.toString() ||
+          update.$set?.discountPercentage?.toString() ||
+          '0',
+      );
+      const additionPercentage = parseFloat(
+        update.additionPercentage?.toString() ||
+          update.$set?.additionPercentage?.toString() ||
+          '0',
+      );
+
+      const discountFromPercentage = (servicesSum * discountPercentage) / 100;
+      const additionFromPercentage = (servicesSum * additionPercentage) / 100;
+
+      const totalAmountLeft =
+        servicesSum +
+        totalAddition +
+        additionFromPercentage -
+        totalDiscount -
+        discountFromPercentage;
 
       this.set({
         servicesSum: Types.Decimal128.fromString(servicesSum.toString()),
@@ -369,6 +420,8 @@ export interface IServiceOrder {
   servicesSum: Types.Decimal128;
   totalDiscount: Types.Decimal128;
   totalAddition: Types.Decimal128;
+  discountPercentage: Types.Decimal128;
+  additionPercentage: Types.Decimal128;
   totalAmountPaid: Types.Decimal128;
   totalAmountLeft: Types.Decimal128;
   isActive: boolean;
@@ -402,6 +455,8 @@ export interface ICreateServiceOrder {
   services?: IServiceItem[];
   totalDiscount?: Types.Decimal128;
   totalAddition?: Types.Decimal128;
+  discountPercentage?: Types.Decimal128;
+  additionPercentage?: Types.Decimal128;
 }
 
 export interface IUpdateServiceOrder {
@@ -434,4 +489,6 @@ export interface IUpdateServiceOrder {
   services?: IServiceItem[];
   totalDiscount?: Types.Decimal128;
   totalAddition?: Types.Decimal128;
+  discountPercentage?: Types.Decimal128;
+  additionPercentage?: Types.Decimal128;
 }

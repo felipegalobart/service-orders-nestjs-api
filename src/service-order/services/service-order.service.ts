@@ -76,8 +76,8 @@ export class ServiceOrderService {
     if (page < 1) {
       throw new BadRequestException('Página deve ser maior que 0');
     }
-    if (limit < 1 || limit > 100) {
-      throw new BadRequestException('Limite deve estar entre 1 e 100');
+    if (limit < 1 || limit > 1000) {
+      throw new BadRequestException('Limite deve estar entre 1 e 1000');
     }
 
     return this.serviceOrderRepository.findAll(page, limit, filters);
@@ -281,8 +281,8 @@ export class ServiceOrderService {
     if (page < 1) {
       throw new BadRequestException('Página deve ser maior que 0');
     }
-    if (limit < 1 || limit > 100) {
-      throw new BadRequestException('Limite deve estar entre 1 e 100');
+    if (limit < 1 || limit > 1000) {
+      throw new BadRequestException('Limite deve estar entre 1 e 1000');
     }
 
     return this.serviceOrderRepository.search(searchTerm.trim(), page, limit);
