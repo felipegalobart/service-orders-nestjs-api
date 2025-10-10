@@ -57,6 +57,8 @@ export class ServiceOrderController {
     @Query('customerCorporateName') customerCorporateName?: string,
     @Query('customerTradeName') customerTradeName?: string,
     @Query('isActive') isActive?: boolean,
+    @Query('dateRange[start]') dateRangeStart?: string,
+    @Query('dateRange[end]') dateRangeEnd?: string,
   ): Promise<IPaginatedResult> {
     const filters: IServiceOrderFilters = {};
 
@@ -72,6 +74,13 @@ export class ServiceOrderController {
       filters.customerCorporateName = customerCorporateName;
     if (customerTradeName) filters.customerTradeName = customerTradeName;
     if (isActive !== undefined) filters.isActive = isActive;
+
+    if (dateRangeStart && dateRangeEnd) {
+      filters.dateRange = {
+        start: new Date(dateRangeStart),
+        end: new Date(dateRangeEnd),
+      };
+    }
 
     return this.serviceOrderService.findAll(page, limit, filters);
   }
